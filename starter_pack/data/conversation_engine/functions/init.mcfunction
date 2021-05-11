@@ -1,0 +1,2 @@
+scoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager
+say conversation engine initialized

@@ -1,0 +1,1 @@
+summon villager ~ ~ ~ {Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{"text":"lab rat","color":"white"}',VillagerData:{profession:"minecraft:nitwit"},Offers:{}}
