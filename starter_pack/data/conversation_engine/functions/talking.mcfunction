@@ -1,2 +1,2 @@
 scoreboard players set @r CE_talking 0
-say i am talking
+execute at @r positioned ~ ~1.5 ~ run function conversation_engine:villager_detection/raycast
