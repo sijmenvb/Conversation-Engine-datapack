@@ -1,1 +1,1 @@
-summon villager ~ ~ ~ {Tags:["CE_npc"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{"text":"lab rat","color":"white"}',VillagerData:{profession:"minecraft:nitwit"},Offers:{}}
+summon villager ~ ~ ~ {Tags:["CE_npc","lab_rat"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{"text":"lab rat","color":"white"}',VillagerData:{profession:"minecraft:nitwit"},Offers:{}}
