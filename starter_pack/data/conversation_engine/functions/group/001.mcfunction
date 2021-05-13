@@ -1,1 +1,0 @@
-execute if score CE_mannager lab_rat matches 1 run function conversation_engine:messages/lab_rat/start

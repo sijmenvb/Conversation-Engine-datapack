@@ -1,0 +1,1 @@
+execute if score CE_mannager lab_rat matches 1 at @e[tag=lab_rat] run function conversation_engine:messages/lab_rat/tick
