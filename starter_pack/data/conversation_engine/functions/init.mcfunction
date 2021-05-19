@@ -3,6 +3,7 @@ scoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villag
 # scoreboard for storing sucsesses of functions to do conditionals
 scoreboard objectives add CE_suc dummy
 scoreboard objectives add CE_suc2 dummy
+scoreboard objectives add CE_resend dummy
 # scoreboard for limiting recursion
 scoreboard objectives add CE_rec dummy
 
