@@ -1,2 +1,2 @@
 # kill all npc's
-kill @e[tag=CE_npc]
+kill @e[type=villager,tag=CE_npc]
