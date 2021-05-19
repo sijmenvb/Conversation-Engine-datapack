@@ -1,5 +1,7 @@
 # always run by the NPC
 
+# this function starts the conversation with a npc
+
 # reset the boolean.
 scoreboard players set bool CE_suc2 0
 # if the player is already talking to this villager

@@ -1,0 +1,1 @@
+say use /function conversation_engine:villager/summon/ followed by the name of the npc to summon the npc's

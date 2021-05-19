@@ -1,4 +1,6 @@
-#always run as the player talking with the villager (scores={lab_ape = 1})
+# always run as the player talking with the villager (scores={lab_ape = 1})
+
+# this function is run each tick if someone is talking to this NPC
 
 # check if the player is in range of the npc if not end the conversation.
 execute at @s unless entity @e[type=villager, distance = ..7, tag=lab_ape] run function conversation_engine:messages/lab_ape/end

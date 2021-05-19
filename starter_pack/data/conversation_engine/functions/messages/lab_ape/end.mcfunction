@@ -1,5 +1,7 @@
 # run as the player
 
+# this function ends the conversation with a npc
+
 # stop the labrat conversation
 scoreboard players set CE_mannager lab_ape 0
 
