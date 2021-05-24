@@ -1,14 +1,17 @@
-package conversationEngine;
+package conversationEngineInporter;
 
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import org.json.simple.parser.JSONParser;
 
 public class Main {
 
 	public static void main(String[] args) {
 
 		Scanner scan;
+		
+		JSONParser parser = new JSONParser();
 		
 		try {
 			File input = new File("src/input6.txt");
