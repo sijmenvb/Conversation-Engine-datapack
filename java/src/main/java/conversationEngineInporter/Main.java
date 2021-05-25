@@ -33,7 +33,7 @@ public class Main {
 		CEStory Story = new Generator().generateStory(nodesArray);
 		
 
-		System.out.println("poject is set up!");
+		System.out.println("Done! -- tool provided by sijmen_v_b");
 
 	}
 }
