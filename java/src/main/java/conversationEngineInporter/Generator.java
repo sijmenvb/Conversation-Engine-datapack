@@ -12,7 +12,8 @@ public class Generator {
 	
 	public CEStory generateStory(JSONArray nodesArray) {
 		System.out.println(nodesArray.get(0));
-		new ConverzationNode((JSONObject) nodesArray.get(0), 0);
+		ConverzationNode n = new ConverzationNode((JSONObject) nodesArray.get(0), 0);
+		System.out.println(n.toCommand());
 		
 		return new CEStory();
 	}
