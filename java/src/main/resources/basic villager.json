@@ -2,7 +2,7 @@
 	{
 		"title": "villager1",
 		"tags": "",
-		"body": "hello\n[[hello my man|op1]]\n[[hi my dude|op2]]\n[[hi my dude|op4]]",
+		"body": "hello\nI just said something\n[[hello my man|op1]]\n[[hi my dude|op2]][[hi my dude|op4]]",
 		"position": {
 			"x": 116,
 			"y": -208
