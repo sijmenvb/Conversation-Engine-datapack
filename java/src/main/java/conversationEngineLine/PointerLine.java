@@ -20,8 +20,7 @@ public class PointerLine extends ConversationLine{
 	}
 
 
-
 	public String toCommand() {
-		return "# TODO clickable pointer text";
+		return "# TODO clickable pointer text\"" + text + "\"";
 	}
 }

@@ -12,7 +12,7 @@ public class StringLine extends ConversationLine {
 	}
 
 	public String toCommand() {
-		return "# TODO STRING TELRAW";
+		return "# TODO STRING TELRAW\"" + text + "\"";
 	}
 
 }
