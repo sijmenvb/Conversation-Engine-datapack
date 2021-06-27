@@ -57,8 +57,16 @@ public class ConverzationNode {
 		inPointer.push(name);// update the inPointer list.
 	}
 
-	public LinkedList<String> getInPointer() {
-		return inPointer;
+	public LinkedList<String> getOutPointer() {
+		return outPointer;
+	}
+	
+	/** see's if this node has no other nodes pointing to it 
+	 * 
+	 * @return true if this is a starting node
+	 */
+	public boolean isStartingNode() {
+		return inPointer.isEmpty();
 	}
 
 	public int getId() {

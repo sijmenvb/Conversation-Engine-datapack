@@ -10,5 +10,14 @@ import java.util.LinkedList;
 public class NPC {
 	LinkedList<ConverzationNode> nodes = new LinkedList<ConverzationNode>();
 	String name;
+	
+	public NPC(String name) {
+		super();
+		this.name = name;
+	}
+	
+	public void addNode(ConverzationNode n) {
+		nodes.push(n);
+	}
 
 }
