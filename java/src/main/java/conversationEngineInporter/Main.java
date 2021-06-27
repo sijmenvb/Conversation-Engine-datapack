@@ -19,18 +19,18 @@ public class Main {
 		try { // try to get the specified file else throw an error and end the program.
 			FileReader input = new FileReader(file); // get the file
 			nodesArray = (JSONArray)parser.parse(input); // convert the file to a JSON array.
-		} catch (FileNotFoundException e) { // if the file was not found
+		} catch (FileNotFoundException e) {  // if the file was not found
 			System.out.println("could not find \"" + file + "\".\nABORTING");
-			return;//stop the program
-		} catch (Exception e) { //if there was another error (could not read file, not proper JSON file etc.)
+			return;  // stop the program
+		} catch (Exception e) {  // if there was another error (could not read file, not proper JSON file etc.)
 			System.out.println("an unexpected error occured when reading \"" + file + "\".");
 			e.printStackTrace();
 			System.out.println("ABORTING");
-			return;//stop the program
+			return;  // stop the program
 		}
 		
 		System.out.println("importing the file");
-		CEStory Story = new Generator().generateStory(nodesArray);
+		CEStory Story = new Generator().generateStory(nodesArray,10);
 		
 
 		System.out.println("Done! -- tool provided by sijmen_v_b");

@@ -19,5 +19,6 @@ public class NPC {
 	public void addNode(ConverzationNode n) {
 		nodes.push(n);
 	}
+	
 
 }

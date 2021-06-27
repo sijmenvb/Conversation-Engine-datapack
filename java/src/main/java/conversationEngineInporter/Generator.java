@@ -17,15 +17,15 @@ import org.json.simple.JSONObject;
  */
 public class Generator {
 
-	private int IdCounter = 0; // to ensure unique id's (picked sequentially)
+	private int IdCounter = -1; // to ensure unique id's (picked sequentially) (first id will be 0)
 
-	public CEStory generateStory(JSONArray nodesArray) {
+	public CEStory generateStory(JSONArray nodesArray, int groupSize) {
 		// System.out.println(nodesArray.get(0));
 
 		HashMap<String, ConverzationNode> nodes = new HashMap<String, ConverzationNode>();// store all conversation
 																							// nodes with their names as
 																							// their key.
-		LinkedList<NPC> NPCs = new LinkedList<NPC>(); // store the npc's
+		Queue<NPC> NPCs = new LinkedList<NPC>(); // store the npc's
 
 		// get all nodes into the nodes hashMap as conversationNodes.
 		{
@@ -78,6 +78,23 @@ public class Generator {
 			}
 			NPCs.add(npc);// add this npc to the list of npc's
 		}
+
+		// put the npc's into groups of groupSize.
+		LinkedList<NPCGroup> npcGroups = new LinkedList<NPCGroup>();
+		int groupId = 0;  // start with a group id of 0
+		while (!NPCs.isEmpty()) {  // while we still have npc's
+			LinkedList<NPC> npcGroup = new LinkedList<NPC>();  // create new group of npc's
+			for (int i = 0; i < groupSize; i++) {  // repeat group size times.
+				if(!NPCs.isEmpty()) {  // if we have not run out of npc's
+					npcGroup.add(NPCs.remove());  // add the npc to the group
+				}
+			}
+			npcGroups.add(new NPCGroup(npcGroup, groupId));  // add the list of npcs into a npcGroup
+			groupId++;  // increase the group id
+		}
+		
+		// now gather the groups into a CEStory
+		CEStory story = new CEStory(npcGroups);
 
 		// print all the commands, for testing purposes.
 		for (ConverzationNode n : nodes.values()) {
