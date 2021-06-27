@@ -3,8 +3,8 @@ package conversationEngineLine;
 import conversationEngineInporter.ConverzationNode;
 
 public class PointerLine extends ConversationLine{
-	String text;
-	String pointer;
+	private String text;
+	private String pointer;
 	
 
 	public PointerLine(String text,ConverzationNode node) {

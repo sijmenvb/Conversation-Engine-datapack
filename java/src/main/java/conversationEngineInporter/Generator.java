@@ -77,7 +77,6 @@ public class Generator {
 				}
 			}
 			NPCs.add(npc);// add this npc to the list of npc's
-
 		}
 
 		// print all the commands, for testing purposes.

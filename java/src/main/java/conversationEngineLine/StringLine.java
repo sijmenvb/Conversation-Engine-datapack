@@ -4,7 +4,7 @@ import conversationEngineInporter.ConverzationNode;
 
 public class StringLine extends ConversationLine {
 
-	String text;
+	private String text;
 
 	public StringLine(String text, ConverzationNode node) {
 		super(node);

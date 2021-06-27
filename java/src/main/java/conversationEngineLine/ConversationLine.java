@@ -9,7 +9,7 @@ import conversationEngineInporter.ConverzationNode;
  */
 public abstract class ConversationLine {
 	
-	ConverzationNode node;
+	private ConverzationNode node;
 	
 	public ConversationLine(ConverzationNode node) {
 		this.node = node;

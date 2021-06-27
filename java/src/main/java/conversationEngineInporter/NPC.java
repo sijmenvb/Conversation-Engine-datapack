@@ -8,8 +8,8 @@ import java.util.LinkedList;
  *
  */
 public class NPC {
-	LinkedList<ConverzationNode> nodes = new LinkedList<ConverzationNode>();
-	String name;
+	private LinkedList<ConverzationNode> nodes = new LinkedList<ConverzationNode>();
+	private String name;
 	
 	public NPC(String name) {
 		super();
