@@ -20,5 +20,20 @@ public class NPC {
 		nodes.push(n);
 	}
 	
+	public String createStartFunction() {
+		return  "# TODO generate start function";
+	}
+	
+	public String createEndFunction() {
+		return  "# TODO generate end function";
+	}
+	
+	public String createTickFunction() {
+		return  "# TODO generate Tick function";
+	}
+	
+	public String createNodeFunctions() {
+		return  "# TODO generate Tick function";
+	}
 
 }

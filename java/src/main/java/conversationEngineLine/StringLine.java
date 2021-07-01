@@ -5,6 +5,7 @@ import conversationEngineInporter.ConverzationNode;
 public class StringLine extends ConversationLine {
 
 	private String text;
+	
 
 	public StringLine(String text, ConverzationNode node) {
 		super(node);
@@ -12,7 +13,7 @@ public class StringLine extends ConversationLine {
 	}
 
 	public String toCommand() {
-		return "# TODO STRING TELRAW\"" + text + "\"";
+		return "execute if score bool CE_suc matches 1 run tellraw @s [{\"text\":\""+text+"\",\"color\":\"white\"}]\n";
 	}
 
 }

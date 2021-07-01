@@ -102,7 +102,7 @@ public class Generator {
 			System.out.println("new");
 		}
 
-		return new CEStory();
+		return story;
 	}
 
 	/**

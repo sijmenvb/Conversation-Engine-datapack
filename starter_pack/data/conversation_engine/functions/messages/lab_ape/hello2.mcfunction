@@ -15,6 +15,7 @@ execute store success score bool CE_resend if score @s CE_current_node matches 3
     execute if score bool CE_suc matches 1 run tellraw @s [{"text":"\n\n\n[lab ape]","color":"#5e4500"},{"text":"ooo oo aaa i'm an ape","color":"white"}]
 
 
+
     # update the last run node
     execute if score bool CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger
 
