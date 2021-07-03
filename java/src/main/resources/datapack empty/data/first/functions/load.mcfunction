@@ -1,0 +1,1 @@
+say datapack loaded :D
