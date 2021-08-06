@@ -36,4 +36,9 @@ public class NPC {
 		return  "# TODO generate Tick function";
 	}
 
+	public String getName() {
+		return name;
+	}
+	
+	
 }

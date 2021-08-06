@@ -25,7 +25,7 @@ public class ConverzationNode {
 
 	public ConverzationNode(JSONObject in, int id) {
 		this.id = id;
-		this.name = (String) in.get("title");
+		this.name = ((String) in.get("title")).replace(' ', '_');// make sure there are no spaces in the name.
 		String body = (String) in.get("body");
 		String lines[] = body.split("(?<=\\r?\\n)|((?=\\[\\[)|(?<=\\]\\]))"); // splits before [[ and after ]] and
 																				// next-lines

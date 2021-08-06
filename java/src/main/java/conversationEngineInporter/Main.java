@@ -30,7 +30,7 @@ public class Main {
 		}
 		
 		System.out.println("importing the file");
-		CEStory Story = new Generator().generateStory(nodesArray,10);
+		CEStory Story = new Generator().generateStory(nodesArray,1);
 		
 		Story.generateDatapack();
 		

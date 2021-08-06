@@ -31,12 +31,18 @@ public class CEStory {
 		String name = "exported datapack";
 		deletePreviousDatapack(name);
 		loadEmptyDatapack(name);
-		createGroupFolder();
-		createMessagesFolder();
-		createVillagerFolder();
+		createGroupFolder(name);
+		createMessagesFolder(name);
+		createVillagerFolder(name);
 	}
 
 	// ---- delete previous datapack ----
+
+	/**
+	 * deletes previous datapack with same name if it exists.
+	 * 
+	 * @param name
+	 */
 	private void deletePreviousDatapack(String name) {
 		try {
 			deleteDirectory(System.getProperty("user.dir") + "\\" + name);
@@ -49,6 +55,11 @@ public class CEStory {
 	// ---- delete previous datapack ----
 	// ---- load empty datapack ----
 
+	/**
+	 * copys the empty datapack to the root directory
+	 * 
+	 * @param name
+	 */
 	private void loadEmptyDatapack(String name) {
 		try {
 			copyDirectory(System.getProperty("user.dir") + "\\src\\main\\resources\\datapack empty",
@@ -62,20 +73,77 @@ public class CEStory {
 	// ---- load empty datapack ----
 	// ---- create group folder ----
 
-	private void createGroupFolder() {
-		createGroupFunction();
-		// for every group create the open and close function.
+	private void createGroupFolder(String name) {
+		createDirectory(name + "\\data\\conversation_engine\\functions\\group");
+		createGroupFunction(name);
+		createOpenFunction(name);
+		createCloseFunction(name);
 
 	}
 
-	private void createGroupFunction() {
+	private void createOpenFunction(String name) {
+		for (NPCGroup npcGroup : groups) {
+			String s = npcGroup.createOpenFunction();
+
+			// try to save the file.
+			try {
+				PrintWriter out = new PrintWriter(
+						String.format("%s\\data\\conversation_engine\\functions\\group\\%03d.mcfunction", name,
+								npcGroup.getGroupId()));
+				out.write(s);
+				out.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void createCloseFunction(String name) {
+		for (NPCGroup npcGroup : groups) {
+			String s = npcGroup.createCloseFunction();
+
+			// try to save the file.
+			try {
+				PrintWriter out = new PrintWriter(
+						String.format("%s\\data\\conversation_engine\\functions\\group\\close_%03d.mcfunction", name,
+								npcGroup.getGroupId()));
+				out.write(s);
+				out.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void createGroupFunction(String name) {
+		// start the function with some comments
+		String s = "# run by server\n\n# this is for grouping of villagers so we don't have to check each villager each tick only each group.\n\n# check if there is a conversation in a group:\n";
+		for (NPCGroup npcGroup : groups) {// for each group create the execute command with the correct group id.
+			s += String.format(
+					"execute if score CE_mannager CE_group_%02d matches 1 run function conversation_engine:group/%03d\n",
+					npcGroup.getGroupId(), npcGroup.getGroupId());
+		}
+
+		// try to save the file.
+		try {
+			PrintWriter out = new PrintWriter(name + "\\data\\conversation_engine\\functions\\group\\group.mcfunction");
+			out.write(s);
+			out.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
 	// ---- create group folder ----
 	// ---- create messages folder ----
 
-	private void createMessagesFolder() {
+	private void createMessagesFolder(String name) {
 		createTalkFunction();
 		// for every villager create their named messages folder.
 	}
@@ -85,8 +153,9 @@ public class CEStory {
 	}
 
 	// ---- create messages folder ----
+	// ---- create villager folder ----
 
-	private void createVillagerFolder() {
+	private void createVillagerFolder(String name) {
 		createKillFolder();
 		createSummonFolder();
 	}
@@ -104,7 +173,17 @@ public class CEStory {
 		// for every villager create summon function
 	}
 
-	// ---- create messages folder ----
+	// ---- create villager folder ----
+	// ---- create directory ----
+
+	private void createDirectory(String dirpath) {
+		File f = new File(dirpath);
+		if (!f.exists()) {
+			f.mkdir();
+		}
+	}
+
+	// ---- create directory ----
 	// ---- copy directory ---- source: https://www.baeldung.com/java-copy-directory
 
 	public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation)
