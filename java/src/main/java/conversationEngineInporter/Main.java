@@ -32,6 +32,8 @@ public class Main {
 		System.out.println("importing the file");
 		CEStory Story = new Generator().generateStory(nodesArray,10);
 		
+		Story.generateDatapack();
+		
 
 		System.out.println("Done! -- tool provided by sijmen_v_b");
 
