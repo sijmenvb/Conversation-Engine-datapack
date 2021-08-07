@@ -32,7 +32,7 @@ public class CEStory {
 		deletePreviousDatapack();
 		loadEmptyDatapack();
 		createGroupFolder();
-		createMessagesFolder();//TODO
+		createMessagesFolder();// TODO
 		createVillagerFolder();
 	}
 
@@ -86,16 +86,9 @@ public class CEStory {
 			String s = npcGroup.createOpenFunction();
 
 			// try to save the file.
-			try {
-				PrintWriter out = new PrintWriter(
-						String.format("%s\\data\\conversation_engine\\functions\\group\\%03d.mcfunction", name,
-								npcGroup.getGroupId()));
-				out.write(s);
-				out.close();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\group\\%03d.mcfunction", name,
+					npcGroup.getGroupId()));
+
 		}
 
 	}
@@ -105,16 +98,9 @@ public class CEStory {
 			String s = npcGroup.createCloseFunction();
 
 			// try to save the file.
-			try {
-				PrintWriter out = new PrintWriter(
-						String.format("%s\\data\\conversation_engine\\functions\\group\\close_%03d.mcfunction", name,
-								npcGroup.getGroupId()));
-				out.write(s);
-				out.close();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\group\\close_%03d.mcfunction", name,
+					npcGroup.getGroupId()));
+
 		}
 
 	}
@@ -129,14 +115,7 @@ public class CEStory {
 		}
 
 		// try to save the file.
-		try {
-			PrintWriter out = new PrintWriter(name + "\\data\\conversation_engine\\functions\\group\\group.mcfunction");
-			out.write(s);
-			out.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		SaveAsFile(s, name + "\\data\\conversation_engine\\functions\\group\\group.mcfunction");
 
 	}
 
@@ -150,6 +129,10 @@ public class CEStory {
 	}
 
 	private void createTalkFunction() {
+
+		String s = "# kill all npc's\nkill @e[type=villager,tag=CE_npc]";
+
+		SaveAsFile(s, name + "\\data\\conversation_engine\\functions\\messages\\talk.mcfunction");
 
 	}
 
@@ -168,32 +151,19 @@ public class CEStory {
 		// for every villager create kill function
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
-				String s = String.format("# kill the labrat npc\nkill @e[type=villager,tag=CE_npc,tag=%s]", npc.getName());
-				//save the file
-				try {
-					PrintWriter out = new PrintWriter(String.format("%s\\data\\conversation_engine\\functions\\villager\\kill\\%s.mcfunction", name,npc.getName()));
-					out.write(s);
-					out.close();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+				String s = String.format("# kill the labrat npc\nkill @e[type=villager,tag=CE_npc,tag=%s]",
+						npc.getName());
+
+				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\kill\\%s.mcfunction",
+						name, npc.getName()));
+
 			}
 		}
 	}
 
 	private void createkillAllFunction() {
 		String s = "# kill all npc's\nkill @e[type=villager,tag=CE_npc]";
-		try {
-			PrintWriter out = new PrintWriter(name + "\\data\\conversation_engine\\functions\\villager\\kill\\all.mcfunction");
-			out.write(s);
-			out.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		SaveAsFile(s, name + "\\data\\conversation_engine\\functions\\villager\\kill\\all.mcfunction");
 	}
 
 	private void createSummonFolder() {
@@ -201,22 +171,32 @@ public class CEStory {
 		// for every villager create summon function
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
-				String s = String.format("# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:nitwit\"},Offers:{}}", npc.getName(),npc.getName().replace('_', ' '));
-				//save the file
-				try {
-					PrintWriter out = new PrintWriter(String.format("%s\\data\\conversation_engine\\functions\\villager\\summon\\%s.mcfunction", name,npc.getName()));
-					out.write(s);
-					out.close();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+				String s = String.format(
+						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:nitwit\"},Offers:{}}",
+						npc.getName(), npc.getName().replace('_', ' '));
+
+				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\summon\\%s.mcfunction",
+						name, npc.getName()));
+
 			}
 		}
 	}
 
 	// ---- create villager folder ----
+	// ---- save string as file ----
+
+	private void SaveAsFile(String s, String path) {
+		try {
+			PrintWriter out = new PrintWriter(path);
+			out.write(s);
+			out.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// ---- save string as file ----
 	// ---- create directory ----
 
 	private void createDirectory(String dirpath) {
