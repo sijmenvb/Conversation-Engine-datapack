@@ -32,8 +32,8 @@ public class CEStory {
 		deletePreviousDatapack(name);
 		loadEmptyDatapack(name);
 		createGroupFolder(name);
-		createMessagesFolder(name);
-		createVillagerFolder(name);
+		createMessagesFolder(name);//TODO
+		createVillagerFolder(name);//TODO
 	}
 
 	// ---- delete previous datapack ----
@@ -156,21 +156,63 @@ public class CEStory {
 	// ---- create villager folder ----
 
 	private void createVillagerFolder(String name) {
-		createKillFolder();
-		createSummonFolder();
+		createDirectory(name + "\\data\\conversation_engine\\functions\\villager");
+		createKillFolder(name);
+		createSummonFolder(name);
 	}
 
-	private void createKillFolder() {
-		createkillAllFunction();
+	private void createKillFolder(String name) {
+		createDirectory(name + "\\data\\conversation_engine\\functions\\villager\\kill");
+		createkillAllFunction(name);
 		// for every villager create kill function
+		for (NPCGroup npcGroup : groups) {
+			for (NPC npc : npcGroup.getNpcs()) {
+				String s = String.format("# kill the labrat npc\nkill @e[type=villager,tag=CE_npc,tag=%s]", npc.getName());
+				//save the file
+				try {
+					PrintWriter out = new PrintWriter(String.format("%s\\data\\conversation_engine\\functions\\villager\\kill\\%s.mcfunction", name,npc.getName()));
+					out.write(s);
+					out.close();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}
 	}
 
-	private void createkillAllFunction() {
+	private void createkillAllFunction(String name) {
+		String s = "# kill all npc's\nkill @e[type=villager,tag=CE_npc]";
+		try {
+			PrintWriter out = new PrintWriter(name + "\\data\\conversation_engine\\functions\\villager\\kill\\all.mcfunction");
+			out.write(s);
+			out.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
-	private void createSummonFolder() {
+	private void createSummonFolder(String name) {
+		createDirectory(name + "\\data\\conversation_engine\\functions\\villager\\summon");
 		// for every villager create summon function
+		for (NPCGroup npcGroup : groups) {
+			for (NPC npc : npcGroup.getNpcs()) {
+				String s = String.format("# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:nitwit\"},Offers:{}}", npc.getName(),npc.getName().replace('_', ' '));
+				//save the file
+				try {
+					PrintWriter out = new PrintWriter(String.format("%s\\data\\conversation_engine\\functions\\villager\\summon\\%s.mcfunction", name,npc.getName()));
+					out.write(s);
+					out.close();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}
 	}
 
 	// ---- create villager folder ----
