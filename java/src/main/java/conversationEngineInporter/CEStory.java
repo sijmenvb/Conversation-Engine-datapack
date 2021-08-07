@@ -22,18 +22,18 @@ import static java.nio.file.StandardCopyOption.*;
  */
 public class CEStory {
 	private LinkedList<NPCGroup> groups;
+	private static String name = "exported datapack";
 
 	public CEStory(LinkedList<NPCGroup> groups) {
 		this.groups = groups;
 	}
 
 	public void generateDatapack() {
-		String name = "exported datapack";
-		deletePreviousDatapack(name);
-		loadEmptyDatapack(name);
-		createGroupFolder(name);
-		createMessagesFolder(name);//TODO
-		createVillagerFolder(name);//TODO
+		deletePreviousDatapack();
+		loadEmptyDatapack();
+		createGroupFolder();
+		createMessagesFolder();//TODO
+		createVillagerFolder();
 	}
 
 	// ---- delete previous datapack ----
@@ -43,7 +43,7 @@ public class CEStory {
 	 * 
 	 * @param name
 	 */
-	private void deletePreviousDatapack(String name) {
+	private void deletePreviousDatapack() {
 		try {
 			deleteDirectory(System.getProperty("user.dir") + "\\" + name);
 		} catch (IOException e) {
@@ -60,7 +60,7 @@ public class CEStory {
 	 * 
 	 * @param name
 	 */
-	private void loadEmptyDatapack(String name) {
+	private void loadEmptyDatapack() {
 		try {
 			copyDirectory(System.getProperty("user.dir") + "\\src\\main\\resources\\datapack empty",
 					System.getProperty("user.dir") + "\\" + name);
@@ -73,15 +73,15 @@ public class CEStory {
 	// ---- load empty datapack ----
 	// ---- create group folder ----
 
-	private void createGroupFolder(String name) {
+	private void createGroupFolder() {
 		createDirectory(name + "\\data\\conversation_engine\\functions\\group");
-		createGroupFunction(name);
-		createOpenFunction(name);
-		createCloseFunction(name);
+		createGroupFunction();
+		createOpenFunction();
+		createCloseFunction();
 
 	}
 
-	private void createOpenFunction(String name) {
+	private void createOpenFunction() {
 		for (NPCGroup npcGroup : groups) {
 			String s = npcGroup.createOpenFunction();
 
@@ -100,7 +100,7 @@ public class CEStory {
 
 	}
 
-	private void createCloseFunction(String name) {
+	private void createCloseFunction() {
 		for (NPCGroup npcGroup : groups) {
 			String s = npcGroup.createCloseFunction();
 
@@ -119,7 +119,7 @@ public class CEStory {
 
 	}
 
-	private void createGroupFunction(String name) {
+	private void createGroupFunction() {
 		// start the function with some comments
 		String s = "# run by server\n\n# this is for grouping of villagers so we don't have to check each villager each tick only each group.\n\n# check if there is a conversation in a group:\n";
 		for (NPCGroup npcGroup : groups) {// for each group create the execute command with the correct group id.
@@ -143,7 +143,8 @@ public class CEStory {
 	// ---- create group folder ----
 	// ---- create messages folder ----
 
-	private void createMessagesFolder(String name) {
+	private void createMessagesFolder() {
+		createDirectory(name + "\\data\\conversation_engine\\functions\\messages");
 		createTalkFunction();
 		// for every villager create their named messages folder.
 	}
@@ -155,15 +156,15 @@ public class CEStory {
 	// ---- create messages folder ----
 	// ---- create villager folder ----
 
-	private void createVillagerFolder(String name) {
+	private void createVillagerFolder() {
 		createDirectory(name + "\\data\\conversation_engine\\functions\\villager");
-		createKillFolder(name);
-		createSummonFolder(name);
+		createKillFolder();
+		createSummonFolder();
 	}
 
-	private void createKillFolder(String name) {
+	private void createKillFolder() {
 		createDirectory(name + "\\data\\conversation_engine\\functions\\villager\\kill");
-		createkillAllFunction(name);
+		createkillAllFunction();
 		// for every villager create kill function
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
@@ -182,7 +183,7 @@ public class CEStory {
 		}
 	}
 
-	private void createkillAllFunction(String name) {
+	private void createkillAllFunction() {
 		String s = "# kill all npc's\nkill @e[type=villager,tag=CE_npc]";
 		try {
 			PrintWriter out = new PrintWriter(name + "\\data\\conversation_engine\\functions\\villager\\kill\\all.mcfunction");
@@ -195,7 +196,7 @@ public class CEStory {
 
 	}
 
-	private void createSummonFolder(String name) {
+	private void createSummonFolder() {
 		createDirectory(name + "\\data\\conversation_engine\\functions\\villager\\summon");
 		// for every villager create summon function
 		for (NPCGroup npcGroup : groups) {
