@@ -126,13 +126,90 @@ public class CEStory {
 		createDirectory(name + "\\data\\conversation_engine\\functions\\messages");
 		createTalkFunction();
 		// for every villager create their named messages folder.
+		for (NPCGroup npcGroup : groups) {
+			for (NPC npc : npcGroup.getNpcs()) {
+				createNpcFolder(npcGroup, npc);
+			}
+		}
 	}
 
 	private void createTalkFunction() {
 
-		String s = "# kill all npc's\nkill @e[type=villager,tag=CE_npc]";
+		String s = "# always run by the NPC\n\n# this function checks wich NPC the player has clicked\n";
+
+		// for each villager
+		for (NPCGroup npcGroup : groups) {
+			for (NPC npc : npcGroup.getNpcs()) {
+				s += String.format("\nexecute at @s[tag=%s] run function conversation_engine:messages/%s/start",
+						npc.getName(), npc.getName());
+			}
+		}
 
 		SaveAsFile(s, name + "\\data\\conversation_engine\\functions\\messages\\talk.mcfunction");
+
+	}
+
+	private void createNpcFolder(NPCGroup npcGroup, NPC npc) {
+		// create a directory with the name of the npc.
+		createDirectory(String.format("%s\\data\\conversation_engine\\functions\\messages\\%s", name, npc.getName()));
+		createNpcStartFolder(npcGroup, npc);
+		createNpcEndFolder(npcGroup, npc);
+		createNpcTickFolder(npcGroup, npc);
+
+		// get all the nodes of this villager to functions
+	}
+
+	private void createNpcStartFolder(NPCGroup npcGroup, NPC npc) {
+		Boolean force1TalkingAtATime = true;
+		int n = 0;
+		if (force1TalkingAtATime) {
+			n = 2;
+		}
+
+		String s = "# always run by the NPC\n\n# this function starts the conversation with a npc\n\n# reset the boolean.\n";
+		s += "scoreboard players set bool CE_suc2 0\n# if the player is already talking to this villager";
+		s += String.format(
+				"    execute if entity @p[scores={CE_talking=1,%s=1}] run scoreboard players set bool CE_suc2 1\n    # make the tellraw the same as the last message so it repeats.\n    execute if score bool CE_suc2 matches 1 as @p[scores={CE_talking=1,%s=1}] run scoreboard players operation @s CE_trigger = @s CE_current_node\n",
+				npc.getName(), npc.getName());
+		s += String.format(
+				"# unless there is already someone else talking to the villager  (note that 2 as boolean is also true) \n# TIP: turn the 2(on the next line) into a 0 if you want multiple people to talk to the same npc at the same time\nexecute if score bool CE_suc2 matches 0 if entity @a[scores={%s=1}] run scoreboard players set bool CE_suc2 %01d \n    execute if score bool CE_suc2 matches 2 run tellraw @p[scores={CE_talking=1}] [{\"selector\":\"@a[scores={%s=1}]\"},{\"text\":\"[someone is already talking to this NPC]\",\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"you'll have to wait your turn.\"}]}}]\n",
+				npc.getName(), n, npc.getName());
+		s += String.format(
+				"# else:\n\n    # start the %s conversation\n    execute if score bool CE_suc2 matches 0 run scoreboard players set CE_mannager CE_group_%02d 1\n    execute if score bool CE_suc2 matches 0 run scoreboard players set CE_mannager %s 1\n",
+				npc.getName(), npcGroup.getGroupId(), npc.getName());
+		s += String.format(
+				"\n    # set the %s score to 1 for the player.\n    execute if score bool CE_suc2 matches 0 as @p[scores={CE_talking=1}] run scoreboard players set @s %s 1\n",
+				npc.getName(), npc.getName());
+		s += String.format(
+				"\n    # also set the current node back to 0 \n    execute if score bool CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_current_node 0\n",
+				npc.getName());
+		
+		//make sure you will start the correct node.
+		s += String.format(
+				"\n    # give the choises using the trigger command.\n    execute if score bool CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_trigger %d \n",
+				npc.getName(), npc.GetStartingNodeId());
+		
+		s += "# set talking back to 0\nscoreboard players set @p[scores={CE_talking=1}] CE_talking 0";
+		
+
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\start.mcfunction", name,
+				npc.getName()));
+	}
+
+	private void createNpcEndFolder(NPCGroup npcGroup, NPC npc) {
+		String s = "# run as the player\n\n# this function ends the conversation with a npc\n\n# stop the labrat conversation\n";
+		s += String.format(
+				"scoreboard players set CE_mannager CE_group_%02d 0\nscoreboard players set CE_mannager %s 0\n",
+				npcGroup.getGroupId(), npc.getName());
+		s += "\n# reset the last node \nscoreboard players set @s CE_current_node 0\n# also reset the trigger\nscoreboard players set @s CE_trigger 0\n\n# set lab_rat score of player that was talking to this villager back to 0\n";
+		s += String.format("scoreboard players set @s %s 0\n\nsay [ended the converstaion]", npc.getName());
+
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\end.mcfunction", name,
+				npc.getName()));
+
+	}
+
+	private void createNpcTickFolder(NPCGroup npcGroup, NPC npc) {
 
 	}
 

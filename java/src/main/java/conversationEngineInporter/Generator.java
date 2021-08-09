@@ -17,7 +17,7 @@ import org.json.simple.JSONObject;
  */
 public class Generator {
 
-	private int IdCounter = -1; // to ensure unique id's (picked sequentially) (first id will be 0)
+	private int IdCounter = 0; // to ensure unique id's (picked sequentially) (0 will never be used intentionally)
 
 	public CEStory generateStory(JSONArray nodesArray, int groupSize) {
 		// System.out.println(nodesArray.get(0));
@@ -111,7 +111,7 @@ public class Generator {
 	 * @return new id as int
 	 */
 	public int getNewId() {
-		IdCounter++; // get to new id
+		IdCounter++; // get to new id (0 will never be used intentionally)
 		return IdCounter; // return the new id
 	}
 
