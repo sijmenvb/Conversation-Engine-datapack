@@ -4,14 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.stream.Stream;
-import static java.nio.file.StandardCopyOption.*;
 
 /**
  * the Conversation Engine Story class stores the different npc's and is called
@@ -23,17 +20,29 @@ import static java.nio.file.StandardCopyOption.*;
 public class CEStory {
 	private LinkedList<NPCGroup> groups;
 	private static String name = "exported datapack";
+	private HashMap<String, ConverzationNode> nodes;
 
-	public CEStory(LinkedList<NPCGroup> groups) {
+	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConverzationNode> nodes) {
 		this.groups = groups;
+		this.nodes = nodes;
 	}
 
 	public void generateDatapack() {
 		deletePreviousDatapack();
 		loadEmptyDatapack();
+		createInitFunction();//TODO
+		createPlayerLogOnFunction();// TODO
 		createGroupFolder();
-		createMessagesFolder();// TODO
+		createMessagesFolder();
 		createVillagerFolder();
+	}
+
+	private void createInitFunction() {
+
+	}
+
+	private void createPlayerLogOnFunction() {
+
 	}
 
 	// ---- delete previous datapack ----
@@ -152,14 +161,18 @@ public class CEStory {
 	private void createNpcFolder(NPCGroup npcGroup, NPC npc) {
 		// create a directory with the name of the npc.
 		createDirectory(String.format("%s\\data\\conversation_engine\\functions\\messages\\%s", name, npc.getName()));
-		createNpcStartFolder(npcGroup, npc);
-		createNpcEndFolder(npcGroup, npc);
-		createNpcTickFolder(npcGroup, npc);
+		createNpcStartFunction(npcGroup, npc);
+		createNpcEndFunction(npcGroup, npc);
+		createNpcTickFunction(npcGroup, npc);// TODO
 
 		// get all the nodes of this villager to functions
+
+		for (ConverzationNode converzationNode : npc.getNodes()) {
+			createNodeFunction(npcGroup, npc, converzationNode);
+		}
 	}
 
-	private void createNpcStartFolder(NPCGroup npcGroup, NPC npc) {
+	private void createNpcStartFunction(NPCGroup npcGroup, NPC npc) {
 		Boolean force1TalkingAtATime = true;
 		int n = 0;
 		if (force1TalkingAtATime) {
@@ -183,20 +196,19 @@ public class CEStory {
 		s += String.format(
 				"\n    # also set the current node back to 0 \n    execute if score bool CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_current_node 0\n",
 				npc.getName());
-		
-		//make sure you will start the correct node.
+
+		// make sure you will start the correct node.
 		s += String.format(
 				"\n    # give the choises using the trigger command.\n    execute if score bool CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_trigger %d \n",
 				npc.getName(), npc.GetStartingNodeId());
-		
+
 		s += "# set talking back to 0\nscoreboard players set @p[scores={CE_talking=1}] CE_talking 0";
-		
 
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\start.mcfunction", name,
 				npc.getName()));
 	}
 
-	private void createNpcEndFolder(NPCGroup npcGroup, NPC npc) {
+	private void createNpcEndFunction(NPCGroup npcGroup, NPC npc) {
 		String s = "# run as the player\n\n# this function ends the conversation with a npc\n\n# stop the labrat conversation\n";
 		s += String.format(
 				"scoreboard players set CE_mannager CE_group_%02d 0\nscoreboard players set CE_mannager %s 0\n",
@@ -209,8 +221,54 @@ public class CEStory {
 
 	}
 
-	private void createNpcTickFolder(NPCGroup npcGroup, NPC npc) {
+	private void createNpcTickFunction(NPCGroup npcGroup, NPC npc) {
+		String s = String.format(
+				"# always run as the player talking with the villager (scores={%s = 1})\n\n# this function is run each tick if someone is talking to this NPC\n\n# check if the player is in range of the npc if not end the conversation.\n",
+				npc.getName());
+		s += String.format(
+				"execute at @s unless entity @e[type=villager, distance = ..7, tag=%s] run function conversation_engine:messages/%s/end\n",
+				npc.getName(), npc.getName());
+		s += "\n# check for trigger\n";
+		// check for all the triggers
+		for (ConverzationNode converzationNode : npc.getNodes()) {
+			s += String.format(
+					"execute as @s[scores={CE_trigger = %d}] run function conversation_engine:messages/%s/%s\n",
+					converzationNode.getId(), npc.getName(), converzationNode.getName());
+		}
+		s += "\n# set trigger back to 0\nscoreboard players set @s CE_trigger 0\n\n\n\n# set the current node, do not do this here\n";
 
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\tick.mcfunction", name,
+				npc.getName()));
+	}
+
+	private void createNodeFunction(NPCGroup npcGroup, NPC npc, ConverzationNode converzationNode) {
+		String s = String.format(
+				"# run as the player\n\n# message id: %d\n\n# reset the sucsess scoreboard\nscoreboard players set bool CE_suc 0\nscoreboard players set bool CE_resend 0\n",
+				converzationNode.getId());
+		s += "\n# check if the player came from a valid previous node (to prevent manual use of /trigger)\n";
+		// check if you come from a valid node (to prevent manual use of the /trigger
+		// command)
+		for (int id : converzationNode.getValidInpointerIds(nodes)) {
+			s += String.format(
+					"execute if score @s CE_current_node matches %d run scoreboard players set bool CE_suc 1\n", id);
+		}
+		s += "\n";
+
+		// check if the previous node is itself
+		s += String.format(
+				"# special case in case the previous node is itself in that case CE_resend of bool is set to 1 (use this to prevent commands that for example give items are executed twice)\nexecute store success score bool CE_resend if score @s CE_current_node matches %d run scoreboard players set bool CE_suc 1\n\n",
+				converzationNode.getId());
+
+		// give the dialogue and choices
+		s += "    # give the choices\n";
+		s += converzationNode.toCommand(nodes);
+		s += "\n\n";
+		
+		//update the last run node
+		s += "    # update the last run node\n    execute if score bool CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger\n"; 
+		
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\%s.mcfunction", name,
+				npc.getName(),converzationNode.getName()));
 	}
 
 	// ---- create messages folder ----

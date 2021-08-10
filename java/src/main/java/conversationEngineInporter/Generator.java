@@ -94,11 +94,11 @@ public class Generator {
 		}
 		
 		// now gather the groups into a CEStory
-		CEStory story = new CEStory(npcGroups);
+		CEStory story = new CEStory(npcGroups,nodes);
 
 		// print all the commands, for testing purposes.
 		for (ConverzationNode n : nodes.values()) {
-			System.out.println(n.toCommand());
+			System.out.println(n.toCommand(nodes));
 			System.out.println("new");
 		}
 

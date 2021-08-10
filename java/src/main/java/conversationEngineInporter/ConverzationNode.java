@@ -1,5 +1,6 @@
 package conversationEngineInporter;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.json.simple.JSONObject;
@@ -43,11 +44,27 @@ public class ConverzationNode {
 			}
 		}
 	}
+	
+	public LinkedList<Integer> getValidInpointerIds(HashMap<String, ConverzationNode> nodes) {
+		LinkedList<Integer> list = new LinkedList<Integer>();
+		
+		//for all the valid input pointers get the node id's
+		for (String name : inPointer) {
+			list.add(nodes.get(name).getId());
+		}
+		
+		//if this node is the starting node then 0 is also a valid starting point.
+		if (isStartingNode()) { 
+			list.add(0); 			
+		}
+		
+		return list;
+	}
 
-	public String toCommand() {
+	public String toCommand(HashMap<String, ConverzationNode> nodes) {
 		String s = "";
 		for (int i = 0; i < lines.size(); i++) {
-			s += lines.get(i).toCommand();
+			s += lines.get(i).toCommand(nodes);
 		}
 
 		return s;
