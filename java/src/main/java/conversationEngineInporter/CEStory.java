@@ -226,7 +226,7 @@ public class CEStory {
 		}
 
 		String s = "# always run by the NPC\n\n# this function starts the conversation with a npc\n\n# reset the boolean.\n";
-		s += "scoreboard players set bool CE_suc2 0\n# if the player is already talking to this villager";
+		s += "scoreboard players set bool CE_suc2 0\n# if the player is already talking to this villager\n";
 		s += String.format(
 				"    execute if entity @p[scores={CE_talking=1,%s=1}] run scoreboard players set bool CE_suc2 1\n    # make the tellraw the same as the last message so it repeats.\n    execute if score bool CE_suc2 matches 1 as @p[scores={CE_talking=1,%s=1}] run scoreboard players operation @s CE_trigger = @s CE_current_node\n",
 				npc.getName(), npc.getName());
