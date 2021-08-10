@@ -9,9 +9,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		String file = "src/main/resources/basic villager.json"; // get the basic villager
+		//String file = "src/main/resources/basic villager.json"; // get the basic villager
 		//String file = "src/main/resources/broken.json"; // load in the file with broken JSON for testing error
-
+		String file = "src/main/resources/missing node.json"; // file with a reference to a node that does not exist
 		JSONParser parser = new JSONParser();
 		
 		JSONArray nodesArray;

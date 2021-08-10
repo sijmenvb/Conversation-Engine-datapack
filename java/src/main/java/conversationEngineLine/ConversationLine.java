@@ -11,7 +11,7 @@ import conversationEngineInporter.ConverzationNode;
  */
 public abstract class ConversationLine {
 	
-	private ConverzationNode node;
+	protected ConverzationNode node;
 	
 	public ConversationLine(ConverzationNode node) {
 		this.node = node;

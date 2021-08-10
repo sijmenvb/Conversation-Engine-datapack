@@ -17,7 +17,8 @@ import org.json.simple.JSONObject;
  */
 public class Generator {
 
-	private int IdCounter = 0; // to ensure unique id's (picked sequentially) (0 will never be used intentionally)
+	private int IdCounter = 0; // to ensure unique id's (picked sequentially) (0 will never be used
+								// intentionally)
 
 	public CEStory generateStory(JSONArray nodesArray, int groupSize) {
 		// System.out.println(nodesArray.get(0));
@@ -43,8 +44,14 @@ public class Generator {
 			String name = n.getName(); // get the name of the current node
 			Iterator<String> iter = n.getOutPointer().iterator(); // get all the nodes this one points to.
 			while (iter.hasNext()) { // for all the nodes this node points to
-				nodes.get(iter.next()).addInPointer(name); // add the name of this node to the inPonter of the node it
-															// points to.
+				try {
+					nodes.get(iter.next()).addInPointer(name); // add the name of this node to the inPonter of the node
+																// it
+																// points to.
+				} catch (NullPointerException e) {
+					System.err.println("WARNING! the node " + name + " does not exist!");
+				}
+
 			}
 		}
 
@@ -70,10 +77,15 @@ public class Generator {
 				String nodeName = nodesQueue.remove(); // get next item from the queue
 				if (exploredNodes.add(nodeName)) { // if this node was not already explored
 					ConverzationNode n = nodes.get(nodeName);
-					npc.addNode(n); // add this node to the npc.
-					for (String s : n.getOutPointer()) { // for all nodes this node points to.
-						nodesQueue.add(s); // add the nodes this node points to to the queue
+					if (n == null) {
+						System.err.println("WARNING! the node " + nodeName + " does not exist!");
+					} else {
+						npc.addNode(n); // add this node to the npc.
+						for (String s : n.getOutPointer()) { // for all nodes this node points to.
+							nodesQueue.add(s); // add the nodes this node points to to the queue
+						}
 					}
+
 				}
 			}
 			NPCs.add(npc);// add this npc to the list of npc's
@@ -81,20 +93,20 @@ public class Generator {
 
 		// put the npc's into groups of groupSize.
 		LinkedList<NPCGroup> npcGroups = new LinkedList<NPCGroup>();
-		int groupId = 0;  // start with a group id of 0
-		while (!NPCs.isEmpty()) {  // while we still have npc's
-			LinkedList<NPC> npcGroup = new LinkedList<NPC>();  // create new group of npc's
-			for (int i = 0; i < groupSize; i++) {  // repeat group size times.
-				if(!NPCs.isEmpty()) {  // if we have not run out of npc's
-					npcGroup.add(NPCs.remove());  // add the npc to the group
+		int groupId = 0; // start with a group id of 0
+		while (!NPCs.isEmpty()) { // while we still have npc's
+			LinkedList<NPC> npcGroup = new LinkedList<NPC>(); // create new group of npc's
+			for (int i = 0; i < groupSize; i++) { // repeat group size times.
+				if (!NPCs.isEmpty()) { // if we have not run out of npc's
+					npcGroup.add(NPCs.remove()); // add the npc to the group
 				}
 			}
-			npcGroups.add(new NPCGroup(npcGroup, groupId));  // add the list of npcs into a npcGroup
-			groupId++;  // increase the group id
+			npcGroups.add(new NPCGroup(npcGroup, groupId)); // add the list of npcs into a npcGroup
+			groupId++; // increase the group id
 		}
-		
+
 		// now gather the groups into a CEStory
-		CEStory story = new CEStory(npcGroups,nodes);
+		CEStory story = new CEStory(npcGroups, nodes);
 
 		// print all the commands, for testing purposes.
 		for (ConverzationNode n : nodes.values()) {

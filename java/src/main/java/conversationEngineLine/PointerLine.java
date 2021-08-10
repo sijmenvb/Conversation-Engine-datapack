@@ -24,8 +24,17 @@ public class PointerLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConverzationNode> nodes) {
+		// try to get the id of the node if this node does not exist show an error and
+		// use id 0 instead.
+		int nodeId = 0;
+		try {
+			nodeId = nodes.get(pointer).getId();
+		} catch (NullPointerException e) {
+			System.err.println("WARNING: " + super.node.getName() + " points to " + pointer + " which does NOT exist");
+		}
+
 		return String.format(
 				"    execute if score bool CE_suc matches 1 run tellraw @s [{\"text\":\"%s\",\"color\":\"#A8DFFF\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/trigger CE_trigger set %d\"}}]\n",
-				Functions.stringEscape(text), nodes.get(pointer).getId());
+				Functions.stringEscape(text), nodeId);
 	}
 }
