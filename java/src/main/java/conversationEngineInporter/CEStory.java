@@ -30,7 +30,7 @@ public class CEStory {
 	public void generateDatapack() {
 		deletePreviousDatapack();
 		loadEmptyDatapack();
-		createInitFunction();//TODO
+		createInitFunction();
 		createPlayerLogOnFunction();// TODO
 		createGroupFolder();
 		createMessagesFolder();
@@ -38,11 +38,57 @@ public class CEStory {
 	}
 
 	private void createInitFunction() {
+		// add standard scoreboards
+		String s = "# detect when a player richt clicks a villager\nscoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager\n# scoreboard for storing sucsesses of functions to do conditionals\nscoreboard objectives add CE_suc dummy\nscoreboard objectives add CE_suc2 dummy\nscoreboard objectives add CE_resend dummy\n# scoreboard for limiting recursion\nscoreboard objectives add CE_rec dummy\n\n# trigger scoreboard to be acsessed by players without permissions.\nscoreboard objectives add CE_trigger trigger\n# a way to store the current node in the dialouge tree. used to prevent players from jumping unexpectedly by using /trigger manually.\nscoreboard objectives add CE_current_node dummy\n";
 
+		// Initialise all the groups
+		s += "\n# groups for optimazation to be used by fake player CE_mannager\n";
+		for (NPCGroup npcGroup : groups) {
+			s += String.format("scoreboard objectives add CE_group_%02d dummy\n", npcGroup.getGroupId());
+		}
+
+		// Initialise all the groups
+		s += "\n# scoreboard for villagers to be used by fake player CE_mannager\n";
+		for (NPCGroup npcGroup : groups) {
+			for (NPC npc : npcGroup.getNpcs()) {
+				s += String.format("scoreboard objectives add %s dummy\n", npc.getName());
+			}
+		}
+
+		// detect player joining
+		s += "\n# scoreboard for detecting if a player joins the game\nexecute unless entity @a run scoreboard objectives remove CE_leave_game\n# not fully shure what the one above does but it got reccomended to me and it can't hurt.\nscoreboard objectives add CE_leave_game custom:leave_game\n";
+
+		// reset the score for all players
+		s += "\n# reset the scores for all players:\nexecute as @a run function conversation_engine:player_log_on\n";
+
+		// Initialise message
+		s += "\nsay conversation engine initialized";
+
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\init.mcfunction", name));
 	}
 
 	private void createPlayerLogOnFunction() {
+		// set the leave scoreboard
+		String s = "# called by players who just log in again.\n\n# reset the CE_leave_game scoreboard \nscoreboard players set @s CE_leave_game 0\n";
 
+		// reset the groups scoreboards
+		s += "\n# reset the scoreboards\n    # groups\n";
+		for (NPCGroup npcGroup : groups) {
+			s += String.format("scoreboard players set @s CE_group_%02d 0\n", npcGroup.getGroupId());
+		}
+
+		// reset the villager scoreboards
+		s += "\n    # scoreboard for villagers\n";
+		for (NPCGroup npcGroup : groups) {
+			for (NPC npc : npcGroup.getNpcs()) {
+				s += String.format("scoreboard players set @s %s 0\n", npc.getName());
+			}
+		}
+		
+		//welcome back message
+		s += "\n\nsay welcome back!";
+		
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\player_log_on.mcfunction", name));
 	}
 
 	// ---- delete previous datapack ----
@@ -263,12 +309,12 @@ public class CEStory {
 		s += "    # give the choices\n";
 		s += converzationNode.toCommand(nodes);
 		s += "\n\n";
-		
-		//update the last run node
-		s += "    # update the last run node\n    execute if score bool CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger\n"; 
-		
+
+		// update the last run node
+		s += "    # update the last run node\n    execute if score bool CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger\n";
+
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\%s.mcfunction", name,
-				npc.getName(),converzationNode.getName()));
+				npc.getName(), converzationNode.getName()));
 	}
 
 	// ---- create messages folder ----

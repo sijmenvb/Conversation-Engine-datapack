@@ -1,4 +1,4 @@
-# detech when a player richt clicks a villager
+# detect when a player richt clicks a villager
 scoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager
 # scoreboard for storing sucsesses of functions to do conditionals
 scoreboard objectives add CE_suc dummy
