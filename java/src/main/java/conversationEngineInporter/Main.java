@@ -11,7 +11,9 @@ public class Main {
 		
 		//String file = "src/main/resources/basic villager.json"; // get the basic villager
 		//String file = "src/main/resources/broken.json"; // load in the file with broken JSON for testing error
-		String file = "src/main/resources/missing node.json"; // file with a reference to a node that does not exist
+		//String file = "src/main/resources/missing node.json"; // file with a reference to a node that does not exist
+		//String file = "src/main/resources/shopDialog.json"; // file with [[text]] notation.
+		String file = "src/main/resources/shopDialog-Fixed.json"; // fixed version of the previous.
 		JSONParser parser = new JSONParser();
 		
 		JSONArray nodesArray;

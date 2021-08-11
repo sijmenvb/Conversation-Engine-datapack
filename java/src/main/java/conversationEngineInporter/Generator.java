@@ -44,12 +44,14 @@ public class Generator {
 			String name = n.getName(); // get the name of the current node
 			Iterator<String> iter = n.getOutPointer().iterator(); // get all the nodes this one points to.
 			while (iter.hasNext()) { // for all the nodes this node points to
+				String s = iter.next();
 				try {
-					nodes.get(iter.next()).addInPointer(name); // add the name of this node to the inPonter of the node
+					
+					nodes.get(s).addInPointer(name); // add the name of this node to the inPonter of the node
 																// it
 																// points to.
 				} catch (NullPointerException e) {
-					System.err.println("WARNING! the node " + name + " does not exist!");
+					System.err.println("WARNING! the node " + s + " does not exist!");
 				}
 
 			}
@@ -60,7 +62,7 @@ public class Generator {
 		LinkedList<String> startingNodes = new LinkedList<String>();
 		for (ConverzationNode n : nodes.values()) {
 			if (n.isStartingNode()) {
-				startingNodes.push(n.getName());
+				startingNodes.push(n.getRealName());
 			}
 		}
 
@@ -68,9 +70,10 @@ public class Generator {
 		for (String name : startingNodes) {
 			HashSet<String> exploredNodes = new HashSet<String>(); // keep track of the nodes
 			Queue<String> nodesQueue = new LinkedList<String>(); // keep list of nodes to explore
-			nodesQueue.add(name);
-
+	
 			NPC npc = new NPC(name); // create new npc.
+			nodesQueue.add(npc.getName()); // add the name(lower case and space is _) to the nodes queue
+			
 			System.out.println("detected npc named: " + name);
 
 			while (!nodesQueue.isEmpty()) {

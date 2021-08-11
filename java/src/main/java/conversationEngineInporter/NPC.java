@@ -41,7 +41,11 @@ public class NPC {
 	}
 
 	public String getName() {
-		return name;
+		return name.toLowerCase().replace(' ', '_');
+	}
+	
+	public String getRealName() {
+		return name.replace("_", " ");
 	}
 
 	public LinkedList<ConverzationNode> getNodes() {

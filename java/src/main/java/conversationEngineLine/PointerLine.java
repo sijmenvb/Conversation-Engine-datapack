@@ -15,7 +15,7 @@ public class PointerLine extends ConversationLine {
 															// and |
 		this.text = split[1]; // get the text (note that split[0] is an empty string due to the initial split
 								// at [[)
-		this.pointer = split[2]; // get the pointer
+		this.pointer = split[2].replace(' ', '_').toLowerCase(); // get the pointer and make sure it has underscores just as the id's
 		System.out.println();
 	}
 

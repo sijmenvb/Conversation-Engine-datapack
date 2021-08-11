@@ -31,7 +31,7 @@ public class CEStory {
 		deletePreviousDatapack();
 		loadEmptyDatapack();
 		createInitFunction();
-		createPlayerLogOnFunction();// TODO
+		createPlayerLogOnFunction();
 		createGroupFolder();
 		createMessagesFolder();
 		createVillagerFolder();
@@ -354,7 +354,7 @@ public class CEStory {
 			for (NPC npc : npcGroup.getNpcs()) {
 				String s = String.format(
 						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:nitwit\"},Offers:{}}",
-						npc.getName(), npc.getName().replace('_', ' '));
+						npc.getName(), npc.getRealName()); //TODO see if the replace is nessacary
 
 				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\summon\\%s.mcfunction",
 						name, npc.getName()));
