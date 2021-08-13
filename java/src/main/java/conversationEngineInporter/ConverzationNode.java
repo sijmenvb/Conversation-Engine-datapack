@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import org.json.simple.JSONObject;
 
+import conversationEngineLine.CommandLine;
 import conversationEngineLine.ConversationLine;
 import conversationEngineLine.GiveLine;
 import conversationEngineLine.PointerLine;
@@ -92,7 +93,12 @@ public class ConverzationNode {
 					} else {
 						System.err.println("Error " + lines[i] + " is invalid. example: <<give|cooked_beef|4>>");
 					}
-
+				} else if (arguments[0].toLowerCase().equals("command")) {
+					if (arguments.length == 2) {
+						this.lines.push(new CommandLine(arguments[1], this));					
+					}else {
+						System.err.println("Error " + lines[i] + " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
+					}
 				} else {
 					System.err.println("Error " + lines[i] + " is invalid syntax!");
 				}

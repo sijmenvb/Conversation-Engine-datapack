@@ -15,8 +15,7 @@ public class GiveLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConverzationNode> nodes) {
-
-		return String.format("    execute if score bool CE_suc matches 1 run give @s %s %d", item, ammount);
+		return String.format("    execute if score bool CE_suc matches 1 if score bool CE_resend matches 0 run give @s %s %d", item, ammount);
 	}
 
 }
