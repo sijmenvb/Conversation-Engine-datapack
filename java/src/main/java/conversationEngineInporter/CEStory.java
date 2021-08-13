@@ -84,10 +84,10 @@ public class CEStory {
 				s += String.format("scoreboard players set @s %s 0\n", npc.getName());
 			}
 		}
-		
-		//welcome back message
+
+		// welcome back message
 		s += "\n\nsay welcome back!";
-		
+
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\player_log_on.mcfunction", name));
 	}
 
@@ -256,12 +256,11 @@ public class CEStory {
 
 	private void createNpcEndFunction(NPCGroup npcGroup, NPC npc) {
 		String s = "# run as the player\n\n# this function ends the conversation with a npc\n\n# stop the labrat conversation\n";
-		s += String.format(
-				"scoreboard players set CE_mannager CE_group_%02d 0\nscoreboard players set CE_mannager %s 0\n",
-				npcGroup.getGroupId(), npc.getName());
+		s += String.format("scoreboard players set CE_mannager %s 0\n", npc.getName());
 		s += "\n# reset the last node \nscoreboard players set @s CE_current_node 0\n# also reset the trigger\nscoreboard players set @s CE_trigger 0\n\n# set lab_rat score of player that was talking to this villager back to 0\n";
-		s += String.format("scoreboard players set @s %s 0\n\nsay [ended the converstaion]", npc.getName());
-
+		s += String.format("scoreboard players set @s %s 0\n", npc.getName());
+		s += String.format("\n# try to close the group as well\nfunction conversation_engine:group/close_%03d\n", npcGroup.getGroupId());
+		s += "\nsay [ended the converstaion]";
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\end.mcfunction", name,
 				npc.getName()));
 
@@ -353,8 +352,8 @@ public class CEStory {
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
 				String s = String.format(
-						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:nitwit\"},Offers:{}}",
-						npc.getName(), npc.getRealName()); //TODO see if the replace is nessacary
+						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{}}",
+						npc.getName(), npc.getRealName(), npc.getProfession()); // TODO see if the replace is nessacary
 
 				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\summon\\%s.mcfunction",
 						name, npc.getName()));

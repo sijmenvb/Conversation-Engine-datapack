@@ -13,10 +13,12 @@ import java.util.LinkedList;
 public class NPC {
 	private LinkedList<ConverzationNode> nodes = new LinkedList<ConverzationNode>();
 	private String name;
-
-	public NPC(String name) {
+	private String profession;
+	
+	public NPC(String name,String profession) {
 		super();
 		this.name = name;
+		this.profession = profession;
 	}
 
 	public void addNode(ConverzationNode n) {
@@ -50,6 +52,10 @@ public class NPC {
 
 	public LinkedList<ConverzationNode> getNodes() {
 		return nodes;
+	}
+
+	public String getProfession() {
+		return profession;
 	}
 
 	

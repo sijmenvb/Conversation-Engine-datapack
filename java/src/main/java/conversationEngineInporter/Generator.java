@@ -59,22 +59,22 @@ public class Generator {
 
 		// now to create the villagers we need to get the nodes that no other nodes
 		// point to.
-		LinkedList<String> startingNodes = new LinkedList<String>();
+		LinkedList<ConverzationNode> startingNodes = new LinkedList<ConverzationNode>();
 		for (ConverzationNode n : nodes.values()) {
 			if (n.isStartingNode()) {
-				startingNodes.push(n.getRealName());
+				startingNodes.push(n);
 			}
 		}
 
 		// now create the npc's (same name as the starting node and contain all )
-		for (String name : startingNodes) {
+		for (ConverzationNode node : startingNodes) {
 			HashSet<String> exploredNodes = new HashSet<String>(); // keep track of the nodes
 			Queue<String> nodesQueue = new LinkedList<String>(); // keep list of nodes to explore
 	
-			NPC npc = new NPC(name); // create new npc.
+			NPC npc = new NPC(node.getRealName(),node.getProfession()); // create new npc.
 			nodesQueue.add(npc.getName()); // add the name(lower case and space is _) to the nodes queue
 			
-			System.out.println("detected npc named: " + name);
+			System.out.println("detected npc named: " + node.getRealName());
 
 			while (!nodesQueue.isEmpty()) {
 				String nodeName = nodesQueue.remove(); // get next item from the queue
