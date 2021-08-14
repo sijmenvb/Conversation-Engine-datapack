@@ -1,5 +1,19 @@
 package conversationEngineLine;
 
-public class EndIfLine {
+import java.util.HashMap;
+import java.util.LinkedList;
+
+import conversationEngineInporter.ConverzationNode;
+
+public class EndIfLine extends ConversationLine{
+
+	public EndIfLine(ConverzationNode node) {
+		super(node);
+	}
+
+	
+	public String toCommand(HashMap<String, ConverzationNode> nodes, LinkedList<String> condition) {
+		return "TODO";
+	}
 
 }

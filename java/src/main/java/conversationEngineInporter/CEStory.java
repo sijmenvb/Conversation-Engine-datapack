@@ -41,6 +41,12 @@ public class CEStory {
 		// add standard scoreboards
 		String s = "# detect when a player richt clicks a villager\nscoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager\n# scoreboard for storing sucsesses of functions to do conditionals\nscoreboard objectives add CE_suc dummy\nscoreboard objectives add CE_suc2 dummy\nscoreboard objectives add CE_resend dummy\n# scoreboard for limiting recursion\nscoreboard objectives add CE_rec dummy\n\n# trigger scoreboard to be acsessed by players without permissions.\nscoreboard objectives add CE_trigger trigger\n# a way to store the current node in the dialouge tree. used to prevent players from jumping unexpectedly by using /trigger manually.\nscoreboard objectives add CE_current_node dummy\n";
 
+		// add for scoreboards
+		s += "\n# scoreborads for if statements";
+		for (int id = 0; id < 10; id++) {
+			s += String.format("scoreboard objectives add CE_if_%02d dummy", id);
+		}
+
 		// Initialise all the groups
 		s += "\n# groups for optimazation to be used by fake player CE_mannager\n";
 		for (NPCGroup npcGroup : groups) {
@@ -226,27 +232,29 @@ public class CEStory {
 		}
 
 		String s = "# always run by the NPC\n\n# this function starts the conversation with a npc\n\n# reset the boolean.\n";
-		s += "scoreboard players set bool CE_suc2 0\n# if the player is already talking to this villager\n";
 		s += String.format(
-				"    execute if entity @p[scores={CE_talking=1,%s=1}] run scoreboard players set bool CE_suc2 1\n    # make the tellraw the same as the last message so it repeats.\n    execute if score bool CE_suc2 matches 1 as @p[scores={CE_talking=1,%s=1}] run scoreboard players operation @s CE_trigger = @s CE_current_node\n",
-				npc.getName(), npc.getName());
-		s += String.format(
-				"# unless there is already someone else talking to the villager  (note that 2 as boolean is also true) \n# TIP: turn the 2(on the next line) into a 0 if you want multiple people to talk to the same npc at the same time\nexecute if score bool CE_suc2 matches 0 if entity @a[scores={%s=1}] run scoreboard players set bool CE_suc2 %01d \n    execute if score bool CE_suc2 matches 2 run tellraw @p[scores={CE_talking=1}] [{\"selector\":\"@a[scores={%s=1}]\"},{\"text\":\"[someone is already talking to this NPC]\",\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"you'll have to wait your turn.\"}]}}]\n",
-				npc.getName(), n, npc.getName());
-		s += String.format(
-				"# else:\n\n    # start the %s conversation\n    execute if score bool CE_suc2 matches 0 run scoreboard players set CE_mannager CE_group_%02d 1\n    execute if score bool CE_suc2 matches 0 run scoreboard players set CE_mannager %s 1\n",
-				npc.getName(), npcGroup.getGroupId(), npc.getName());
-		s += String.format(
-				"\n    # set the %s score to 1 for the player.\n    execute if score bool CE_suc2 matches 0 as @p[scores={CE_talking=1}] run scoreboard players set @s %s 1\n",
-				npc.getName(), npc.getName());
-		s += String.format(
-				"\n    # also set the current node back to 0 \n    execute if score bool CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_current_node 0\n",
+				"scoreboard players set @p[scores={CE_talking=1,%s=1}] CE_suc2 0\n# if the player is already talking to this villager\n",
 				npc.getName());
+		s += String.format(
+				"    execute if entity @p[scores={CE_talking=1,%s=1}] run scoreboard players set @p[scores={CE_talking=1,%s=1}] CE_suc2 1\n    # make the tellraw the same as the last message so it repeats.\n    execute if score @p[scores={CE_talking=1,%s=1}] CE_suc2 matches 1 as @p[scores={CE_talking=1,%s=1}] run scoreboard players operation @s CE_trigger = @s CE_current_node\n",
+				npc.getName(), npc.getName(), npc.getName(), npc.getName());
+		s += String.format(
+				"# unless there is already someone else talking to the villager  (note that 2 as boolean is also true) \n# TIP: turn the 2(on the next line) into a 0 if you want multiple people to talk to the same npc at the same time\nexecute if score @p[scores={CE_talking=1,%s=1}] CE_suc2 matches 0 if entity @a[scores={%s=1}] run scoreboard players set @p[scores={CE_talking=1,%s=1}] CE_suc2 %01d \n    execute if score @p[scores={CE_talking=1,%s=1}] CE_suc2 matches 2 run tellraw @p[scores={CE_talking=1}] [{\"selector\":\"@a[scores={%s=1}]\"},{\"text\":\"[someone is already talking to this NPC]\",\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"you'll have to wait your turn.\"}]}}]\n",
+				npc.getName(), npc.getName(), npc.getName(), n, npc.getName(), npc.getName());
+		s += String.format(
+				"# else:\n\n    # start the %s conversation\n    execute if score @p[scores={CE_talking=1,%s=1}] CE_suc2 matches 0 run scoreboard players set CE_mannager CE_group_%02d 1\n    execute if score @p[scores={CE_talking=1,%s=1}] CE_suc2 matches 0 run scoreboard players set CE_mannager %s 1\n",
+				npc.getName(), npc.getName(), npcGroup.getGroupId(), npc.getName(), npc.getName());
+		s += String.format(
+				"\n    # set the %s score to 1 for the player.\n    execute if score @p[scores={CE_talking=1,%s=1}] CE_suc2 matches 0 as @p[scores={CE_talking=1}] run scoreboard players set @s %s 1\n",
+				npc.getName(), npc.getName(), npc.getName());
+		s += String.format(
+				"\n    # also set the current node back to 0 \n    execute if score @p[scores={CE_talking=1,%s=1}] CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_current_node 0\n",
+				npc.getName(), npc.getName());
 
 		// make sure you will start the correct node.
 		s += String.format(
-				"\n    # give the choises using the trigger command.\n    execute if score bool CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_trigger %d \n",
-				npc.getName(), npc.GetStartingNodeId());
+				"\n    # give the choises using the trigger command.\n    execute if score @p[scores={CE_talking=1,%s=1}] CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_trigger %d \n",
+				npc.getName(), npc.getName(), npc.GetStartingNodeId());
 
 		s += "# set talking back to 0\nscoreboard players set @p[scores={CE_talking=1}] CE_talking 0";
 
@@ -259,7 +267,8 @@ public class CEStory {
 		s += String.format("scoreboard players set CE_mannager %s 0\n", npc.getName());
 		s += "\n# reset the last node \nscoreboard players set @s CE_current_node 0\n# also reset the trigger\nscoreboard players set @s CE_trigger 0\n\n# set lab_rat score of player that was talking to this villager back to 0\n";
 		s += String.format("scoreboard players set @s %s 0\n", npc.getName());
-		s += String.format("\n# try to close the group as well\nfunction conversation_engine:group/close_%03d\n", npcGroup.getGroupId());
+		s += String.format("\n# try to close the group as well\nfunction conversation_engine:group/close_%03d\n",
+				npcGroup.getGroupId());
 		s += "\nsay [ended the converstaion]";
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\end.mcfunction", name,
 				npc.getName()));
@@ -288,20 +297,20 @@ public class CEStory {
 
 	private void createNodeFunction(NPCGroup npcGroup, NPC npc, ConverzationNode converzationNode) {
 		String s = String.format(
-				"# run as the player\n\n# message id: %d\n\n# reset the sucsess scoreboard\nscoreboard players set bool CE_suc 0\nscoreboard players set bool CE_resend 0\n",
+				"# run as the player\n\n# message id: %d\n\n# reset the sucsess scoreboard\nscoreboard players set @s CE_suc 0\nscoreboard players set @s CE_resend 0\n",
 				converzationNode.getId());
 		s += "\n# check if the player came from a valid previous node (to prevent manual use of /trigger)\n";
 		// check if you come from a valid node (to prevent manual use of the /trigger
 		// command)
 		for (int id : converzationNode.getValidInpointerIds(nodes)) {
 			s += String.format(
-					"execute if score @s CE_current_node matches %d run scoreboard players set bool CE_suc 1\n", id);
+					"execute if score @s CE_current_node matches %d run scoreboard players set @s CE_suc 1\n", id);
 		}
 		s += "\n";
 
 		// check if the previous node is itself
 		s += String.format(
-				"# special case in case the previous node is itself in that case CE_resend of bool is set to 1 (use this to prevent commands that for example give items are executed twice)\nexecute store success score bool CE_resend if score @s CE_current_node matches %d run scoreboard players set bool CE_suc 1\n\n",
+				"# special case in case the previous node is itself in that case CE_resend of @s is set to 1 (use this to prevent commands that for example give items are executed twice)\nexecute store success score @s CE_resend if score @s CE_current_node matches %d run scoreboard players set @s CE_suc 1\n\n",
 				converzationNode.getId());
 
 		// give the dialogue and choices
@@ -310,7 +319,7 @@ public class CEStory {
 		s += "\n\n";
 
 		// update the last run node
-		s += "    # update the last run node\n    execute if score bool CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger\n";
+		s += "    # update the last run node\n    execute if score @s CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger\n";
 
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\%s.mcfunction", name,
 				npc.getName(), converzationNode.getName()));
