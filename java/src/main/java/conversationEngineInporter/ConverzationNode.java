@@ -128,7 +128,7 @@ public class ConverzationNode {
 	public String toCommand(HashMap<String, ConverzationNode> nodes) {
 		String s = "";
 		LinkedList<String> condition = new LinkedList<String>();
-		condition.addLast("    execute if score bool CE_suc matches 1 ");
+		condition.addLast("    execute if score @s CE_suc matches 1 ");
 		for (int i = 0; i < lines.size(); i++) {
 			String con = "";
 			for (String string : condition) {
