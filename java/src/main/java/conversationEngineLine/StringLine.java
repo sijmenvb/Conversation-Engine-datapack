@@ -1,6 +1,7 @@
 package conversationEngineLine;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import conversationEngineInporter.ConverzationNode;
 import conversationEngineInporter.Functions;
@@ -15,8 +16,7 @@ public class StringLine extends ConversationLine {
 		this.text = text;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes) {
-		return String.format("    execute if score bool CE_suc matches 1 run tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n", Functions.stringEscape(text));
+	public String toCommand(HashMap<String, ConverzationNode> nodes, LinkedList<String> condition) {
+		return String.format("run tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n", Functions.stringEscape(text));
 	}
-
 }

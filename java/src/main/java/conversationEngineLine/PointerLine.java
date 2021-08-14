@@ -1,6 +1,7 @@
 package conversationEngineLine;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import conversationEngineInporter.ConverzationNode;
 import conversationEngineInporter.Functions;
@@ -23,7 +24,7 @@ public class PointerLine extends ConversationLine {
 		return pointer;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes) {
+	public String toCommand(HashMap<String, ConverzationNode> nodes, LinkedList<String> condition) {
 		// try to get the id of the node if this node does not exist show an error and
 		// use id 0 instead.
 		int nodeId = 0;
@@ -34,7 +35,7 @@ public class PointerLine extends ConversationLine {
 		}
 
 		return String.format(
-				"    execute if score bool CE_suc matches 1 run tellraw @s [{\"text\":\"%s\",\"color\":\"#A8DFFF\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/trigger CE_trigger set %d\"}}]\n",
+				"run tellraw @s [{\"text\":\"%s\",\"color\":\"#A8DFFF\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/trigger CE_trigger set %d\"}}]\n",
 				Functions.stringEscape(text), nodeId);
 	}
 }

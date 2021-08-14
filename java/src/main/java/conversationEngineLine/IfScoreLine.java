@@ -5,17 +5,16 @@ import java.util.LinkedList;
 
 import conversationEngineInporter.ConverzationNode;
 
-public class CommandLine extends ConversationLine {
+public class IfScoreLine extends ConversationLine{
 
-	String command;
-
-	public CommandLine(String command, ConverzationNode node) {
+	public IfScoreLine(ConverzationNode node) {
 		super(node);
-		this.command = command;
+		
 	}
 
+	@Override
 	public String toCommand(HashMap<String, ConverzationNode> nodes, LinkedList<String> condition) {
-		return String.format("run %s", command);
+		return null;
 	}
 
 }

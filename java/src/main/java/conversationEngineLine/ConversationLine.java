@@ -1,6 +1,7 @@
 package conversationEngineLine;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import conversationEngineInporter.ConverzationNode;
 
@@ -18,6 +19,6 @@ public abstract class ConversationLine {
 	}
 
 
-	public abstract String toCommand(HashMap<String, ConverzationNode> nodes);	
+	public abstract String toCommand(HashMap<String, ConverzationNode> nodes, LinkedList<String> condition);	
 
 }
