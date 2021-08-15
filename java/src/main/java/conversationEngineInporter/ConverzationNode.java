@@ -35,20 +35,25 @@ public class ConverzationNode {
 		this.id = id;
 		this.name = ((String) in.get("title"));// make sure there are no spaces in the name.
 		String body = (String) in.get("body");
-		String lines[] = body.split("(?<=\\r?\\n)|((?=\\[\\[)|(?<=\\]\\]))|((?=<<)|(?<=>>))"); // splits before [[ and
-																								// after ]] and
-		// next-lines
+		body = body.replace("\n\n", "\n \n");
+		String lines[] = body.split("(\\r?\\n)|((?=\\[\\[)|(?<=\\]\\]))|((?=<<)|(?<=>>))"); // splits before [[ and << ,
+																							// after ]] and << and it
+																							// splits and removes next
+																							// lines next-lines
 
 		for (int i = lines.length - 1; i >= 0; i--) { // go over array backwards (since we want the linkedlist to be in
 														// order)
-			if (lines[i].matches("\\[\\[([^\\|]*)\\|([^\\|]*)\\]\\]")) { // if the line is in the format of
-																			// [[ some text | some text ]]
+			if (lines[i] == "" && i > 0 && lines[i - 1] != "") { // if this line is empty and the next line is not also
+																	// empty ignore it.
+				// do not display empty lines
+			} else if (lines[i].matches("\\[\\[([^\\|]*)\\|([^\\|]*)\\]\\]")) { // if the line is in the format of
+																				// [[ some text | some text ]]
 				PointerLine pointerLine = new PointerLine(lines[i], this);// convert input to PointerLine.
 				this.lines.push(pointerLine); // add the pointerLine to the list.
 				outPointer.push(pointerLine.getPointer());// update the outPointer list.
 
 			} else if (lines[i].matches("\\[\\[([^\\|]*)\\]\\]")) { // check for pointers without text
-				// we might want to make this syntax for going straight to
+				// we might want to make this syntax for going straight to another node
 
 				// convert the string of type [[text]] to type [[text|text]]. so making the
 				// message the same as the text

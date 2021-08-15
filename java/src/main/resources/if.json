@@ -212,7 +212,7 @@
 	{
 		"title": "coolthing",
 		"tags": "",
-		"body": "cool thing also works!\nand now with.\nmultiple.\nlines!!!!",
+		"body": "cool thing also works!\nand now with.\nmultiple.\nlines!!!!\n\nand spaces",
 		"position": {
 			"x": -145,
 			"y": 948

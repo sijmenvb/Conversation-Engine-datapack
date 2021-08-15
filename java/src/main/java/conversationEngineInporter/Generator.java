@@ -113,8 +113,8 @@ public class Generator {
 
 		// print all the commands, for testing purposes.
 		for (ConverzationNode n : nodes.values()) {
+			System.out.println("new " + n.getRealName());
 			System.out.println(n.toCommand(nodes,story));
-			System.out.println("new");
 		}
 
 		return story;
