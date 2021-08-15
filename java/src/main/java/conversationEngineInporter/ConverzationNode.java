@@ -72,74 +72,81 @@ public class ConverzationNode {
 				if (arguments.length == 0) { // check if there are arguments.
 					System.err.println("Error " + lines[i] + " needs more arguments!");
 
-				} else if (arguments[0].toLowerCase().equals("profession")) { // if the argument is a profession.
-					if (arguments.length == 2) {
-						String[] villager = { "none", "armorer", "butcher", "cartographer", "cleric", "farmer",
-								"fisherman", "fletcher", "leatherworker", "librarian", "mason", "nitwit", "shepherd",
-								"toolsmith", "weaponsmith" };
+				} else {
+					switch (arguments[0].toLowerCase()) {
+					case "profession":
+						if (arguments.length == 2) {
+							String[] villager = { "none", "armorer", "butcher", "cartographer", "cleric", "farmer",
+									"fisherman", "fletcher", "leatherworker", "librarian", "mason", "nitwit",
+									"shepherd", "toolsmith", "weaponsmith" };
 
-						profession = Functions.closestString(villager, arguments[1]);
-					} else {
-						System.err.println("Error " + lines[i] + " is invalid. example: <<profession|farmer>>");
-					}
-
-				} else if (arguments[0].toLowerCase().equals("give")) {
-					String item;
-					int ammount;
-					if (arguments.length == 2) {
-						item = arguments[1];
-						ammount = 1;
-						this.lines.push(new GiveLine(item, ammount, this));
-					} else if (arguments.length == 3) {
-						item = arguments[1];
-						try {
-							ammount = Integer.parseInt(arguments[2]);
-						} catch (NumberFormatException e) {
-							ammount = 1;
-							System.err.println("Error " + lines[i]
-									+ " 3rd argument should be a number. example: <<cooked_beef|4>>");
+							profession = Functions.closestString(villager, arguments[1]);
+						} else {
+							System.err.println("Error " + lines[i] + " is invalid. example: <<profession|farmer>>");
 						}
-						this.lines.push(new GiveLine(item, ammount, this));
-					} else {
-						System.err.println("Error " + lines[i] + " is invalid. example: <<give|cooked_beef|4>>");
-					}
 
-				} else if (arguments[0].toLowerCase().equals("command")) {
-					if (arguments.length == 2) {
-						this.lines.push(new CommandLine(arguments[1], this));
-					} else {
-						System.err.println("Error " + lines[i]
-								+ " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
-					}
-
-				} else if (arguments[0].toLowerCase().equals("if")) {
-					if (arguments.length == 4) {
-						if (arguments[1].toLowerCase().equals("score")) {
-							int target;
+						break;
+					case "give":
+						String item;
+						int ammount;
+						if (arguments.length == 2) {
+							item = arguments[1];
+							ammount = 1;
+							this.lines.push(new GiveLine(item, ammount, this));
+						} else if (arguments.length == 3) {
+							item = arguments[1];
 							try {
-								target = Integer.parseInt(arguments[3]);
+								ammount = Integer.parseInt(arguments[2]);
 							} catch (NumberFormatException e) {
-								target = 1;
+								ammount = 1;
 								System.err.println("Error " + lines[i]
-										+ " 4th argument should be a number. example: <<if|score|name of score|1>>");
+										+ " 3rd argument should be a number. example: <<cooked_beef|4>>");
 							}
-							this.lines.push(new IfScoreLine(arguments[2], target, this));
+							this.lines.push(new GiveLine(item, ammount, this));
+						} else {
+							System.err.println("Error " + lines[i] + " is invalid. example: <<give|cooked_beef|4>>");
+						}
+						break;
+					case "command":
+						if (arguments.length == 2) {
+							this.lines.push(new CommandLine(arguments[1], this));
+						} else {
+							System.err.println("Error " + lines[i]
+									+ " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
+						}
+						break;
+					case "if":
+						if (arguments.length == 4) {
+							if (arguments[1].toLowerCase().equals("score")) {
+								int target;
+								try {
+									target = Integer.parseInt(arguments[3]);
+								} catch (NumberFormatException e) {
+									target = 1;
+									System.err.println("Error " + lines[i]
+											+ " 4th argument should be a number. example: <<if|score|name of score|1>>");
+								}
+								this.lines.push(new IfScoreLine(arguments[2], target, this));
+							} else {
+								System.err.println("Error " + lines[i]
+										+ " is invalid. example: <<if|score|name of score|target score>> ");
+							}
 						} else {
 							System.err.println("Error " + lines[i]
 									+ " is invalid. example: <<if|score|name of score|target score>> ");
 						}
-					} else {
-						System.err.println(
-								"Error " + lines[i] + " is invalid. example: <<if|score|name of score|target score>> ");
+
+						break;
+					case "else":
+						this.lines.push(new ElseLine(this));
+						break;
+					case "endif":
+						this.lines.push(new EndIfLine(this));
+						break;
+					default:
+						System.err.println("Error " + lines[i] + " is invalid syntax!");
+						break;
 					}
-				} else if (arguments[0].toLowerCase().equals("else")) {
-					this.lines.push(new ElseLine(this));
-
-				} else if (arguments[0].toLowerCase().equals("endif")) {
-					this.lines.push(new EndIfLine(this));
-
-				} else {
-					System.err.println("Error " + lines[i] + " is invalid syntax!");
 				}
 
 			} else { // if it is not in any special syntax treat it as text
@@ -166,17 +173,19 @@ public class ConverzationNode {
 
 	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, Boolean clearchat) {
 		String s = "";
-		
-		//add the clear chat message.
-		if(clearchat) {
+
+		// add the clear chat message.
+		if (clearchat) {
 			String nexline = "";
 			for (int i = 0; i < 20; i++) {
 				nexline += "\\n";
 			}
-			
-			s += String.format("    execute if score @s CE_suc matches 1 run tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n",nexline);
+
+			s += String.format(
+					"    execute if score @s CE_suc matches 1 run tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n",
+					nexline);
 		}
-		
+
 		LinkedList<String> condition = new LinkedList<String>();
 		condition.addLast("    execute if score @s CE_suc matches 1 ");
 		for (int i = 0; i < lines.size(); i++) {
