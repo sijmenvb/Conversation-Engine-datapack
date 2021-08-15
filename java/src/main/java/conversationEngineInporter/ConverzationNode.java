@@ -164,8 +164,19 @@ public class ConverzationNode {
 		return list;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory) {
+	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, Boolean clearchat) {
 		String s = "";
+		
+		//add the clear chat message.
+		if(clearchat) {
+			String nexline = "";
+			for (int i = 0; i < 20; i++) {
+				nexline += "\\n";
+			}
+			
+			s += String.format("    execute if score @s CE_suc matches 1 run tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n",nexline);
+		}
+		
 		LinkedList<String> condition = new LinkedList<String>();
 		condition.addLast("    execute if score @s CE_suc matches 1 ");
 		for (int i = 0; i < lines.size(); i++) {

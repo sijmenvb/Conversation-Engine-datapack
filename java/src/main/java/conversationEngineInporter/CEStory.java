@@ -312,7 +312,7 @@ public class CEStory {
 
 		// give the dialogue and choices
 		s += "    # give the choices\n";
-		s += converzationNode.toCommand(nodes, this);
+		s += converzationNode.toCommand(nodes, this, true);
 		s += "\n\n";
 
 		// update the last run node
