@@ -7,7 +7,10 @@ import org.json.simple.JSONObject;
 
 import conversationEngineLine.CommandLine;
 import conversationEngineLine.ConversationLine;
+import conversationEngineLine.ElseLine;
+import conversationEngineLine.EndIfLine;
 import conversationEngineLine.GiveLine;
+import conversationEngineLine.IfScoreLine;
 import conversationEngineLine.PointerLine;
 import conversationEngineLine.StringLine;
 
@@ -62,6 +65,7 @@ public class ConverzationNode {
 																								// arguments
 				if (arguments.length == 0) { // check if there are arguments.
 					System.err.println("Error " + lines[i] + " needs more arguments!");
+
 				} else if (arguments[0].toLowerCase().equals("profession")) { // if the argument is a profession.
 					if (arguments.length == 2) {
 						String[] villager = { "none", "armorer", "butcher", "cartographer", "cleric", "farmer",
@@ -93,12 +97,41 @@ public class ConverzationNode {
 					} else {
 						System.err.println("Error " + lines[i] + " is invalid. example: <<give|cooked_beef|4>>");
 					}
+
 				} else if (arguments[0].toLowerCase().equals("command")) {
 					if (arguments.length == 2) {
-						this.lines.push(new CommandLine(arguments[1], this));					
-					}else {
-						System.err.println("Error " + lines[i] + " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
+						this.lines.push(new CommandLine(arguments[1], this));
+					} else {
+						System.err.println("Error " + lines[i]
+								+ " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
 					}
+
+				} else if (arguments[0].toLowerCase().equals("if")) {
+					if (arguments.length == 4) {
+						if (arguments[1].toLowerCase().equals("score")) {
+							int target;
+							try {
+								target = Integer.parseInt(arguments[3]);
+							} catch (NumberFormatException e) {
+								target = 1;
+								System.err.println("Error " + lines[i]
+										+ " 4th argument should be a number. example: <<if|score|name of score|1>>");
+							}
+							this.lines.push(new IfScoreLine(arguments[2], target, this));
+						} else {
+							System.err.println("Error " + lines[i]
+									+ " is invalid. example: <<if|score|name of score|target score>> ");
+						}
+					} else {
+						System.err.println(
+								"Error " + lines[i] + " is invalid. example: <<if|score|name of score|target score>> ");
+					}
+				} else if (arguments[0].toLowerCase().equals("else")) {
+					this.lines.push(new ElseLine(this));
+
+				} else if (arguments[0].toLowerCase().equals("endif")) {
+					this.lines.push(new EndIfLine(this));
+
 				} else {
 					System.err.println("Error " + lines[i] + " is invalid syntax!");
 				}
@@ -125,16 +158,21 @@ public class ConverzationNode {
 		return list;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes) {
+	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory) {
 		String s = "";
 		LinkedList<String> condition = new LinkedList<String>();
 		condition.addLast("    execute if score @s CE_suc matches 1 ");
 		for (int i = 0; i < lines.size(); i++) {
 			String con = "";
-			for (String string : condition) {
-				con += string;
+
+			// if the line is a <<else>> do not apply the last conditional
+
+			for (int j = 0; j < condition.size(); j++) {
+
+				con += condition.get(j);
 			}
-			s += con + lines.get(i).toCommand(nodes,condition);
+			s += lines.get(i).toCommand(nodes, ceStory, condition, con);
+
 		}
 
 		return s;

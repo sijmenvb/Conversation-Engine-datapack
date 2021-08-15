@@ -21,7 +21,8 @@ public class Main {
 		// notation.
 		// String file = "src/main/resources/shopDialog-Fixed.json"; // fixed version of the previous.
 		// String file = "src/main/resources/farmer+give.json"; // uses <<>> notation for profession and give command.
-		String file = "src/main/resources/command.json"; // uses <<command|some custom command>> notation for profession and give command.
+		//String file = "src/main/resources/command.json"; // uses <<command|some custom command>> notation for profession and give command.
+		String file = "src/main/resources/if.json"; // uses <<if>> , <<else>> and <<endif>> notaton.
 		JSONParser parser = new JSONParser();
 
 		JSONArray nodesArray;

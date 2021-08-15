@@ -3,6 +3,7 @@ package conversationEngineLine;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import conversationEngineInporter.CEStory;
 import conversationEngineInporter.ConverzationNode;
 
 public class GiveLine extends ConversationLine {
@@ -15,8 +16,9 @@ public class GiveLine extends ConversationLine {
 		this.ammount = ammount;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, LinkedList<String> condition) {
-		return String.format("if score bool CE_resend matches 0 run give @s %s %d", item, ammount);
+	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, LinkedList<String> condition,
+			String con) {
+		return String.format("%sif score @s CE_resend matches 0 run give @s %s %d", con, item, ammount);
 	}
 
 }
