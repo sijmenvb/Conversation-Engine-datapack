@@ -4,10 +4,10 @@
 		"tags": "",
 		"body": "Can I help you?\n[[No, sorry for bothering...|exit]]\n[[Yeah! What can I buy here?|op2]]",
 		"position": {
-			"x": 366,
-			"y": 185
+			"x": 373,
+			"y": 181
 		},
-		"colorID": 0
+		"colorID": 8
 	},
 	{
 		"title": "op2",
@@ -212,7 +212,7 @@
 	{
 		"title": "coolthing",
 		"tags": "",
-		"body": "cool thing also works!\nand now with.\nmultiple.\nlines!!!!\n\nand spaces",
+		"body": "cool thing also works!\nand now with.\nmultiple.\nlines!!!!\n\n\n\nand spaces",
 		"position": {
 			"x": -145,
 			"y": 948

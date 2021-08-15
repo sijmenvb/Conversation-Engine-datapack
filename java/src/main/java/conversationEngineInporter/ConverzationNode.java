@@ -35,7 +35,8 @@ public class ConverzationNode {
 		this.id = id;
 		this.name = ((String) in.get("title"));// make sure there are no spaces in the name.
 		String body = (String) in.get("body");
-		body = body.replace("\n\n", "\n \n");
+		body = Functions.recReplace(body, "\n\n", "\n \n"); // replace to sequential nextlines to have a space until no
+															// sequential nextlines are left.
 		String lines[] = body.split("(\\r?\\n)|((?=\\[\\[)|(?<=\\]\\]))|((?=<<)|(?<=>>))"); // splits before [[ and << ,
 																							// after ]] and << and it
 																							// splits and removes next
