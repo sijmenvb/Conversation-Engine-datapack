@@ -19,7 +19,6 @@ public class PointerLine extends ConversationLine {
 								// at [[)
 		this.pointer = split[2].replace(' ', '_').toLowerCase(); // get the pointer and make sure it has underscores
 																	// just as the id's
-		System.out.println();
 	}
 
 	public String getPointer() {

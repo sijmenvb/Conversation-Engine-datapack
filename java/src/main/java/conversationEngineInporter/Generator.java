@@ -38,7 +38,7 @@ public class Generator {
 				nodes.put(n.getName(), n);
 			}
 		}
-
+		
 		// now we have all the nodes loaded update all their inPointer lists
 		for (ConverzationNode n : nodes.values()) {
 			String name = n.getName(); // get the name of the current node
@@ -65,7 +65,7 @@ public class Generator {
 				startingNodes.push(n);
 			}
 		}
-
+		
 		// now create the npc's (same name as the starting node and contain all )
 		for (ConverzationNode node : startingNodes) {
 			HashSet<String> exploredNodes = new HashSet<String>(); // keep track of the nodes
@@ -89,11 +89,10 @@ public class Generator {
 						}
 					}
 
-				}
+				} 
 			}
 			NPCs.add(npc);// add this npc to the list of npc's
 		}
-
 		// put the npc's into groups of groupSize.
 		LinkedList<NPCGroup> npcGroups = new LinkedList<NPCGroup>();
 		int groupId = 0; // start with a group id of 0
@@ -110,12 +109,13 @@ public class Generator {
 
 		// now gather the groups into a CEStory
 		CEStory story = new CEStory(npcGroups, nodes);
-
+		
+		/*
 		// print all the commands, for testing purposes.
 		for (ConverzationNode n : nodes.values()) {
 			System.out.println("new " + n.getRealName());
 			System.out.println(n.toCommand(nodes,story,true));
-		}
+		}*/
 
 		return story;
 	}

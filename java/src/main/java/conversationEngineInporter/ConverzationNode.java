@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import org.json.simple.JSONObject;
 
+import conversationEngineLine.BuyLine;
 import conversationEngineLine.CommandLine;
 import conversationEngineLine.ConversationLine;
 import conversationEngineLine.ElseLine;
@@ -142,6 +143,25 @@ public class ConverzationNode {
 						break;
 					case "endif":
 						this.lines.push(new EndIfLine(this));
+						break;
+					case "buy":
+						if (arguments.length == 5) {
+							int getAmmount;
+							int payAmmount;
+							try {
+								getAmmount = Integer.parseInt(arguments[2]);
+								payAmmount = Integer.parseInt(arguments[4]);
+							} catch (NumberFormatException e) {
+								getAmmount = 1;
+								payAmmount = 1;
+								System.err.println("Error " + lines[i]
+										+ " 3rd argument should be a number. example: <<buy|carrot|20|diamond|1>>");
+							}
+							this.lines.push(new BuyLine(arguments[1], getAmmount, arguments[3], payAmmount, this));
+						} else {
+							System.err.println("Error " + lines[i]
+									+ " is invalid. example: <<buy|carrot|20|diamond|1>> (where you but 20 carrots for 1 diamond)");
+						}
 						break;
 					default:
 						System.err.println("Error " + lines[i] + " is invalid syntax!");
