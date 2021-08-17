@@ -4,6 +4,7 @@ scoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villag
 scoreboard objectives add CE_suc dummy
 scoreboard objectives add CE_suc2 dummy
 scoreboard objectives add CE_resend dummy
+scoreboard objectives add CE_buy_count dummy
 # scoreboard for limiting recursion
 scoreboard objectives add CE_rec dummy
 

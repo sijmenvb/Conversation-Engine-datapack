@@ -2,7 +2,6 @@ package conversationEngineInporter;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,11 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -34,6 +31,7 @@ public class CEStory {
 	private int noNestedIfStatements = 0;
 	private ZipOutputStream zipArch;
 	private Boolean saveAsZip = false; // keep this false cause gradually generating the zip does not work
+	private Boolean zipResult = false;
 	private FileOutputStream f;
 
 	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConverzationNode> nodes) {
@@ -54,6 +52,8 @@ public class CEStory {
 			System.err.println("ERROR CREATING ZIP FILE!");
 			return;
 		}
+		deletePreviousDatapack();// move this to the end of this function if you do not want to keep exporting
+									// the file only.
 
 		loadEmptyDatapack();
 
@@ -67,9 +67,10 @@ public class CEStory {
 		Functions.debug("init function created");
 		createVillagerFolder();
 		Functions.debug("villager folder created");
-		copydirTozip(name + "\\", name + "\\");
-		Functions.debug("saved as zip");
-		deletePreviousDatapack();
+		if (zipResult) {
+			copydirTozip(name + "\\", name + "\\");
+			Functions.debug("saved as zip");
+		}
 
 		// copyResourcesTozip("/exported datapack/");
 		try {
@@ -86,7 +87,7 @@ public class CEStory {
 
 	private void createInitFunction() {
 		// add standard scoreboards
-		String s = "# detect when a player richt clicks a villager\nscoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager\n# scoreboard for storing sucsesses of functions to do conditionals\nscoreboard objectives add CE_suc dummy\nscoreboard objectives add CE_suc2 dummy\nscoreboard objectives add CE_resend dummy\n# scoreboard for limiting recursion\nscoreboard objectives add CE_rec dummy\n\n# trigger scoreboard to be acsessed by players without permissions.\nscoreboard objectives add CE_trigger trigger\n# a way to store the current node in the dialouge tree. used to prevent players from jumping unexpectedly by using /trigger manually.\nscoreboard objectives add CE_current_node dummy\n";
+		String s = "# detect when a player richt clicks a villager\nscoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager\n# scoreboard for storing sucsesses of functions to do conditionals\nscoreboard objectives add CE_suc dummy\nscoreboard objectives add CE_suc2 dummy\nscoreboard objectives add CE_resend dummy\nscoreboard objectives add CE_buy_count dummy\n# scoreboard for limiting recursion\nscoreboard objectives add CE_rec dummy\n\n# trigger scoreboard to be acsessed by players without permissions.\nscoreboard objectives add CE_trigger trigger\n# a way to store the current node in the dialouge tree. used to prevent players from jumping unexpectedly by using /trigger manually.\nscoreboard objectives add CE_current_node dummy\n";
 
 		// add for scoreboards
 		s += "\n# scoreboards for if statements\n";
@@ -239,8 +240,7 @@ public class CEStory {
 	private void createMessagesFolder() {
 		createDirectory(name + "\\data\\conversation_engine\\functions\\messages");
 		createTalkFunction();
-		
-		
+
 		// for every villager create their named messages folder.
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
@@ -266,7 +266,7 @@ public class CEStory {
 	}
 
 	private void createNpcFolder(NPCGroup npcGroup, NPC npc) {
-		Functions.debug("\tcreated npc folder: "+npc.getName());
+		Functions.debug("\tcreated npc folder: " + npc.getName());
 		// create a directory with the name of the npc.
 		createDirectory(String.format("%s\\data\\conversation_engine\\functions\\messages\\%s", name, npc.getName()));
 		createNpcStartFunction(npcGroup, npc);
@@ -277,15 +277,15 @@ public class CEStory {
 		Functions.debug("\tcreated tick function");
 
 		// get all the nodes of this villager to functions
-		int i =0;
+		int i = 0;
 		for (ConverzationNode converzationNode : npc.getNodes()) {
-			if(i==0) {
+			if (i == 0) {
 				Functions.debug("\tstarted for loop");
 			}
 			createNodeFunction(npcGroup, npc, converzationNode);
-			
-			if(i%1000==0) {
-				Functions.debug("\tcreated node function: "+converzationNode.getRealName());
+
+			if (i % 1000 == 0) {
+				Functions.debug("\tcreated node function: " + converzationNode.getRealName());
 			}
 			i++;
 		}
@@ -425,8 +425,9 @@ public class CEStory {
 		// for every villager create summon function
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
+				
 				String s = String.format(
-						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{}}",
+						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{},Inventory:[{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b}]}",
 						npc.getName(), npc.getRealName(), npc.getProfession());
 
 				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\summon\\%s.mcfunction",
@@ -527,7 +528,6 @@ public class CEStory {
 			}
 
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
