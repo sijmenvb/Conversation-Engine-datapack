@@ -116,6 +116,8 @@ public class Generator {
 			System.out.println("new " + n.getRealName());
 			System.out.println(n.toCommand(nodes,story,true));
 		}*/
+		
+		Functions.debug("story generated");
 
 		return story;
 	}

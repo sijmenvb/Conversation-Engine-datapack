@@ -4,8 +4,8 @@
 		"tags": "",
 		"body": "Can I help you?\n[[No, sorry for bothering...|exit]]\n[[Yeah! What can I buy here?|op2]]",
 		"position": {
-			"x": 392,
-			"y": 207
+			"x": 375,
+			"y": 209
 		},
 		"colorID": 0
 	},
@@ -14,8 +14,8 @@
 		"tags": "",
 		"body": "You can buy a lot. What are you looking for?\n[[Tools.|tools]]\n[[Items.|items]]\n[[Nevermind.|exit]]",
 		"position": {
-			"x": 384,
-			"y": 560
+			"x": 378,
+			"y": 539
 		},
 		"colorID": 0
 	},
@@ -154,8 +154,8 @@
 		"tags": "",
 		"body": "Oh, have a good day then.",
 		"position": {
-			"x": 1510,
-			"y": 362
+			"x": 1537,
+			"y": 228
 		},
 		"colorID": 0
 	},

@@ -6,6 +6,15 @@ import java.util.Arrays;
 public class Functions {
 	/**will replace each instance of target in str by replacement until no instance of target is left.
 	 */
+	private static Boolean debug = true;
+	private static long time = System.nanoTime();
+	
+	public static void debug(String s) {
+		if (debug) {
+			System.out.println(String.format("%s %d", s,(System.nanoTime()-time)/1000000));
+		}
+	}
+	
 	public static String recReplace(String str, String target, String replacement) {
 		String str2 = str.replace(target, replacement);
 		if (str == str2) {

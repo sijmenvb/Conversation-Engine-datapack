@@ -1,14 +1,24 @@
 package conversationEngineInporter;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * the Conversation Engine Story class stores the different npc's and is called
@@ -22,20 +32,56 @@ public class CEStory {
 	private static String name = "exported datapack";
 	private HashMap<String, ConverzationNode> nodes;
 	private int noNestedIfStatements = 0;
+	private ZipOutputStream zipArch;
+	private Boolean saveAsZip = false; // keep this false cause gradually generating the zip does not work
+	private FileOutputStream f;
 
 	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConverzationNode> nodes) {
 		this.groups = groups;
 		this.nodes = nodes;
+		try {
+			f = new FileOutputStream(name + ".zip");
+			zipArch = new ZipOutputStream(new BufferedOutputStream(f));
+		} catch (FileNotFoundException e) {
+
+			e.printStackTrace();
+		}
+
 	}
 
 	public void generateDatapack() {
-		deletePreviousDatapack();
+		if (zipArch == null) {// check if zip exist.
+			System.err.println("ERROR CREATING ZIP FILE!");
+			return;
+		}
+
 		loadEmptyDatapack();
+
+		Functions.debug("empty datapack loaded");
 		createPlayerLogOnFunction();
 		createGroupFolder();
+		Functions.debug("group folder created");
 		createMessagesFolder();
-		createVillagerFolder();
+		Functions.debug("messages created");
 		createInitFunction();// needs to be after createMessagesFolder
+		Functions.debug("init function created");
+		createVillagerFolder();
+		Functions.debug("villager folder created");
+		copydirTozip(name + "\\", name + "\\");
+		Functions.debug("saved as zip");
+		deletePreviousDatapack();
+
+		// copyResourcesTozip("/exported datapack/");
+		try {
+			zipArch.finish();
+			zipArch.close();
+			f.close();
+
+		} catch (IOException e) {
+			System.err.println("ERROR SAVING ZIP FILE!");
+			e.printStackTrace();
+		}
+
 	}
 
 	private void createInitFunction() {
@@ -44,7 +90,8 @@ public class CEStory {
 
 		// add for scoreboards
 		s += "\n# scoreboards for if statements\n";
-		for (int id = 0; id <= noNestedIfStatements; id++) { //for this to work it must be run after createMessagesFolder
+		for (int id = 0; id <= noNestedIfStatements; id++) { // for this to work it must be run after
+																// createMessagesFolder
 			s += String.format("scoreboard objectives add CE_if_%02d dummy\n", id);
 		}
 
@@ -106,10 +153,13 @@ public class CEStory {
 	 * @param name
 	 */
 	private void deletePreviousDatapack() {
-		try {
-			deleteDirectory(System.getProperty("user.dir") + "\\" + name);
-		} catch (IOException e) {
-			System.out.println("There was no previous datapack to delete.");
+		if (!saveAsZip) {
+
+			try {
+				deleteDirectory(System.getProperty("user.dir") + "\\" + name);
+			} catch (IOException e) {
+				System.out.println("There was no previous datapack to delete.");
+			}
 		}
 	}
 
@@ -122,11 +172,15 @@ public class CEStory {
 	 * @param name
 	 */
 	private void loadEmptyDatapack() {
-		try {
-			copyDirectory(System.getProperty("user.dir") + "\\src\\main\\resources\\datapack empty",
-					System.getProperty("user.dir") + "\\" + name);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (saveAsZip) {
+			copyResourcesTozip("/datapack empty/");
+		} else {
+			try {
+				copyDirectory(System.getProperty("user.dir") + "\\src\\main\\resources\\datapack empty",
+						System.getProperty("user.dir") + "\\" + name);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -185,6 +239,8 @@ public class CEStory {
 	private void createMessagesFolder() {
 		createDirectory(name + "\\data\\conversation_engine\\functions\\messages");
 		createTalkFunction();
+		
+		
 		// for every villager create their named messages folder.
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
@@ -210,16 +266,28 @@ public class CEStory {
 	}
 
 	private void createNpcFolder(NPCGroup npcGroup, NPC npc) {
+		Functions.debug("\tcreated npc folder: "+npc.getName());
 		// create a directory with the name of the npc.
 		createDirectory(String.format("%s\\data\\conversation_engine\\functions\\messages\\%s", name, npc.getName()));
 		createNpcStartFunction(npcGroup, npc);
+		Functions.debug("\tcreated npc start function");
 		createNpcEndFunction(npcGroup, npc);
+		Functions.debug("\tcreated npc end function");
 		createNpcTickFunction(npcGroup, npc);
+		Functions.debug("\tcreated tick function");
 
 		// get all the nodes of this villager to functions
-
+		int i =0;
 		for (ConverzationNode converzationNode : npc.getNodes()) {
+			if(i==0) {
+				Functions.debug("\tstarted for loop");
+			}
 			createNodeFunction(npcGroup, npc, converzationNode);
+			
+			if(i%1000==0) {
+				Functions.debug("\tcreated node function: "+converzationNode.getRealName());
+			}
+			i++;
 		}
 	}
 
@@ -237,13 +305,13 @@ public class CEStory {
 				npc.getName(), npc.getName());
 		s += String.format(
 				"# unless there is already someone else talking to the villager  (note that 2 as boolean is also true) \n# TIP: turn the 2(on the next line) into a 0 if you want multiple people to talk to the same npc at the same time\nexecute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 if entity @a[scores={%s=1}] run scoreboard players set @r[scores={CE_talking=1}] CE_suc2 %01d \n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 2 run tellraw @r[scores={CE_talking=1}] [{\"selector\":\"@a[scores={%s=1}]\"},{\"text\":\"[someone is already talking to this NPC]\",\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"you'll have to wait your turn.\"}]}}]\n",
-				 npc.getName(), n, npc.getName(), npc.getName());
+				npc.getName(), n, npc.getName(), npc.getName());
 		s += String.format(
 				"# else:\n\n    # start the %s conversation\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set CE_mannager CE_group_%02d 1\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set CE_mannager %s 1\n",
-				 npc.getName(), npcGroup.getGroupId(), npc.getName());
+				npc.getName(), npcGroup.getGroupId(), npc.getName());
 		s += String.format(
 				"\n    # set the %s score to 1 for the player.\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 as @p[scores={CE_talking=1}] run scoreboard players set @s %s 1\n",
-				 npc.getName(), npc.getName());
+				npc.getName(), npc.getName());
 		s += String.format(
 				"\n    # also set the current node back to 0 \n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_current_node 0\n",
 				npc.getName());
@@ -372,24 +440,45 @@ public class CEStory {
 	// ---- save string as file ----
 
 	private void SaveAsFile(String s, String path) {
-		try {
-			PrintWriter out = new PrintWriter(path);
-			out.write(s);
-			out.close();
-		} catch (FileNotFoundException e) {
-			
-			e.printStackTrace();
+		if (saveAsZip) {
+			try {
+
+				ZipEntry e = new ZipEntry(path.substring((name + "\\").length(), path.length()));
+				zipArch.putNextEntry(e);
+				Charset charset = StandardCharsets.US_ASCII;
+
+				zipArch.write(charset.encode(s).array());
+
+				zipArch.closeEntry();
+
+			} catch (IOException e1) {
+				System.err.println("failed saving " + path);
+				e1.printStackTrace();
+			}
+		} else {
+			try {
+				PrintWriter out = new PrintWriter(path);
+				out.write(s);
+				out.close();
+			} catch (FileNotFoundException e) {
+
+				e.printStackTrace();
+			}
 		}
+
 	}
 
 	// ---- save string as file ----
 	// ---- create directory ----
 
 	private void createDirectory(String dirpath) {
-		File f = new File(dirpath);
-		if (!f.exists()) {
-			f.mkdir();
+		if (!saveAsZip) {
+			File f = new File(dirpath);
+			if (!f.exists()) {
+				f.mkdir();
+			}
 		}
+
 	}
 
 	// ---- create directory ----
@@ -408,13 +497,78 @@ public class CEStory {
 		});
 	}
 
+	public void copyResourcesTozip(String path) {
+		try {
+
+			File[] file = (new File(getClass().getResource(path).toURI())).listFiles();// get all files/directory's in
+																						// the folder
+			for (File file2 : file) { // for every file
+				if (file2.isDirectory()) { // if the file is a directory
+					copyResourcesTozip(path + file2.getName() + "/"); // recursively copy that directory as well.
+				} else { // if it is a file
+					try {
+						// get the relative file path
+						String filePath = path + file2.getName();
+						filePath = filePath.substring(("/datapack empty/").length(), filePath.length());
+
+						// create new entry for the file
+						ZipEntry e = new ZipEntry(filePath);
+						zipArch.putNextEntry(e);
+
+						// write the content's of the file to the new zip entry.
+						zipArch.write(Files.readAllBytes(file2.toPath()));
+						zipArch.closeEntry();
+
+					} catch (IOException e1) {
+						System.err.println("faled saving " + path);
+						e1.printStackTrace();
+					}
+				}
+			}
+
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void copydirTozip(String path, String originalPath) {
+		File[] file = (new File(path).listFiles());// get all files/directory's in
+													// the folder
+		for (File file2 : file) { // for every file
+			if (file2.isDirectory()) { // if the file is a directory
+				copydirTozip(path + file2.getName() + "/", originalPath); // recursively copy that directory as well.
+			} else { // if it is a file
+				try {
+					// get the relative file path
+					String filePath = path + file2.getName();
+					filePath = filePath.substring((originalPath).length(), filePath.length());
+
+					// create new entry for the file
+					ZipEntry e = new ZipEntry(filePath);
+					zipArch.putNextEntry(e);
+
+					// write the content's of the file to the new zip entry.
+					zipArch.write(Files.readAllBytes(file2.toPath()));
+					zipArch.closeEntry();
+
+				} catch (IOException e1) {
+					System.err.println("faled saving " + path);
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
+
 	// ---- copy directory ---- source: https://www.baeldung.com/java-copy-directory
 	// ---- delete directory ---- source:
 	// https://softwarecave.org/2018/03/24/delete-directory-with-contents-in-java/
 
 	private void deleteDirectory(String dirpath) throws IOException {
-		File file = new File(dirpath);
-		deleteDirectoryRecursionJava6(file);
+		if (!saveAsZip) {
+			File file = new File(dirpath);
+			deleteDirectoryRecursionJava6(file);
+		}
 	}
 
 	private void deleteDirectoryRecursionJava6(File file) throws IOException {
@@ -434,11 +588,11 @@ public class CEStory {
 	// https://softwarecave.org/2018/03/24/delete-directory-with-contents-in-java/
 
 	public void setNoNestedIfStatements(int noNestedIfStatements) {
-		if (noNestedIfStatements > this.noNestedIfStatements) {//only update is new value is bigger
+		if (noNestedIfStatements > this.noNestedIfStatements) {// only update is new value is bigger
 			this.noNestedIfStatements = noNestedIfStatements;
 		}
 	}
-	
+
 	// ---- getters and setters ----
-	
+
 }
