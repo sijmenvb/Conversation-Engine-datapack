@@ -334,7 +334,7 @@ public class CEStory {
 		s += String.format("scoreboard players set @s %s 0\n", npc.getName());
 		s += String.format("\n# try to close the group as well\nfunction conversation_engine:group/close_%03d\n",
 				npcGroup.getGroupId());
-		s += "\nsay [ended the converstaion]";
+		s += String.format("\ntellraw @s {\"text\":\"[the conversation with %s has ended]\",\"color\":\"dark_gray\"}",npc.getRealName());
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\end.mcfunction", name,
 				npc.getName()));
 
@@ -380,7 +380,7 @@ public class CEStory {
 
 		// give the dialogue and choices
 		s += "    # give the choices\n";
-		s += converzationNode.toCommand(nodes, this, true);
+		s += converzationNode.toCommand(nodes, this,npc, true);
 		s += "\n\n";
 
 		// update the last run node

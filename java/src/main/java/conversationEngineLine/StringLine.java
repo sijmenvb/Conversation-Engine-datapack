@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import conversationEngineInporter.CEStory;
 import conversationEngineInporter.ConverzationNode;
 import conversationEngineInporter.Functions;
+import conversationEngineInporter.NPC;
 
 public class StringLine extends ConversationLine {
 
@@ -17,7 +18,7 @@ public class StringLine extends ConversationLine {
 		this.text = text;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, LinkedList<String> condition, String con) {
+	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition, String con) {
 		return String.format("%srun tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n",con, Functions.stringEscape(text));
 	}
 }

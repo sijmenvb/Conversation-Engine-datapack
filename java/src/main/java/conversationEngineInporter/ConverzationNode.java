@@ -10,6 +10,7 @@ import conversationEngineLine.CommandLine;
 import conversationEngineLine.ConversationLine;
 import conversationEngineLine.ElseLine;
 import conversationEngineLine.EndIfLine;
+import conversationEngineLine.EndLine;
 import conversationEngineLine.GiveLine;
 import conversationEngineLine.IfScoreLine;
 import conversationEngineLine.PointerLine;
@@ -163,15 +164,24 @@ public class ConverzationNode {
 									+ " is invalid. example: <<buy|carrot|20|diamond|1>> (where you but 20 carrots for 1 diamond)");
 						}
 						break;
+					case "end":
+						this.lines.push(new EndLine(this));
+						break;
 					default:
 						System.err.println("Error " + lines[i] + " is invalid syntax!");
 						break;
+
 					}
 				}
 
 			} else { // if it is not in any special syntax treat it as text
 				this.lines.push(new StringLine(lines[i], this)); // convert the input to a string line.
 			}
+		}
+		
+		//once done parsing 
+		if(outPointer.isEmpty()) { // if this node is a dead end add an end line.
+			this.lines.addLast(new EndLine(this));
 		}
 	}
 
@@ -191,7 +201,7 @@ public class ConverzationNode {
 		return list;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, Boolean clearchat) {
+	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, Boolean clearchat) {
 		String s = "";
 
 		// add the clear chat message.
@@ -217,7 +227,7 @@ public class ConverzationNode {
 
 				con += condition.get(j);
 			}
-			s += lines.get(i).toCommand(nodes, ceStory, condition, con);
+			s += lines.get(i).toCommand(nodes, ceStory, npc, condition, con);
 
 		}
 

@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import conversationEngineInporter.CEStory;
 import conversationEngineInporter.ConverzationNode;
 import conversationEngineInporter.Functions;
+import conversationEngineInporter.NPC;
 
 public class PointerLine extends ConversationLine {
 	private String text;
@@ -25,7 +26,7 @@ public class PointerLine extends ConversationLine {
 		return pointer;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, LinkedList<String> condition,
+	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
 			String con) {
 		// try to get the id of the node if this node does not exist show an error and
 		// use id 0 instead.

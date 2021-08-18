@@ -114,7 +114,7 @@ public class Generator {
 		// print all the commands, for testing purposes.
 		for (ConverzationNode n : nodes.values()) {
 			System.out.println("new " + n.getRealName());
-			System.out.println(n.toCommand(nodes,story,true));
+			System.out.println(n.toCommand(nodes,story,new NPC("villager_name", "none"),true));
 		}//*/
 		
 		Functions.debug("story generated");

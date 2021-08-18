@@ -24,7 +24,8 @@ public class Main {
 		// String file = "src/main/resources/command.json"; // uses <<command|some custom command>> notation for profession and give command.
 		// String file = "src/main/resources/if.json"; // uses <<if>> , <<else>> and <<endif>> notaton.
 		// String file = "src/main/resources/10000.json"; // stress testing
-		String file = "src/main/resources/buy.json"; // usess <<buy|carrot|20|diamond|1>> notation for the attempt at buying items.
+		//String file = "src/main/resources/buy.json"; // usess <<buy|carrot|20|diamond|1>> notation for the attempt at buying items.
+		String file = "src/main/resources/end.json"; // Uses <<end>> notation to end the conversation.
 		JSONParser parser = new JSONParser();
 
 		JSONArray nodesArray;

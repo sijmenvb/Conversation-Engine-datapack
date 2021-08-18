@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import conversationEngineInporter.CEStory;
 import conversationEngineInporter.ConverzationNode;
+import conversationEngineInporter.NPC;
 
 public class GiveLine extends ConversationLine {
 	private String item;
@@ -16,7 +17,7 @@ public class GiveLine extends ConversationLine {
 		this.ammount = ammount;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, LinkedList<String> condition,
+	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
 			String con) {
 		return String.format("%sif score @s CE_resend matches 0 run give @s %s %d", con, item, ammount);
 	}

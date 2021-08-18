@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import conversationEngineInporter.CEStory;
 import conversationEngineInporter.ConverzationNode;
+import conversationEngineInporter.NPC;
 
 public class IfScoreLine extends ConversationLine {
 
@@ -17,7 +18,7 @@ public class IfScoreLine extends ConversationLine {
 		this.target = target;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, LinkedList<String> condition,
+	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
 			String con) {
 		int ifId = condition.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
 		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behaviour is defined in the set method)
