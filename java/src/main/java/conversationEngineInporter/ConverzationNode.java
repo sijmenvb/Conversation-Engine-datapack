@@ -13,6 +13,7 @@ import conversationEngineLine.EndIfLine;
 import conversationEngineLine.EndLine;
 import conversationEngineLine.GiveLine;
 import conversationEngineLine.IfScoreLine;
+import conversationEngineLine.IfTagLine;
 import conversationEngineLine.PointerLine;
 import conversationEngineLine.StringLine;
 
@@ -133,6 +134,13 @@ public class ConverzationNode {
 								System.err.println("Error " + lines[i]
 										+ " is invalid. example: <<if|score|name of score|target score>> ");
 							}
+						} else if (arguments.length == 3) {
+							if(arguments[1].toLowerCase().equals("tag")) {
+								this.lines.push(new IfTagLine(arguments[2], this));
+							} else {
+								System.err.println("Error " + lines[i]
+										+ " is invalid. example: <<if|tag|name of tag>>");
+							}
 						} else {
 							System.err.println("Error " + lines[i]
 									+ " is invalid. example: <<if|score|name of score|target score>> ");
@@ -178,9 +186,9 @@ public class ConverzationNode {
 				this.lines.push(new StringLine(lines[i], this)); // convert the input to a string line.
 			}
 		}
-		
-		//once done parsing 
-		if(outPointer.isEmpty()) { // if this node is a dead end add an end line.
+
+		// once done parsing
+		if (outPointer.isEmpty()) { // if this node is a dead end add an end line.
 			this.lines.addLast(new EndLine(this));
 		}
 	}
