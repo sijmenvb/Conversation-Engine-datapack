@@ -5,17 +5,7 @@ import java.util.LinkedList;
 
 import org.json.simple.JSONObject;
 
-import conversationEngineLine.BuyLine;
-import conversationEngineLine.CommandLine;
-import conversationEngineLine.ConversationLine;
-import conversationEngineLine.ElseLine;
-import conversationEngineLine.EndIfLine;
-import conversationEngineLine.EndLine;
-import conversationEngineLine.GiveLine;
-import conversationEngineLine.IfScoreLine;
-import conversationEngineLine.IfTagLine;
-import conversationEngineLine.PointerLine;
-import conversationEngineLine.StringLine;
+import conversationEngineLine.*;
 
 /**
  * this class will hold all the individual nodes of the conversation with
@@ -76,8 +66,8 @@ public class ConverzationNode {
 					System.err.println("Error " + lines[i] + " needs more arguments!");
 
 				} else {
-					switch (arguments[0].toLowerCase()) {
-					case "profession":
+					switch (arguments[0].toLowerCase()) { //get the first argument
+					case "profession": 
 						if (arguments.length == 2) {
 							String[] villager = { "none", "armorer", "butcher", "cartographer", "cleric", "farmer",
 									"fisherman", "fletcher", "leatherworker", "librarian", "mason", "nitwit",
@@ -135,11 +125,13 @@ public class ConverzationNode {
 										+ " is invalid. example: <<if|score|name of score|target score>> ");
 							}
 						} else if (arguments.length == 3) {
-							if(arguments[1].toLowerCase().equals("tag")) {
+							if (arguments[1].toLowerCase().equals("tag")) {
 								this.lines.push(new IfTagLine(arguments[2], this));
+							} else if (arguments[1].toLowerCase().equals("custom")) {
+								this.lines.push(new IfCustomLine(arguments[2], this));
 							} else {
-								System.err.println("Error " + lines[i]
-										+ " is invalid. example: <<if|tag|name of tag>>");
+								System.err
+										.println("Error " + lines[i] + " is invalid. example: <<if|tag|name of tag>>");
 							}
 						} else {
 							System.err.println("Error " + lines[i]

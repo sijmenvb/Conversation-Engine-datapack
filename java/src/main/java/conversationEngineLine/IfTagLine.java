@@ -22,7 +22,7 @@ public class IfTagLine extends ConversationLine {
 		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behaviour is defined in the set method)
 		condition.addLast(String.format("if score @s CE_if_%02d matches 1 ", ifId));
 		return String.format(
-				"    # if if the player has the tag %s\n%sif score @s CE_resend matches 0 run scoreboard players set @s CE_if_%02d 0\n%sif score @s CE_resend matches 0 if entity @s[tag=%s] run scoreboard players set @s CE_if_%02d 1\n",
+				"    # if the player has the tag %s\n%sif score @s CE_resend matches 0 run scoreboard players set @s CE_if_%02d 0\n%sif score @s CE_resend matches 0 if entity @s[tag=%s] run scoreboard players set @s CE_if_%02d 1\n",
 				tag, con, ifId, con, tag, ifId);
 	}
 

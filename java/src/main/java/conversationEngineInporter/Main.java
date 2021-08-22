@@ -26,7 +26,8 @@ public class Main {
 		// String file = "src/main/resources/10000.json"; // stress testing
 		//String file = "src/main/resources/buy.json"; // usess <<buy|carrot|20|diamond|1>> notation for the attempt at buying items.
 		//String file = "src/main/resources/end.json"; // Uses <<end>> notation to end the conversation.
-		String file = "src/main/resources/ifTag.json"; // uses <<if|tag|name of the tag>> notation.
+		//String file = "src/main/resources/ifTag.json"; // uses <<if|tag|name of the tag>> notation.
+		String file = "src/main/resources/ifCustom.json"; // uses <<if|custom|some if statement>> notation.
 		JSONParser parser = new JSONParser();
 
 		JSONArray nodesArray;
