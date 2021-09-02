@@ -39,6 +39,6 @@ public class PointerLine extends ConversationLine {
 
 		return String.format(
 				"%srun tellraw @s [{\"text\":\"%s\",\"color\":\"#A8DFFF\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/trigger CE_trigger set %d\"}}]\n",
-				con, Functions.stringEscape(text), nodeId);
+				con, Functions.stringEscape(text).replace("@s", "\"},{\"selector\":\"@s\"},{\"text\":\""), nodeId);
 	}
 }

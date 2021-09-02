@@ -13,6 +13,9 @@ public class CommandLine extends ConversationLine {
 
 	public CommandLine(String command, ConverzationNode node) {
 		super(node);
+		if(command.charAt(0) == '/') {
+			command = command.substring(1);//if the command starts with a / remove it.
+		}
 		this.command = command;
 	}
 
