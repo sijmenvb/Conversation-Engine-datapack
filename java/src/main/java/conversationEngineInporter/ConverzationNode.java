@@ -66,8 +66,8 @@ public class ConverzationNode {
 					System.err.println("Error " + lines[i] + " needs more arguments!");
 
 				} else {
-					switch (arguments[0].toLowerCase()) { //get the first argument
-					case "profession": 
+					switch (arguments[0].toLowerCase()) { // get the first argument
+					case "profession":
 						if (arguments.length == 2) {
 							String[] villager = { "none", "armorer", "butcher", "cartographer", "cleric", "farmer",
 									"fisherman", "fletcher", "leatherworker", "librarian", "mason", "nitwit",
@@ -163,6 +163,20 @@ public class ConverzationNode {
 							System.err.println("Error " + lines[i]
 									+ " is invalid. example: <<buy|carrot|20|diamond|1>> (where you but 20 carrots for 1 diamond)");
 						}
+						break;
+					case "tag":
+						if (arguments.length == 3) {
+							boolean b = false;
+							//if the second argument is remove make it a remove tag otherwise assume add.
+							if(arguments[1].toLowerCase().equals("remove")) {
+								b = true;
+							}
+							this.lines.push(new TagLine(b,arguments[2],this));
+						}else {
+							System.err.println("Error " + lines[i]
+									+ " is invalid. example: <<tag|add|name of the tag>>");
+						}
+						
 						break;
 					case "end":
 						this.lines.push(new EndLine(this));
