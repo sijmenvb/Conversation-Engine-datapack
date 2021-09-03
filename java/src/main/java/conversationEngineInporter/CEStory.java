@@ -41,27 +41,35 @@ public class CEStory {
 	private HashMap<String, ConverzationNode> nodes;
 	private int noNestedIfStatements = 0;
 	private ZipOutputStream zipArch;
-	private Boolean saveAsZip = false; // keep this false cause gradually generating the zip does not work
-	private Boolean zipResult = false;
+	private boolean saveAsZip = false; // keep this false cause gradually generating the zip does not work
+	private boolean zipResult = false;
 	private FileOutputStream f;
 
-	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConverzationNode> nodes) {
+	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConverzationNode> nodes, String name,
+			boolean zipResult) {
 		this.groups = groups;
 		this.nodes = nodes;
-		try {
-			f = new FileOutputStream(name + ".zip");
-			zipArch = new ZipOutputStream(new BufferedOutputStream(f));
-		} catch (FileNotFoundException e) {
+		this.name = name;
+		this.zipResult = zipResult;
+		
+		if (zipResult) {
+			try {
+				f = new FileOutputStream(name + ".zip");
+				zipArch = new ZipOutputStream(new BufferedOutputStream(f));
+			} catch (FileNotFoundException e) {
 
-			e.printStackTrace();
+				e.printStackTrace();
+			}
 		}
 
 	}
 
 	public void generateDatapack() {
-		if (zipArch == null) {// check if zip exist.
-			System.err.println("ERROR CREATING ZIP FILE!");
-			return;
+		if (zipResult) {
+			if (zipArch == null) {// check if zip exist.
+				System.err.println("ERROR CREATING ZIP FILE!");
+				return;
+			}
 		}
 		deletePreviousDatapack();// move this to the end of this function if you do not want to keep exporting
 									// the file only.
@@ -81,17 +89,20 @@ public class CEStory {
 		if (zipResult) {
 			copydirTozip(name + "\\", name + "\\");
 			Functions.debug("saved as zip");
+			deletePreviousDatapack();
 		}
 
 		// copyResourcesTozip("/exported datapack/");
-		try {
-			zipArch.finish();
-			zipArch.close();
-			f.close();
+		if (zipResult) {
+			try {
+				zipArch.finish();
+				zipArch.close();
+				f.close();
 
-		} catch (IOException e) {
-			System.err.println("ERROR SAVING ZIP FILE!");
-			e.printStackTrace();
+			} catch (IOException e) {
+				System.err.println("ERROR SAVING ZIP FILE!");
+				e.printStackTrace();
+			}
 		}
 
 	}

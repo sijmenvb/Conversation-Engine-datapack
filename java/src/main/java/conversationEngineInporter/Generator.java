@@ -20,7 +20,7 @@ public class Generator {
 	private int IdCounter = 0; // to ensure unique id's (picked sequentially) (0 will never be used
 								// intentionally)
 
-	public CEStory generateStory(JSONArray nodesArray, int groupSize) {
+	public CEStory generateStory(JSONArray nodesArray, int groupSize, String datapackName, boolean zipResult) {
 		// System.out.println(nodesArray.get(0));
 
 		HashMap<String, ConverzationNode> nodes = new HashMap<String, ConverzationNode>();// store all conversation
@@ -38,7 +38,7 @@ public class Generator {
 				nodes.put(n.getName(), n);
 			}
 		}
-		
+
 		// now we have all the nodes loaded update all their inPointer lists
 		for (ConverzationNode n : nodes.values()) {
 			String name = n.getName(); // get the name of the current node
@@ -46,10 +46,10 @@ public class Generator {
 			while (iter.hasNext()) { // for all the nodes this node points to
 				String s = iter.next();
 				try {
-					
+
 					nodes.get(s).addInPointer(name); // add the name of this node to the inPonter of the node
-																// it
-																// points to.
+														// it
+														// points to.
 				} catch (NullPointerException e) {
 					System.err.println("WARNING! the node " + s + " does not exist!");
 				}
@@ -65,15 +65,15 @@ public class Generator {
 				startingNodes.push(n);
 			}
 		}
-		
+
 		// now create the npc's (same name as the starting node and contain all )
 		for (ConverzationNode node : startingNodes) {
 			HashSet<String> exploredNodes = new HashSet<String>(); // keep track of the nodes
 			Queue<String> nodesQueue = new LinkedList<String>(); // keep list of nodes to explore
-	
-			NPC npc = new NPC(node.getRealName(),node.getProfession()); // create new npc.
+
+			NPC npc = new NPC(node.getRealName(), node.getProfession()); // create new npc.
 			nodesQueue.add(npc.getName()); // add the name(lower case and space is _) to the nodes queue
-			
+
 			System.out.println("detected npc named: " + node.getRealName());
 
 			while (!nodesQueue.isEmpty()) {
@@ -89,7 +89,7 @@ public class Generator {
 						}
 					}
 
-				} 
+				}
 			}
 			NPCs.add(npc);// add this npc to the list of npc's
 		}
@@ -108,15 +108,15 @@ public class Generator {
 		}
 
 		// now gather the groups into a CEStory
-		CEStory story = new CEStory(npcGroups, nodes);
-		
+		CEStory story = new CEStory(npcGroups, nodes, datapackName, zipResult);
+
 		/*
-		// print all the commands, for testing purposes.
-		for (ConverzationNode n : nodes.values()) {
-			System.out.println("new " + n.getRealName());
-			System.out.println(n.toCommand(nodes,story,new NPC("villager_name", "none"),true));
-		}//*/
-		
+		 * // print all the commands, for testing purposes. for (ConverzationNode n :
+		 * nodes.values()) { System.out.println("new " + n.getRealName());
+		 * System.out.println(n.toCommand(nodes,story,new NPC("villager_name",
+		 * "none"),true)); }//
+		 */
+
 		Functions.debug("story generated");
 
 		return story;

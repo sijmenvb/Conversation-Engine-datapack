@@ -1,7 +1,11 @@
 package conversationEngineInporter;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 
 import org.json.simple.JSONArray;
@@ -37,7 +41,7 @@ public class Main {
 		// String file = "src/main/resources/ifCustom.json"; // uses <<if|custom|some if
 		// statement>> notation.
 		// String file = "src/main/resources/tag.json"; // uses <<tag|add|some tag>> notation.
-		
+
 		ReadConfig config = new ReadConfig();
 		String file = config.getFileName();
 
@@ -59,7 +63,7 @@ public class Main {
 		}
 
 		System.out.println("importing the file");
-		CEStory Story = new Generator().generateStory(nodesArray, 10);
+		CEStory Story = new Generator().generateStory(nodesArray, 10,config.getDatapackName(),config.isSaveAsZip());
 
 		Story.generateDatapack();
 
@@ -67,4 +71,6 @@ public class Main {
 		Functions.debug("DONE!");
 
 	}
+	
+	
 }

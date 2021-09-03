@@ -23,6 +23,7 @@ public class ConverzationNode {
 	private LinkedList<String> inPointer = new LinkedList<String>(); // a list of names of nodes that point to this
 																		// node.
 	private String profession = "none";
+	private int noEmptyLines = 20;
 
 	public ConverzationNode(JSONObject in, int id) {
 		this.id = id;
@@ -221,7 +222,7 @@ public class ConverzationNode {
 		// add the clear chat message.
 		if (clearchat) {
 			String nexline = "";
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < noEmptyLines; i++) {
 				nexline += "\\n";
 			}
 
