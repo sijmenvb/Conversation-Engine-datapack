@@ -5,16 +5,27 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -176,12 +187,11 @@ public class CEStory {
 		if (saveAsZip) {
 			copyResourcesTozip("/datapack empty/");
 		} else {
-			try {
-				copyDirectory(System.getProperty("user.dir") + "\\src\\main\\resources\\datapack empty",
-						System.getProperty("user.dir") + "\\" + name);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			InputStream source = getClass().getClassLoader().getResourceAsStream("datapack empty.zip");
+
+			// get path from resource
+			ZipInputStream zipIn = new ZipInputStream(source);
+			unzip(zipIn, name);
 		}
 	}
 
@@ -334,7 +344,8 @@ public class CEStory {
 		s += String.format("scoreboard players set @s %s 0\n", npc.getName());
 		s += String.format("\n# try to close the group as well\nfunction conversation_engine:group/close_%03d\n",
 				npcGroup.getGroupId());
-		s += String.format("\ntellraw @s {\"text\":\"[the conversation with %s has ended]\",\"color\":\"dark_gray\"}",npc.getRealName());
+		s += String.format("\ntellraw @s {\"text\":\"[the conversation with %s has ended]\",\"color\":\"dark_gray\"}",
+				npc.getRealName());
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\end.mcfunction", name,
 				npc.getName()));
 
@@ -380,7 +391,7 @@ public class CEStory {
 
 		// give the dialogue and choices
 		s += "    # give the choices\n";
-		s += converzationNode.toCommand(nodes, this,npc, true);
+		s += converzationNode.toCommand(nodes, this, npc, true);
 		s += "\n\n";
 
 		// update the last run node
@@ -425,7 +436,7 @@ public class CEStory {
 		// for every villager create summon function
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
-				
+
 				String s = String.format(
 						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{},Inventory:[{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b}]}",
 						npc.getName(), npc.getRealName(), npc.getProfession());
@@ -487,6 +498,7 @@ public class CEStory {
 
 	public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation)
 			throws IOException {
+		System.err.println("source dir: " + sourceDirectoryLocation);
 		Files.walk(Paths.get(sourceDirectoryLocation)).forEach(source -> {
 			Path destination = Paths.get(destinationDirectoryLocation,
 					source.toString().substring(sourceDirectoryLocation.length()));
@@ -593,6 +605,62 @@ public class CEStory {
 		}
 	}
 
+	// ---- delete directory ----
+	// ---- unzip ---- source: https://www.baeldung.com/java-compress-and-uncompress
+
+	private void unzip(ZipInputStream zipIn, String destinationPath) {
+		try {
+			File destDir = new File(destinationPath);
+			byte[] buffer = new byte[1024];
+			ZipEntry zipEntry;
+
+			zipEntry = zipIn.getNextEntry();
+
+			while (zipEntry != null) {
+				File newFile = newFile(destDir, zipEntry);
+				if (zipEntry.isDirectory()) {
+					if (!newFile.isDirectory() && !newFile.mkdirs()) {
+						throw new IOException("Failed to create directory " + newFile);
+					}
+				} else {
+					// fix for Windows-created archives
+					File parent = newFile.getParentFile();
+					if (!parent.isDirectory() && !parent.mkdirs()) {
+						throw new IOException("Failed to create directory " + parent);
+					}
+
+					// write file content
+					FileOutputStream fos = new FileOutputStream(newFile);
+					int len;
+					while ((len = zipIn.read(buffer)) > 0) {
+						fos.write(buffer, 0, len);
+					}
+					fos.close();
+				}
+				zipEntry = zipIn.getNextEntry();
+			}
+			zipIn.closeEntry();
+			zipIn.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+		File destFile = new File(destinationDir, zipEntry.getName());
+
+		String destDirPath = destinationDir.getCanonicalPath();
+		String destFilePath = destFile.getCanonicalPath();
+
+		if (!destFilePath.startsWith(destDirPath + File.separator)) {
+			throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+		}
+
+		return destFile;
+	}
+
+	// ---- unzip ----
 	// ---- getters and setters ----
 
 }

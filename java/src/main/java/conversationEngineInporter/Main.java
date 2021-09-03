@@ -19,21 +19,31 @@ public class Main {
 		// reference to a node that does not exist
 		// String file = "src/main/resources/shopDialog.json"; // file with [[text]]
 		// notation.
-		// String file = "src/main/resources/shopDialog-Fixed.json"; // fixed version of the previous.
-		// String file = "src/main/resources/farmer+give.json"; // uses <<>> notation for profession and give command.
-		// String file = "src/main/resources/command.json"; // uses <<command|some custom command>> notation for profession and give command.
-		// String file = "src/main/resources/if.json"; // uses <<if>> , <<else>> and <<endif>> notaton.
+		// String file = "src/main/resources/shopDialog-Fixed.json"; // fixed version of
+		// the previous.
+		// String file = "src/main/resources/farmer+give.json"; // uses <<>> notation
+		// for profession and give command.
+		// String file = "src/main/resources/command.json"; // uses <<command|some
+		// custom command>> notation for profession and give command.
+		// String file = "src/main/resources/if.json"; // uses <<if>> , <<else>> and
+		// <<endif>> notaton.
 		// String file = "src/main/resources/10000.json"; // stress testing
-		//String file = "src/main/resources/buy.json"; // usess <<buy|carrot|20|diamond|1>> notation for the attempt at buying items.
-		//String file = "src/main/resources/end.json"; // Uses <<end>> notation to end the conversation.
-		//String file = "src/main/resources/ifTag.json"; // uses <<if|tag|name of the tag>> notation.
-		//String file = "src/main/resources/ifCustom.json"; // uses <<if|custom|some if statement>> notation.
-		String file = "src/main/resources/tag.json"; // uses <<tag|add|some tag>> notation.
+		// String file = "src/main/resources/buy.json"; // usess
+		// <<buy|carrot|20|diamond|1>> notation for the attempt at buying items.
+		// String file = "src/main/resources/end.json"; // Uses <<end>> notation to end
+		// the conversation.
+		// String file = "src/main/resources/ifTag.json"; // uses <<if|tag|name of the
+		// tag>> notation.
+		// String file = "src/main/resources/ifCustom.json"; // uses <<if|custom|some if
+		// statement>> notation.
+		// String file = "src/main/resources/tag.json"; // uses <<tag|add|some tag>> notation.
+		
+		ReadConfig config = new ReadConfig();
+		String file = config.getFileName();
+
 		JSONParser parser = new JSONParser();
 
 		JSONArray nodesArray;
-		
-		
 
 		try { // try to get the specified file else throw an error and end the program.
 			FileReader input = new FileReader(file); // get the file
@@ -55,8 +65,6 @@ public class Main {
 
 		System.out.println("Done! -- tool provided by sijmen_v_b");
 		Functions.debug("DONE!");
-
-		
 
 	}
 }

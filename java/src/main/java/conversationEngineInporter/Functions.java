@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class Functions {
 	/**will replace each instance of target in str by replacement until no instance of target is left.
 	 */
-	private static Boolean debug = true;
+	private static Boolean debug = false;
 	private static long time = System.nanoTime();
 	
 	public static void debug(String s) {
