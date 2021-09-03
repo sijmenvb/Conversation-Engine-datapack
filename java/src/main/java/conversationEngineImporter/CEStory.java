@@ -1,4 +1,4 @@
-package conversationEngineInporter;
+package conversationEngineImporter;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -49,7 +49,7 @@ public class CEStory {
 			boolean zipResult) {
 		this.groups = groups;
 		this.nodes = nodes;
-		this.name = name;
+		CEStory.name = name;
 		this.zipResult = zipResult;
 		
 		if (zipResult) {

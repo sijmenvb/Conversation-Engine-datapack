@@ -1,4 +1,4 @@
-package conversationEngineInporter;
+package conversationEngineImporter;
 
 import java.util.LinkedList;
 

@@ -3,10 +3,10 @@ package conversationEngineLine;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import conversationEngineInporter.CEStory;
-import conversationEngineInporter.ConverzationNode;
-import conversationEngineInporter.Functions;
-import conversationEngineInporter.NPC;
+import conversationEngineImporter.CEStory;
+import conversationEngineImporter.ConverzationNode;
+import conversationEngineImporter.Functions;
+import conversationEngineImporter.NPC;
 
 public class PointerLine extends ConversationLine {
 	private String text;

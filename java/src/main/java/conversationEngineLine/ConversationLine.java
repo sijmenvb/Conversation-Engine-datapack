@@ -3,9 +3,9 @@ package conversationEngineLine;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import conversationEngineInporter.CEStory;
-import conversationEngineInporter.ConverzationNode;
-import conversationEngineInporter.NPC;
+import conversationEngineImporter.CEStory;
+import conversationEngineImporter.ConverzationNode;
+import conversationEngineImporter.NPC;
 
 /**
  * this is an abstract class to contain the different types of line such as
