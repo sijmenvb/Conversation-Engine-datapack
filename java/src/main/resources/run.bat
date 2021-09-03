@@ -1,2 +1,2 @@
-java -jar ./conversationEngineInporter-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+java -jar ./conversationEngineInporter-1.0.0.jar
 PAUSE
