@@ -36,9 +36,13 @@ public class PointerLine extends ConversationLine {
 		} catch (NullPointerException e) {
 			System.err.println("WARNING: " + super.node.getName() + " points to " + pointer + " which does NOT exist");
 		}
+		
+		String clickevent = String.format(",\"color\":\"#A8DFFF\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/trigger CE_trigger set %d\"}", nodeId);
+		
+		String playerSelector = String.format("\"%s},{\"selector\":\"@s\"%s},{\"text\":\"", clickevent,clickevent);
 
 		return String.format(
-				"%srun tellraw @s [{\"text\":\"%s\",\"color\":\"#A8DFFF\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/trigger CE_trigger set %d\"}}]\n",
-				con, Functions.stringEscape(text).replace("@s", "\"},{\"selector\":\"@s\"},{\"text\":\""), nodeId);
+				"%srun tellraw @s [{\"text\":\"%s\"%s}]\n",
+				con, Functions.stringEscape(text).replace("@s", playerSelector), clickevent);
 	}
 }

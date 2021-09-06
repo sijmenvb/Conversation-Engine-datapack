@@ -41,7 +41,8 @@ public class Main {
 		// String file = "src/main/resources/ifCustom.json"; // uses <<if|custom|some if
 		// statement>> notation.
 		// String file = "src/main/resources/tag.json"; // uses <<tag|add|some tag>> notation.
-
+		// String file = "src/main/resources/@s.json"; // uses @s in the pointerline notation.
+		
 		ReadConfig config = new ReadConfig();
 		String file = config.getFileName();
 
