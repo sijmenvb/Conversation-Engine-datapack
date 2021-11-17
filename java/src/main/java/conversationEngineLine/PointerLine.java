@@ -16,6 +16,10 @@ public class PointerLine extends ConversationLine {
 		super(node);
 		String split[] = text.split("\\]\\]|\\[\\[|\\|"); // splits at and removes the following characters [[ and ]]
 															// and |
+		if (split.length != 3) {//make sure the split does not fail.
+			System.err.println(String.format("\n\n! ERROR ! the choice \"%s\" in the node \"%s\" has arguments missing!\n\n", text, node.getRealName()));
+			return;
+		}
 		this.text = split[1]; // get the text (note that split[0] is an empty string due to the initial split
 								// at [[)
 		this.pointer = split[2].replace(' ', '_').toLowerCase(); // get the pointer and make sure it has underscores

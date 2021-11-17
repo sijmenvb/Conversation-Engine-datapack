@@ -1,0 +1,42 @@
+[
+	{
+		"title": "Jack",
+		"tags": "",
+		"body": "Hey, @s! Could you help me with something?\n[[Sure thing!|Yes]]\n[[Not now.|No]]",
+		"position": {
+			"x": 614,
+			"y": 282
+		},
+		"colorID": 0
+	},
+	{
+		"title": "Yes",
+		"tags": "",
+		"body": "Thanks!\n[[What do you need help with?|WhatHelp]]",
+		"position": {
+			"x": 851,
+			"y": 190
+		},
+		"colorID": 0
+	},
+	{
+		"title": "No",
+		"tags": "",
+		"body": "Oh, okay.\n[[Sorry|]]\n[[I change my mind|Yes]]",
+		"position": {
+			"x": 851,
+			"y": 426
+		},
+		"colorID": 0
+	},
+	{
+		"title": "WhatHelp",
+		"tags": "",
+		"body": "End of demo.",
+		"position": {
+			"x": 1111,
+			"y": 177
+		},
+		"colorID": 0
+	}
+]

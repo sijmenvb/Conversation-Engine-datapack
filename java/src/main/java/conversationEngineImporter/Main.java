@@ -42,6 +42,7 @@ public class Main {
 		// statement>> notation.
 		// String file = "src/main/resources/tag.json"; // uses <<tag|add|some tag>> notation.
 		// String file = "src/main/resources/@s.json"; // uses @s in the pointerline notation.
+		// String file = "src/main/resources/error.json"; // a file that generates a eror send to me by a user.
 		
 		ReadConfig config = new ReadConfig();
 		String file = config.getFileName();
