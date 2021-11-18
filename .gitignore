@@ -5,3 +5,4 @@ java/src/main/resources/big.json
 java/deployment/
 java/run.bat
 java/releases/
+java/src/main/resources/long_name.json

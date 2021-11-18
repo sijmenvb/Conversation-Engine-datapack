@@ -278,7 +278,7 @@ public class CEStory {
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
 				s += String.format("\nexecute at @s[tag=%s] run function conversation_engine:messages/%s/start",
-						npc.getName(), npc.getName());
+						npc.getTagName(), npc.getName());
 			}
 		}
 
@@ -368,7 +368,7 @@ public class CEStory {
 				npc.getName());
 		s += String.format(
 				"execute at @s unless entity @e[type=villager, distance = ..7, tag=%s] run function conversation_engine:messages/%s/end\n",
-				npc.getName(), npc.getName());
+				npc.getTagName(), npc.getName());
 		s += "\n# check for trigger\n";
 		// check for all the triggers
 		for (ConverzationNode converzationNode : npc.getNodes()) {
@@ -428,10 +428,10 @@ public class CEStory {
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
 				String s = String.format("# kill the labrat npc\nkill @e[type=villager,tag=CE_npc,tag=%s]",
-						npc.getName());
+						npc.getTagName());
 
 				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\kill\\%s.mcfunction",
-						name, npc.getName()));
+						name, npc.getTagName()));
 
 			}
 		}
@@ -450,10 +450,10 @@ public class CEStory {
 
 				String s = String.format(
 						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[\"CE_npc\",\"%s\"],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{},Inventory:[{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b}]}",
-						npc.getName(), npc.getRealName(), npc.getProfession());
+						npc.getTagName(), npc.getRealName(), npc.getProfession());
 
 				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\summon\\%s.mcfunction",
-						name, npc.getName()));
+						name, npc.getTagName()));
 
 			}
 		}

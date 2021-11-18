@@ -72,7 +72,8 @@ public class Generator {
 			Queue<String> nodesQueue = new LinkedList<String>(); // keep list of nodes to explore
 
 			NPC npc = new NPC(node.getRealName(), node.getProfession()); // create new npc.
-			nodesQueue.add(npc.getName()); // add the name(lower case and space is _) to the nodes queue
+			nodesQueue.add(npc.getTagName()); // add the tag name(lower case and space is _) to the nodes queue Note: we
+												// can't use getName since it might use an id that is not yet assigned
 
 			System.out.println("detected npc named: " + node.getRealName());
 
