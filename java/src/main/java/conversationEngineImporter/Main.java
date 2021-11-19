@@ -43,9 +43,9 @@ public class Main {
 		// String file = "src/main/resources/tag.json"; // uses <<tag|add|some tag>> notation.
 		// String file = "src/main/resources/@s.json"; // uses @s in the pointerline notation.
 		// String file = "src/main/resources/error.json"; // a file that generates a error send to me by a user.
-		String file = "src/main/resources/long_name.json"; // s file with names longer than 16 characters.
+		//String file = "src/main/resources/long_name.json"; // s file with names longer than 16 characters.
 		ReadConfig config = new ReadConfig();
-		//String file = config.getFileName();
+		String file = config.getFileName();
 
 		JSONParser parser = new JSONParser();
 
