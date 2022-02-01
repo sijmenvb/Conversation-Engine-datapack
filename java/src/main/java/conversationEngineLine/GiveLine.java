@@ -19,7 +19,7 @@ public class GiveLine extends ConversationLine {
 
 	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
 			String con) {
-		return String.format("%sif score @s CE_resend matches 0 run give @s %s %d", con, item, ammount);
+		return String.format("%sif score @s CE_resend matches 0 run give @s %s %d\n", con, item, ammount);
 	}
 
 }

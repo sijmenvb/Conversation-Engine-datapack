@@ -32,7 +32,7 @@ public class ConverzationNode {
 		body = Functions.recReplace(body, "\n\n", "\n \n"); // replace to sequential nextlines to have a space until no
 															// sequential nextlines are left.
 		String lines[] = body.split("(\\r?\\n)|((?=\\[\\[)|(?<=\\]\\]))|((?=<<)|(?<=>>))"); // splits before [[ and << ,
-																							// after ]] and << and it
+																							// after ]] and >> and it
 																							// splits and removes next
 																							// lines next-lines
 

@@ -58,7 +58,7 @@ public class Main {
 			System.out.println("could not find \"" + file + "\".\nABORTING");
 			return; // stop the program
 		} catch (Exception e) { // if there was another error (could not read file, not proper JSON file etc.)
-			System.out.println("an unexpected error occured when reading \"" + file + "\".");
+			System.out.println("an unexpected error occurred when reading \"" + file + "\".");
 			e.printStackTrace();
 			System.out.println("ABORTING");
 			return; // stop the program

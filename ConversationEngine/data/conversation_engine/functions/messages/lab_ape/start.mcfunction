@@ -16,7 +16,7 @@ execute if score bool CE_suc2 matches 0 if entity @a[scores={lab_ape=1}] run sco
 # else:
 
     # start the labrat conversation
-    execute if score bool CE_suc2 matches 0 run scoreboard players set CE_mannager CE_group_00 1
+    execute if score bool CE_suc2 matches 0 run scoreboard players set CE_mannager CE_group_00 1 
     execute if score bool CE_suc2 matches 0 run scoreboard players set CE_mannager lab_ape 1
     
 

@@ -207,7 +207,7 @@ public class CEStory {
 	}
 
 	// ---- load empty datapack ----
-	// ---- create group folder ----
+	// ---- create group folder ---- 
 
 	private void createGroupFolder() {
 		createDirectory(name + "\\data\\conversation_engine\\functions\\group");
