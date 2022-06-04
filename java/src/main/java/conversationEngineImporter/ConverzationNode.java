@@ -109,6 +109,14 @@ public class ConverzationNode {
 									+ " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
 						}
 						break;
+					case "playsound":
+						if (arguments.length == 2) {
+							this.lines.push(new PlaySound(arguments[1], this));
+						} else {
+							System.err.println("Error " + lines[i]
+									+ " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
+						}
+						break;
 					case "if":
 						if (arguments.length == 4) {
 							if (arguments[1].toLowerCase().equals("score")) {
