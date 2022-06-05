@@ -20,7 +20,7 @@ public class PlaySound extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition, String con) {
-		return String.format("%srun I AM WORKING %s\n",con, command);
+		return String.format("%srun BRUH BRUH RBUBH %s\n",con, command);
 	}
 
 }
