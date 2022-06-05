@@ -32,7 +32,7 @@ public class ConverzationNode {
 		body = Functions.recReplace(body, "\n\n", "\n \n"); // replace to sequential nextlines to have a space until no
 															// sequential nextlines are left.
 		String lines[] = body.split("(\\r?\\n)|((?=\\[\\[)|(?<=\\]\\]))|((?=<<)|(?<=>>))"); // splits before [[ and << ,
-																							// after ]] and << and it
+																							// after ]] and >> and it
 																							// splits and removes next
 																							// lines next-lines
 
@@ -120,13 +120,11 @@ public class ConverzationNode {
 					case "if":
 						if (arguments.length == 4) {
 							if (arguments[1].toLowerCase().equals("score")) {
-								int target;
-								try {
-									target = Integer.parseInt(arguments[3]);
-								} catch (NumberFormatException e) {
-									target = 1;
+								String target = arguments[3];
+								if (!isValidRange(target)) {
+									target = "1";
 									System.err.println("Error " + lines[i]
-											+ " 4th argument should be a number. example: <<if|score|name of score|1>>");
+											+ " 4th argument should be a range. example: <<if|score|name of score|..5>>");
 								}
 								this.lines.push(new IfScoreLine(arguments[2], target, this));
 							} else {
@@ -255,6 +253,16 @@ public class ConverzationNode {
 		}
 
 		return s;
+	}
+	
+	private boolean isValidRange(String s) {
+		if (s.matches("\\d*\\.\\.\\d*")) {//check if ranges like 5..10 and ..10 and 5..
+			return true;
+		}
+		if (s.matches("\\d*")) {//check for a single number
+			return true;
+		}
+		return false;
 	}
 
 	public void addInPointer(String name) {

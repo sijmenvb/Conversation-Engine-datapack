@@ -12,35 +12,36 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		// String file = "src/main/resources/basic villager.json"; // get the basic
+		// String file = "src/main/resources/examples/basic villager.json"; // get the basic
 		// villager
-		// String file = "src/main/resources/broken.json"; // load in the file with
+		// String file = "src/main/resources/examples/broken.json"; // load in the file with
 		// broken JSON for testing error
-		// String file = "src/main/resources/missing node.json"; // file with a
+		// String file = "src/main/resources/examples/missing node.json"; // file with a
 		// reference to a node that does not exist
-		// String file = "src/main/resources/shopDialog.json"; // file with [[text]]
+		// String file = "src/main/resources/examples/shopDialog.json"; // file with [[text]]
 		// notation.
-		// String file = "src/main/resources/shopDialog-Fixed.json"; // fixed version of
+		// String file = "src/main/resources/examples/shopDialog-Fixed.json"; // fixed version of
 		// the previous.
-		// String file = "src/main/resources/farmer+give.json"; // uses <<>> notation
+		// String file = "src/main/resources/examples/farmer+give.json"; // uses <<>> notation
 		// for profession and give command.
-		// String file = "src/main/resources/command.json"; // uses <<command|some
+		// String file = "src/main/resources/examples/command.json"; // uses <<command|some
 		// custom command>> notation for profession and give command.
-		// String file = "src/main/resources/if.json"; // uses <<if>> , <<else>> and
+		// String file = "src/main/resources/examples/if.json"; // uses <<if>> , <<else>> and
 		// <<endif>> notaton.
-		// String file = "src/main/resources/10000.json"; // stress testing
-		// String file = "src/main/resources/buy.json"; // usess
+		// String file = "src/main/resources/examples/10000.json"; // stress testing
+		// String file = "src/main/resources/examples/buy.json"; // usess
 		// <<buy|carrot|20|diamond|1>> notation for the attempt at buying items.
-		// String file = "src/main/resources/end.json"; // Uses <<end>> notation to end
+		// String file = "src/main/resources/examples/end.json"; // Uses <<end>> notation to end
 		// the conversation.
-		// String file = "src/main/resources/ifTag.json"; // uses <<if|tag|name of the
+		// String file = "src/main/resources/examples/ifTag.json"; // uses <<if|tag|name of the
 		// tag>> notation.
-		// String file = "src/main/resources/ifCustom.json"; // uses <<if|custom|some if
+		// String file = "src/main/resources/examples/ifCustom.json"; // uses <<if|custom|some if
 		// statement>> notation.
-		// String file = "src/main/resources/tag.json"; // uses <<tag|add|some tag>> notation.
-		// String file = "src/main/resources/@s.json"; // uses @s in the pointerline notation.
-		// String file = "src/main/resources/error.json"; // a file that generates a error send to me by a user.
-		//String file = "src/main/resources/long_name.json"; // s file with names longer than 16 characters.
+		// String file = "src/main/resources/examples/tag.json"; // uses <<tag|add|some tag>> notation.
+		// String file = "src/main/resources/examples/@s.json"; // uses @s in the pointerline notation.
+		// String file = "src/main/resources/examples/error.json"; // a file that generates a error send to me by a user.
+		// String file = "src/main/resources/examples/long_name.json"; // s file with names longer than 16 characters.
+		// String file = "src/main/resources/examples/scoreRanges.json"; // s file with names longer than 16 characters.
 		ReadConfig config = new ReadConfig();
 		String file = config.getFileName();
 
@@ -55,7 +56,7 @@ public class Main {
 			System.out.println("could not find \"" + file + "\".\nABORTING");
 			return; // stop the program
 		} catch (Exception e) { // if there was another error (could not read file, not proper JSON file etc.)
-			System.out.println("an unexpected error occured when reading \"" + file + "\".");
+			System.out.println("an unexpected error occurred when reading \"" + file + "\".");
 			e.printStackTrace();
 			System.out.println("ABORTING");
 			return; // stop the program

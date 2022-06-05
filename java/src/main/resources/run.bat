@@ -1,2 +1,2 @@
-java -jar ./conversationEngineImporter-1.0.2.jar
+java -jar ./conversationEngineImporter-1.0.4.jar
 PAUSE

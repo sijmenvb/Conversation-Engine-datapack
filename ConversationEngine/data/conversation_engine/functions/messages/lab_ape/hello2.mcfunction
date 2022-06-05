@@ -18,4 +18,3 @@ execute store success score @s CE_resend if score @s CE_current_node matches 3 r
 
     # update the last run node
     execute if score @s CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger
-
