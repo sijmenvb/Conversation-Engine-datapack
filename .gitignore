@@ -11,7 +11,6 @@ java/conversationEngineImporter-1.0.4.jar
 java/stuff.json
 java/input.json
 java/test.json
-ConversationEngine/data/conversation_engine/functions/ce_tick.mcfunction
 java/src/main/resources/examples/@s.json
 java/src/main/resources/examples/
 java/input.json
