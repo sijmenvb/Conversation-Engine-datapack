@@ -67,7 +67,7 @@ public class ReadConfig {
 			a = Integer.parseInt(prop.getProperty(key));
 		} catch (NumberFormatException e) {
 			try {
-				a = Integer.parseInt(prop.getProperty(key));
+				a = Integer.parseInt(propBackup.getProperty(key));
 			} catch (NumberFormatException f) {
 				a = 0;
 				System.err.println("unexpected error while loading from config.properties file");
