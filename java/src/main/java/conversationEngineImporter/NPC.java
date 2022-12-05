@@ -11,7 +11,7 @@ import java.util.LinkedList;
  *
  */
 public class NPC {
-	private LinkedList<ConverzationNode> nodes = new LinkedList<ConverzationNode>();
+	private LinkedList<ConversationNode> nodes = new LinkedList<ConversationNode>();
 	private String name;
 	private String profession;
 
@@ -21,7 +21,7 @@ public class NPC {
 		this.profession = profession;
 	}
 
-	public void addNode(ConverzationNode n) {
+	public void addNode(ConversationNode n) {
 		nodes.push(n);
 	}
 
@@ -29,7 +29,7 @@ public class NPC {
 		// it might be worth wile making this a variable to do lookups after calculating
 		// once might be worth it.
 
-		for (ConverzationNode converzationNode : nodes) {
+		for (ConversationNode converzationNode : nodes) {
 			if (converzationNode.isStartingNode()) {
 				return converzationNode.getId();
 			}
@@ -71,7 +71,7 @@ public class NPC {
 		return name.toLowerCase().replace(' ', '_');
 	}
 
-	public LinkedList<ConverzationNode> getNodes() {
+	public LinkedList<ConversationNode> getNodes() {
 		return nodes;
 	}
 
