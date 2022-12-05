@@ -35,19 +35,32 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>conversationEngineImporter.Main</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
 				<executions>
 					<execution>
 						<id>assemble-all</id>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>conversationEngineImporter.Main</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>onlyBuyLine</id>
+						<configuration>
+							<descriptors>
+								<descriptor>mavenFiles/onlyBuyLine.xml</descriptor>
+							</descriptors>
+							<finalName>BuyLine.jar</finalName>
+						</configuration>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
