@@ -14,8 +14,8 @@ import conversationEngineLine.*;
  * @author Sijmen_v_b
  *
  */
-public class ConverzationNode {
-	protected LinkedList<ConversationLine> lines = new LinkedList<ConversationLine>();
+public class ConversationNode {
+	private LinkedList<ConversationLine> lines = new LinkedList<ConversationLine>();
 
 	private int id;
 	private String name;
@@ -25,7 +25,7 @@ public class ConverzationNode {
 	protected String profession = "none";
 	private int noEmptyLines = 20;
 
-	public ConverzationNode(JSONObject in, int id) {
+	public ConversationNode(JSONObject in, int id) {
 		this.id = id;
 		this.name = ((String) in.get("title"));// make sure there are no spaces in the name.
 		String body = (String) in.get("body");
@@ -209,7 +209,7 @@ public class ConverzationNode {
 		}
 	}
 
-	public LinkedList<Integer> getValidInpointerIds(HashMap<String, ConverzationNode> nodes) {
+	public LinkedList<Integer> getValidInpointerIds(HashMap<String, ConversationNode> nodes) {
 		LinkedList<Integer> list = new LinkedList<Integer>();
 
 		// for all the valid input pointers get the node id's
@@ -225,7 +225,7 @@ public class ConverzationNode {
 		return list;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, Boolean clearchat) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, Boolean clearchat) {
 		String s = "";
 
 		// add the clear chat message.

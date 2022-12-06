@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import conversationEngineImporter.CEStory;
-import conversationEngineImporter.ConverzationNode;
+import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.Functions;
 import conversationEngineImporter.NPC;
 
@@ -12,7 +12,7 @@ public class PointerLine extends ConversationLine {
 	private String text;
 	private String pointer;
 
-	public PointerLine(String text, ConverzationNode node) {
+	public PointerLine(String text, ConversationNode node) {
 		super(node);
 		String split[] = text.split("\\]\\]|\\[\\[|\\|"); // splits at and removes the following characters [[ and ]]
 															// and |
@@ -32,8 +32,8 @@ public class PointerLine extends ConversationLine {
 		return pointer;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> condition, String con) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
+			String con) {
 		// try to get the id of the node if this node does not exist show an error and
 		// use id 0 instead.
 		int nodeId = 0;

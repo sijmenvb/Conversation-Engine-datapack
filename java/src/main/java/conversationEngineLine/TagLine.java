@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import conversationEngineImporter.CEStory;
-import conversationEngineImporter.ConverzationNode;
+import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
 
 public class TagLine extends ConversationLine {
@@ -12,13 +12,13 @@ public class TagLine extends ConversationLine {
 	private boolean remove;
 	private String tag;
 
-	public TagLine(boolean unless, String tag, ConverzationNode node) {
+	public TagLine(boolean unless, String tag, ConversationNode node) {
 		super(node);
 		this.remove = unless;
 		this.tag = tag;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc,
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
 			LinkedList<String> condition, String con) {
 		String add;
 		if (remove) {

@@ -4,20 +4,20 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import conversationEngineImporter.CEStory;
-import conversationEngineImporter.ConverzationNode;
+import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
 
 public class IfTagLine extends IfLine {
 
 	private String tag;
 
-	public IfTagLine(String tag, ConverzationNode node) {
+	public IfTagLine(String tag, ConversationNode node) {
 		super(node);
 		this.tag = tag;
 	}
 	//TODO: add comma separated list to test for multiple tags
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
 			String con) {
 		int ifId = condition.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
 		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behavior is defined in the set method)

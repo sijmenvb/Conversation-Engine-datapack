@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import conversationEngineImporter.CEStory;
-import conversationEngineImporter.ConverzationNode;
+import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
 
 public class IfScoreLine extends IfLine {
@@ -12,13 +12,13 @@ public class IfScoreLine extends IfLine {
 	private String score;
 	private String target;
 
-	public IfScoreLine(String score, String target, ConverzationNode node) {
+	public IfScoreLine(String score, String target, ConversationNode node) {
 		super(node);
 		this.score = score;
 		this.target = target;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
 			String con) {
 		int ifId = condition.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
 		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behaviour is defined in the set method)

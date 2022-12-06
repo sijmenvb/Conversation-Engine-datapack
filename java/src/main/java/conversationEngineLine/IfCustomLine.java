@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import conversationEngineImporter.CEStory;
-import conversationEngineImporter.ConverzationNode;
+import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
 
 public class IfCustomLine extends IfLine {
 
 	private String ifStatement;
 
-	public IfCustomLine(String ifStatement, ConverzationNode node) {
+	public IfCustomLine(String ifStatement, ConversationNode node) {
 		super(node);
 		// make sure the string is long enough
 		if (ifStatement.length() >= 4) {
@@ -27,8 +27,8 @@ public class IfCustomLine extends IfLine {
 		this.ifStatement = ifStatement;
 	}
 
-	public String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> condition, String con) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
+			String con) {
 		int ifId = condition.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
 		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behaviour is defined in the set method)
 
