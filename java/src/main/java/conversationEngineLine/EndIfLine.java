@@ -24,4 +24,19 @@ public class EndIfLine extends ConversationLine{
 		return "    # end if\n";
 	}
 
+
+	@Override
+	protected String getYarnCommand() {
+		return "endif";
+	}
+
+
+	@Override
+	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
+		if (arguments[0] != getYarnCommand()) {
+			return null;
+		}
+		return new EndIfLine(node);
+	}
+
 }

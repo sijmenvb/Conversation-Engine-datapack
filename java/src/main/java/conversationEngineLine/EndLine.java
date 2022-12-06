@@ -18,4 +18,17 @@ public class EndLine extends ConversationLine {
 		return String.format("%srun function conversation_engine:messages/%s/end\n", con, npc.getName());
 	}
 
+	@Override
+	protected String getYarnCommand() {
+		return "else";
+	}
+
+	@Override
+	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
+		if (arguments[0] != getYarnCommand()) {
+			return null;
+		}
+		return new EndLine(node);
+	}
+
 }

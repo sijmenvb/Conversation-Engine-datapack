@@ -7,7 +7,7 @@ import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConverzationNode;
 import conversationEngineImporter.NPC;
 
-public class IfScoreLine extends ConversationLine {
+public class IfScoreLine extends IfLine {
 
 	private String score;
 	private String target;
@@ -26,6 +26,41 @@ public class IfScoreLine extends ConversationLine {
 		return String.format(
 				"    # if %s is %s\n%sif score @s CE_resend matches 0 run scoreboard players set @s CE_if_%02d 0\n%sif score @s CE_resend matches 0 if score @s %s matches %s run scoreboard players set @s CE_if_%02d 1\n",
 				score, target, con, ifId, con, score, target, ifId);
+	}
+
+	@Override
+	protected String getIfType() {
+		return "score";
+	}
+
+	@Override
+	protected String getYarnCommand() {
+		return "if";
+	}
+
+	@Override
+	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
+		if (arguments[0] != getYarnCommand()) {
+			return null;
+		}
+		if (arguments.length == 4) {
+			if (arguments[1].toLowerCase().equals("score")) {
+				String target = arguments[3];
+				if (!isValidRange(target)) {
+					target = "1";
+					System.err.println("Error " + arguments[0]
+							+ " 4th argument should be a range. example: <<if|score|name of score|..5>>");
+				}
+				return new IfScoreLine(arguments[2], target, node);
+			} else {
+				System.err.println("Error " + arguments[0]
+						+ " is invalid. example: <<if|score|name of score|target score>> ");
+			}		
+		}  else {
+			System.err.println("Error " + arguments[0]
+					+ " is invalid. example: <<if|score|name of score|target score>> ");
+		}
+		return null;
 	}
 
 }

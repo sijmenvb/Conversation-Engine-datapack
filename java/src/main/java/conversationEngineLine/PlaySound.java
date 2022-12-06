@@ -23,4 +23,24 @@ public class PlaySound extends ConversationLine {
 		return String.format("%srun stopsound @s\n%sat @e[type= villager, tag = %s] run playsound %s voice @s\n",con, con, npc.getTagName(), sound);
 	}
 
+	@Override
+	protected String getYarnCommand() {
+		return "playsound";
+	}
+
+	@Override
+	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
+		if (arguments[0] != getYarnCommand()) {
+			return null;
+		}
+		
+		if (arguments.length == 2) {
+			return new PlaySound(arguments[1], node);
+		} else {
+			System.err.println("Error " + arguments[0]
+					+ " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
+		}
+		return null;
+	}
+
 }

@@ -21,6 +21,10 @@ public abstract class ConversationLine {
 	public ConversationLine(ConverzationNode node) {
 		this.node = node;
 	}
+	
+	protected abstract String getYarnCommand();
+	
+	public abstract ConversationLine tryParseArguments(String[] arguments, ConverzationNode node);
 
 	public abstract String toCommand(HashMap<String, ConverzationNode> nodes, CEStory ceStory, NPC npc,
 			LinkedList<String> condition, String con);

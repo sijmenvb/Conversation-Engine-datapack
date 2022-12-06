@@ -29,4 +29,28 @@ public class TagLine extends ConversationLine {
 		return String.format("%srun tag @s %s %s\n", con, add, tag);
 	}
 
+	@Override
+	protected String getYarnCommand() {
+		return "tag";
+	}
+
+	@Override
+	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
+		if (arguments[0] != getYarnCommand()) {
+			return null;
+		}
+		if (arguments.length == 3) {
+			boolean b = false;
+			//if the second argument is remove make it a remove tag otherwise assume add.
+			if(arguments[1].toLowerCase().equals("remove")) {
+				b = true;
+			}
+			return new TagLine(b,arguments[2],node);
+		}else {
+			System.err.println("Error " + arguments[0]
+					+ " is invalid. example: <<tag|add|name of the tag>>");
+		}
+		return null;
+	}
+
 }

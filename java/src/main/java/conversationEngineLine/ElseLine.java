@@ -27,4 +27,14 @@ public class ElseLine extends ConversationLine {
 		return "    # else \n";
 	}
 
+	@Override
+	protected String getYarnCommand() {
+		return "else";
+	}
+
+	@Override
+	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
+		return new ElseLine(node);
+	}
+
 }

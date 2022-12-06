@@ -23,4 +23,24 @@ public class CommandLine extends ConversationLine {
 		return String.format("%srun %s\n",con, command);
 	}
 
+	@Override
+	protected String getYarnCommand() {
+		return "command";
+	}
+
+	@Override
+	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
+		if (arguments[0] != getYarnCommand()) {
+			return null;
+		}
+		
+		if (arguments.length == 2) {
+			return new CommandLine(arguments[1], node);
+		} else {
+			System.err.println("Error " + arguments[0]
+					+ " is invalid. example: <<command|some custom command>> (use @s to select the player talkign with the npc)");
+		}
+		return null;
+	}
+
 }
