@@ -15,7 +15,7 @@
 				<include>**/EndIfLine.*</include>
 				<include>**/IfLine.*</include>
 				<include>**/IfScoreLine.*</include>
-				<include>**/IfTag.*</include>
+				<include>**/IfTagLine.*</include>
 			</includes>
 		</fileSet>
 	</fileSets>

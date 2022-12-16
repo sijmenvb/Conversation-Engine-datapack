@@ -13,7 +13,7 @@ mavenVersion = "1.1.0"
 configuration = [(["BuyLine"], True),
                  (["CommandLine"], False),
                  (["IfCustomLine", "ElseLine", "EndIfLine",
-                  "IfLine", "IfScoreLine", "IfTag"], True),
+                  "IfLine", "IfScoreLine", "IfTagLine"], True),
                  (["TagLine"], True),
                  (["GiveLine"], True),
                  (["PlaySound"], True),
@@ -46,7 +46,7 @@ def makePluginXml(fileNames):
 # filenames is the list of file names, isDefault is a boolean definign if this plugin should be loaded by default.
 def makeMavenExecution(filenames, isDefault):
     # template to make an execution leving out the name and the buid directory.
-    template = "\n\t\t\t\t\t<execution>\n\t\t\t\t\t\t<id>only{0}</id>\n\t\t\t\t\t\t<configuration>{1}\n\t\t\t\t\t\t\t<descriptors>\n\t\t\t\t\t\t\t\t<descriptor>mavenFiles/only{0}.xml</descriptor>\n\t\t\t\t\t\t\t</descriptors>\n\t\t\t\t\t\t\t<finalName>{0}.jar</finalName>\n\t\t\t\t\t\t\t<appendAssemblyId>false</appendAssemblyId>\n\t\t\t\t\t\t</configuration>\n\t\t\t\t\t\t<phase>package</phase>\n\t\t\t\t\t\t<goals>\n\t\t\t\t\t\t\t<goal>single</goal>\n\t\t\t\t\t\t</goals>\n\t\t\t\t\t</execution>"
+    template = "\n\t\t\t\t\t<execution>\n\t\t\t\t\t\t<id>only{0}</id>\n\t\t\t\t\t\t<configuration>{1}\n\t\t\t\t\t\t\t<descriptors>\n\t\t\t\t\t\t\t\t<descriptor>mavenFiles/only{0}.xml</descriptor>\n\t\t\t\t\t\t\t</descriptors>\n\t\t\t\t\t\t\t<finalName>{0}</finalName>\n\t\t\t\t\t\t\t<appendAssemblyId>false</appendAssemblyId>\n\t\t\t\t\t\t</configuration>\n\t\t\t\t\t\t<phase>package</phase>\n\t\t\t\t\t\t<goals>\n\t\t\t\t\t\t\t<goal>single</goal>\n\t\t\t\t\t\t</goals>\n\t\t\t\t\t</execution>"
 
     # get the build directory.
     directory = ""  # remains empty in case the plugin no default.

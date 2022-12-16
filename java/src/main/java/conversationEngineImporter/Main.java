@@ -5,10 +5,13 @@ package conversationEngineImporter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.LinkedList;
+
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import conversationEngineImporterInterfaces.ConversationLineInterface;
 import conversationEngineLine.ConversationNodeJsonParser;
+import conversationEngineLine.EndLine;
 
 
 public class Main {
@@ -54,8 +57,9 @@ public class Main {
 
 		File pluginFolder = new File("Plugins");
 		pluginFolder.mkdir();	
-					
-		ConversationNodeJsonParser.linetypes = PluginLoader.loadClasses(pluginFolder, ConversationLineInterface.class);
+		LinkedList<ConversationLineInterface> list = PluginLoader.loadClasses(pluginFolder, ConversationLineInterface.class);
+		list.push(new EndLine());
+		ConversationNodeJsonParser.linetypes = list;
 	}
 	
 	

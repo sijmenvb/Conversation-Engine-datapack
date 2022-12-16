@@ -61,7 +61,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyBuyLine.xml</descriptor>
 							</descriptors>
-							<finalName>BuyLine.jar</finalName>
+							<finalName>BuyLine</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
@@ -75,7 +75,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyCommandLine.xml</descriptor>
 							</descriptors>
-							<finalName>CommandLine.jar</finalName>
+							<finalName>CommandLine</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
@@ -90,7 +90,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyIfCustomLine.xml</descriptor>
 							</descriptors>
-							<finalName>IfCustomLine.jar</finalName>
+							<finalName>IfCustomLine</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
@@ -105,7 +105,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyTagLine.xml</descriptor>
 							</descriptors>
-							<finalName>TagLine.jar</finalName>
+							<finalName>TagLine</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
@@ -120,7 +120,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyGiveLine.xml</descriptor>
 							</descriptors>
-							<finalName>GiveLine.jar</finalName>
+							<finalName>GiveLine</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
@@ -135,7 +135,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyPlaySound.xml</descriptor>
 							</descriptors>
-							<finalName>PlaySound.jar</finalName>
+							<finalName>PlaySound</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
@@ -150,7 +150,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyProfessionLine.xml</descriptor>
 							</descriptors>
-							<finalName>ProfessionLine.jar</finalName>
+							<finalName>ProfessionLine</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
@@ -164,7 +164,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyCEScheduledCommandVillagerSetNoOffers.xml</descriptor>
 							</descriptors>
-							<finalName>CEScheduledCommandVillagerSetNoOffers.jar</finalName>
+							<finalName>CEScheduledCommandVillagerSetNoOffers</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
@@ -179,7 +179,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/onlyCETickCommandVillagerFacingPlayer.xml</descriptor>
 							</descriptors>
-							<finalName>CETickCommandVillagerFacingPlayer.jar</finalName>
+							<finalName>CETickCommandVillagerFacingPlayer</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
