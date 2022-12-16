@@ -1,4 +1,4 @@
-package conversationEngineImporter;
+package ReplacedWithPlugins;
 
 import conversationEngineImporterInterfaces.CEScheduledCommand;
 

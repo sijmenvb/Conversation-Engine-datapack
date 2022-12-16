@@ -24,6 +24,9 @@ public class PluginLoader {
 	public static <Classes> LinkedList<Classes> loadClasses(File pluginFolder, Class<Classes> classInterface,Object... initargs) {
 		File[] listOfFiles = pluginFolder.listFiles();
 		LinkedList<Classes> list = new LinkedList<Classes>();
+		if(listOfFiles == null) { //return nothing if there are no files.
+			return list;
+		}
 		for (File file : listOfFiles) {// go over all files
 			if (file.isFile()) {// if it is a file load it
 				LinkedList<String> classpaths = searchForClasses(file);
