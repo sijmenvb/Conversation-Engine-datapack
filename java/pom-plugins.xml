@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.conversationEngine.app</groupId>
+	<artifactId>conversationEngineImporter</artifactId>
+	<version>1.1.0</version>
+	<name>conversation engine inporter </name>
+	<description>a tool that imports dialouge trees made with yarn and converts them to a datapack for minecraft java edition</description>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- plugin to clear the plugins folder while cleaning -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>./src/main/resources/plugins</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<!--define the maven jar plugin to tell it not to do anything -->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- build the different plugins to the corresponding location. -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>onlyBuyLine</id>
+						<configuration>
+							<outputDirectory>./src/main/resources/plugins</outputDirectory>
+							<descriptors>
+								<descriptor>mavenFiles/onlyBuyLine.xml</descriptor>
+							</descriptors>
+							<finalName>BuyLine.jar</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>onlyCommandLine</id>
+						<configuration>
+							<descriptors>
+								<descriptor>mavenFiles/onlyCommandLine.xml</descriptor>
+							</descriptors>
+							<finalName>CommandLine.jar</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>onlyIfCustomLine</id>
+						<configuration>
+							<outputDirectory>./src/main/resources/plugins</outputDirectory>
+							<descriptors>
+								<descriptor>mavenFiles/onlyIfCustomLine.xml</descriptor>
+							</descriptors>
+							<finalName>IfCustomLine.jar</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
