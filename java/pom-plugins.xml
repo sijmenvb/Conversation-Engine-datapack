@@ -129,21 +129,6 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>onlyEndLine</id>
-						<configuration>
-							<outputDirectory>./src/main/resources/plugins</outputDirectory>
-							<descriptors>
-								<descriptor>mavenFiles/onlyEndLine.xml</descriptor>
-							</descriptors>
-							<finalName>EndLine.jar</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-						</configuration>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-					<execution>
 						<id>onlyPlaySound</id>
 						<configuration>
 							<outputDirectory>./src/main/resources/plugins</outputDirectory>
