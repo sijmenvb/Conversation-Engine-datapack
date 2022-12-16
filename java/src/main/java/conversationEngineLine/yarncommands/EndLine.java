@@ -6,9 +6,10 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineImporterInterfaces.ConversationLineInterface;
 import conversationEngineLine.ConversationLine;
 
-public class EndLine extends IfLine {
+public class EndLine extends ConversationLine implements ConversationLineInterface {
 	
 	public EndLine() {
 		super();

@@ -25,21 +25,21 @@ public abstract class ConversationNodeJsonParser {
 		// lines next-lines
 
 		for (int i = lines.length - 1; i >= 0; i--) { // go over array backwards (since we want the linkedlist to be in
-// order)
+														// order)
 			if (lines[i] == "" && i > 0 && lines[i - 1] != "") { // if this line is empty and the next line is not also
-// empty ignore it.
-// do not display empty lines
-			} else if (lines[i].matches("\\[\\[([^\\|]*)\\|([^\\|]*)\\]\\]")) { // if the line is in the format of
-// [[ some text | some text ]]
+																	// empty ignore it. do not display empty lines
+			} else if (lines[i].matches("\\[\\[([^\\|]*)\\|([^\\|]*)\\]\\]")) { // if the line is in the format of [[
+																				// some text | some text ]]
 				PointerLine pointerLine = new PointerLine(lines[i], node);// convert input to PointerLine.
 				node.lines.push(pointerLine); // add the pointerLine to the list.
 				node.outPointer.push(pointerLine.getPointer());// update the outPointer list.
 
-			} else if (lines[i].matches("\\[\\[([^\\|]*)\\]\\]")) { // check for pointers without text
-// we might want to make this syntax for going straight to another node
+			} else if (lines[i].matches("\\[\\[([^\\|]*)\\]\\]")) { // check for pointers without text we might want to
+																	// make this syntax for going straight to another
+																	// node
 
-// convert the string of type [[text]] to type [[text|text]]. so making the
-// message the same as the text
+				// convert the string of type [[text]] to type [[text|text]]. so making the
+				// message the same as the text
 				String s = lines[i].substring(0, lines[i].length() - 2);
 				s += "|";
 				s += s.substring(2, s.length() - 1);
@@ -66,7 +66,7 @@ public abstract class ConversationNodeJsonParser {
 							}
 						}
 					}
-					if (parsedLine == null) {
+					if (parsedLine == null) { // line did not match any of the loaded classes
 						System.err.println("Error " + lines[i] + " is invalid syntax!");
 					}
 				}
@@ -76,7 +76,7 @@ public abstract class ConversationNodeJsonParser {
 			}
 		}
 
-// once done parsing
+		// once done parsing
 		if (node.outPointer.isEmpty()) { // if this node is a dead end add an end line.
 			node.lines.addLast(new EndLine(node));
 		}
