@@ -13,7 +13,7 @@ public class StringLine extends ConversationLine {
 	private String text;
 
 	public StringLine(String text, ConversationNode node) {
-		super(node);
+		super();
 		this.text = text;
 	}
 

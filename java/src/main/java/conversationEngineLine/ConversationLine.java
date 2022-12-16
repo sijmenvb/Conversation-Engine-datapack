@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineImporterInterfaces.*;
 
 /**
  * this is an abstract class to contain the different types of line such as
@@ -16,11 +17,8 @@ import conversationEngineImporter.NPC;
  */
 public abstract class ConversationLine {
 
-	protected ConversationNode node;
-
-	public ConversationLine(ConversationNode node) {
-		this.node = node;
-	}
+	public ConversationLine() {
+	}	
 
 	public abstract String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
 			LinkedList<String> condition, String con);

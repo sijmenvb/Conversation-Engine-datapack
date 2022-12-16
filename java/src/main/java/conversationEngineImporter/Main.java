@@ -2,11 +2,18 @@ package conversationEngineImporter;
 
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.LinkedList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+
+import conversationEngineImporterInterfaces.CEScheduledCommand;
+import conversationEngineImporterInterfaces.ConversationLineInterface;
+import conversationEngineLine.ConversationNodeJsonParser;
+import conversationEngineLine.yarncommands.*;
 
 public class Main {
 
@@ -42,6 +49,9 @@ public class Main {
 		// String file = "src/main/resources/examples/error.json"; // a file that generates a error send to me by a user.
 		// String file = "src/main/resources/examples/long_name.json"; // s file with names longer than 16 characters.
 		// String file = "src/main/resources/examples/scoreRanges.json"; // s file with names longer than 16 characters.
+		
+		loadConversationLinePlugins();
+		
 		ReadConfig config = new ReadConfig();
 		String file = config.getFileName();
 
@@ -61,6 +71,7 @@ public class Main {
 			System.out.println("ABORTING");
 			return; // stop the program
 		}
+		
 
 		System.out.println("importing the file");
 		CEStory Story = new Generator().generateStory(nodesArray, 10,config.getDatapackName(),config.isSaveAsZip());
@@ -70,6 +81,15 @@ public class Main {
 		System.out.println("Done! -- tool provided by sijmen_v_b");
 		Functions.debug("DONE!");
 
+	}
+	
+	private static void loadConversationLinePlugins() {
+		
+
+		File pluginFolder = new File("Plugins");
+		pluginFolder.mkdir();	
+					
+		ConversationNodeJsonParser.linetypes = PluginLoader.loadClasses(pluginFolder, ConversationLineInterface.class);
 	}
 	
 	
