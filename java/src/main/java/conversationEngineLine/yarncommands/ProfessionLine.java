@@ -44,7 +44,7 @@ public class ProfessionLine extends ConversationLine implements ConversationLine
 	@Override
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
 			LinkedList<String> condition, String con) {
-		return null;
+		return ""; // empty command because the profession not set using commands
 	}
 
 }
