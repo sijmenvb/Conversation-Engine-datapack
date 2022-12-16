@@ -12,7 +12,15 @@ mavenVersion = "1.1.0"
 # NOTE: The file names are not dependent on the folder, each folder will be searched for files with this name. (matching "**/[name].*")
 configuration = [(["BuyLine"], True),
                  (["CommandLine"], False),
-                 (["IfCustomLine", "ElseLine", "EndIfLine"], True)]
+                 (["IfCustomLine", "ElseLine", "EndIfLine",
+                  "IfLine", "IfScoreLine", "IfTag"], True),
+                 (["TagLine"], True),
+                 (["GiveLine"], True),
+                 (["EndLine"], True),
+                 (["PlaySound"], True),
+                 (["ProfessionLine"], True),
+                 (["CEScheduledCommandVillagerSetNoOffers"], False),
+                 (["CETickCommandVillagerFacingPlayer"], True)]
 
 
 #####################################################################################
