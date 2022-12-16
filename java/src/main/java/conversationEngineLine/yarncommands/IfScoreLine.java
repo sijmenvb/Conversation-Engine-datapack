@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,14 +6,19 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineLine.ConversationLine;
 
 public class IfScoreLine extends IfLine {
 
 	private String score;
 	private String target;
 
+	public IfScoreLine() {
+		super();
+	}
+	
 	public IfScoreLine(String score, String target, ConversationNode node) {
-		super(node);
+		super();
 		this.score = score;
 		this.target = target;
 	}
@@ -28,25 +33,16 @@ public class IfScoreLine extends IfLine {
 				score, target, con, ifId, con, score, target, ifId);
 	}
 
-	@Override
 	protected String getIfType() {
 		return "score";
 	}
 
 	@Override
-	protected String getYarnCommand() {
-		return "if";
-	}
-
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
-		if (arguments.length == 4) {
-			if (arguments[1].toLowerCase().equals("score")) {
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {		
+		if (arguments[1].toLowerCase().equals(getIfType())) {
+			if (arguments.length == 4) {
 				String target = arguments[3];
-				if (!isValidRange(target)) {
+				if (!isValidRange(target)) { 
 					target = "1";
 					System.err.println("Error " + arguments[0]
 							+ " 4th argument should be a range. example: <<if|score|name of score|..5>>");
@@ -55,11 +51,8 @@ public class IfScoreLine extends IfLine {
 			} else {
 				System.err.println("Error " + arguments[0]
 						+ " is invalid. example: <<if|score|name of score|target score>> ");
-			}		
-		}  else {
-			System.err.println("Error " + arguments[0]
-					+ " is invalid. example: <<if|score|name of score|target score>> ");
-		}
+			}	
+		}  
 		return null;
 	}
 

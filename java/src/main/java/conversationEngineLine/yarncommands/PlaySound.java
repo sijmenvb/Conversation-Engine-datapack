@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,13 +6,19 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineImporterInterfaces.ConversationLineInterface;
+import conversationEngineLine.ConversationLine;
 
-public class PlaySound extends ConversationLine {
+public class PlaySound extends ConversationLine implements ConversationLineInterface {
 
 	String sound;
+	
+	public PlaySound() {
+		super();
+	}
 
 	public PlaySound(String sound, ConversationNode node) {
-		super(node);
+		super();
 		if(sound.charAt(0) == '/') {
 			sound = sound.substring(1);//if the command starts with a / remove it.
 		}
@@ -23,17 +29,11 @@ public class PlaySound extends ConversationLine {
 		return String.format("%srun stopsound @s\n%sat @e[type= villager, tag = %s] run playsound %s voice @s\n",con, con, npc.getTagName(), sound);
 	}
 
-	@Override
-	protected String getYarnCommand() {
+	public String getYarnCommand() {
 		return "playsound";
 	}
 
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
-		
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
 		if (arguments.length == 2) {
 			return new PlaySound(arguments[1], node);
 		} else {

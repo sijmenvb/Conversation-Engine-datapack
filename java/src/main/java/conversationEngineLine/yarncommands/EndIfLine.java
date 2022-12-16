@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,11 +6,17 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineImporterInterfaces.ConversationLineInterface;
+import conversationEngineLine.ConversationLine;
 
-public class EndIfLine extends ConversationLine{
+public class EndIfLine extends IfLine {
 
+	public EndIfLine() {
+		super();
+	}
+	
 	public EndIfLine(ConversationNode node) {
-		super(node);
+		super();
 	}
 
 	
@@ -25,17 +31,12 @@ public class EndIfLine extends ConversationLine{
 	}
 
 
-	@Override
-	protected String getYarnCommand() {
+	public String getYarnCommand() {
 		return "endif";
 	}
 
 
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
 		return new EndIfLine(node);
 	}
 

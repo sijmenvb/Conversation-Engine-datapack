@@ -13,7 +13,7 @@ public class PointerLine extends ConversationLine {
 	private String pointer;
 
 	public PointerLine(String text, ConversationNode node) {
-		super(node);
+		super();
 		String split[] = text.split("\\]\\]|\\[\\[|\\|"); // splits at and removes the following characters [[ and ]]
 															// and |
 		if (split.length != 3) {// make sure the split does not fail.
@@ -40,7 +40,7 @@ public class PointerLine extends ConversationLine {
 		try {
 			nodeId = nodes.get(pointer).getId();
 		} catch (NullPointerException e) {
-			System.err.println("WARNING: " + super.node.getName() + " points to " + pointer + " which does NOT exist");
+			System.err.println("WARNING: " + /*super.node.getName() +*/ " points to " + pointer + " which does NOT exist");
 		}
 
 		String clickevent = String.format(
@@ -51,32 +51,6 @@ public class PointerLine extends ConversationLine {
 
 		return String.format("%srun tellraw @s [{\"text\":\"%s\"%s}]\n", con,
 				Functions.stringEscape(text).replace("@s", playerSelector), clickevent);
-	}
-
-	@Override
-	protected String getYarnCommand() {
-		return null;
-	}
-
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		String line = arguments[0];
-		if (line.matches("\\[\\[([^\\|]*)\\|([^\\|]*)\\]\\]")) { // if the line is in the format of
-			// [[ some text | some text ]]
-			return new PointerLine(line, node);// convert input to PointerLine.
-		} else if (line.matches("\\[\\[([^\\|]*)\\]\\]")) { // check for pointers without text
-			// we might want to make this syntax for going straight to another node
-			
-			// convert the string of type [[text]] to type [[text|text]]. so making the
-			// message the same as the text
-			String s = line.substring(0, line.length() - 2);
-			s += "|";
-			s += s.substring(2, s.length() - 1);
-			s += "]]";
-			
-			return new PointerLine(s, node);// convert input to PointerLine.
-		}
-		return null;
 	}
 
 }

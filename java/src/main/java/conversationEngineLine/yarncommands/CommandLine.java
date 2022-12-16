@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,13 +6,19 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineImporterInterfaces.ConversationLineInterface;
+import conversationEngineLine.ConversationLine;
 
-public class CommandLine extends ConversationLine {
+public class CommandLine extends ConversationLine implements ConversationLineInterface {
 
 	String command;
+	
+	public CommandLine() {
+		super();
+	}
 
 	public CommandLine(String command, ConversationNode node) {
-		super(node);
+		super();
 		if(command.charAt(0) == '/') {
 			command = command.substring(1);//if the command starts with a / remove it.
 		}
@@ -23,17 +29,11 @@ public class CommandLine extends ConversationLine {
 		return String.format("%srun %s\n",con, command);
 	}
 
-	@Override
-	protected String getYarnCommand() {
+	public String getYarnCommand() {
 		return "command";
 	}
 
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
-		
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
 		if (arguments.length == 2) {
 			return new CommandLine(arguments[1], node);
 		} else {

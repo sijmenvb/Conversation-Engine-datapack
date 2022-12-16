@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,16 +6,22 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineImporterInterfaces.ConversationLineInterface;
+import conversationEngineLine.ConversationLine;
 
-public class BuyLine extends ConversationLine {
+public class BuyLine extends ConversationLine implements ConversationLineInterface {
 
 	String getItem;
 	int getAmmount;
 	String payItem;
 	int payAmmount;
+	
+	public BuyLine() {
+		super();	
+	}
 
 	public BuyLine(String getItem, int getAmmount, String payItem, int payAmmount, ConversationNode node) {
-		super(node);
+		super();
 		this.getItem = getItem;
 		this.getAmmount = getAmmount;
 		this.payItem = payItem;
@@ -28,17 +34,11 @@ public class BuyLine extends ConversationLine {
 		return String.format("%s    execute if score @s CE_buy_count matches %d.. run clear @s %s %d\n    execute if score @s CE_buy_count matches %d.. run give @s %s %d\n", s, payAmmount,payItem,payAmmount,payAmmount,getItem,getAmmount);
 	}
 
-	@Override
-	protected String getYarnCommand() {
+	public String getYarnCommand() {
 		return "buy";
 	}
 
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
-		
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
 		if (arguments.length == 5) {
 			int getAmmount;
 			int payAmmount;

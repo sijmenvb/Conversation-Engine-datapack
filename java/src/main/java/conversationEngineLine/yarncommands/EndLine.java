@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,11 +6,16 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineLine.ConversationLine;
 
-public class EndLine extends ConversationLine {
+public class EndLine extends IfLine {
+	
+	public EndLine() {
+		super();
+	}
 
 	public EndLine(ConversationNode node) {
-		super(node);
+		super();
 	}
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
@@ -18,16 +23,11 @@ public class EndLine extends ConversationLine {
 		return String.format("%srun function conversation_engine:messages/%s/end\n", con, npc.getName());
 	}
 
-	@Override
-	protected String getYarnCommand() {
-		return "else";
+	public String getYarnCommand() {
+		return "end";
 	}
 
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
 		return new EndLine(node);
 	}
 

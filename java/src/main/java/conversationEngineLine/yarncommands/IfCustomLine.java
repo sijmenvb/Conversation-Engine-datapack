@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,13 +6,18 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineLine.ConversationLine;
 
 public class IfCustomLine extends IfLine {
 
 	private String ifStatement;
+	
+	public IfCustomLine() {
+		super();
+	}
 
 	public IfCustomLine(String ifStatement, ConversationNode node) {
-		super(node);
+		super();
 		// make sure the string is long enough
 		if (ifStatement.length() >= 4) {
 			// if the string starts with a space remove it.
@@ -37,20 +42,14 @@ public class IfCustomLine extends IfLine {
 				"    # a custom if statement:\n%sif score @s CE_resend matches 0 run scoreboard players set @s CE_if_%02d 0\n%sif score @s CE_resend matches 0 if %s run scoreboard players set @s CE_if_%02d 1\n",
 				con, ifId, con, ifStatement, ifId);
 	}
-
-	@Override
+ 
 	protected String getIfType() {
 		return "custom";
 	}
 
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
-		
-		if (arguments.length == 3) {
-			if (arguments[1].toLowerCase().equals(getIfType())) {
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
+		if (arguments[1].toLowerCase().equals(getIfType())) {
+			if (arguments.length == 3) {
 					return new IfCustomLine(arguments[2], node);
 			} else {
 				System.err

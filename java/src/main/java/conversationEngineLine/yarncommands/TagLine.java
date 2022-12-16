@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,14 +6,20 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineImporterInterfaces.ConversationLineInterface;
+import conversationEngineLine.ConversationLine;
 
-public class TagLine extends ConversationLine {
+public class TagLine extends ConversationLine implements ConversationLineInterface {
 
 	private boolean remove;
 	private String tag;
 
+	public TagLine() {
+		super();
+	}
+	
 	public TagLine(boolean unless, String tag, ConversationNode node) {
-		super(node);
+		super();
 		this.remove = unless;
 		this.tag = tag;
 	}
@@ -29,17 +35,17 @@ public class TagLine extends ConversationLine {
 		return String.format("%srun tag @s %s %s\n", con, add, tag);
 	}
 
-	@Override
-	protected String getYarnCommand() {
+	public String getYarnCommand() {
 		return "tag";
 	}
 
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
+//		System.err.println("TagLine");
 		if (arguments.length == 3) {
+//			System.err.println("3 arguments");
+//			System.err.println(arguments[0]);
+//			System.err.println(arguments[1]);
+//			System.err.println(arguments[2]);
 			boolean b = false;
 			//if the second argument is remove make it a remove tag otherwise assume add.
 			if(arguments[1].toLowerCase().equals("remove")) {

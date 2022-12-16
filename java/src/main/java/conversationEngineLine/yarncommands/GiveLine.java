@@ -1,4 +1,4 @@
-package conversationEngineLine;
+package conversationEngineLine.yarncommands;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,13 +6,19 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
+import conversationEngineImporterInterfaces.ConversationLineInterface;
+import conversationEngineLine.ConversationLine;
 
-public class GiveLine extends ConversationLine {
+public class GiveLine extends ConversationLine implements ConversationLineInterface {
 	private String item;
 	private int ammount;
 
+	public GiveLine() {
+		super();
+	}
+	
 	public GiveLine(String item, int ammount, ConversationNode node) {
-		super(node);
+		super();
 		this.item = item;
 		this.ammount = ammount;
 	}
@@ -22,17 +28,11 @@ public class GiveLine extends ConversationLine {
 		return String.format("%sif score @s CE_resend matches 0 run give @s %s %d\n", con, item, ammount);
 	}
 
-	@Override
-	protected String getYarnCommand() {
+	public String getYarnCommand() {
 		return "give";
 	}
 
-	@Override
-	public ConversationLine tryParseArguments(String[] arguments, ConverzationNode node) {
-		if (arguments[0] != getYarnCommand()) {
-			return null;
-		}
-		
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {		
 		String item;
 		int ammount;
 		if (arguments.length == 2) {
