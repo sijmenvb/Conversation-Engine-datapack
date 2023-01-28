@@ -18,8 +18,8 @@ public class StringLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> condition, String con) {
-		return String.format("%srun tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n", con,
+			LinkedList<String> listOfConditions, String currentCondition) {
+		return String.format("%srun tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n", currentCondition,
 				Functions.stringEscape(text).replace("@s", "\"},{\"selector\":\"@s\"},{\"text\":\"")); // when you type
 																										// @s it will
 																										// type the name
@@ -27,7 +27,7 @@ public class StringLine extends ConversationLine {
 																										// player.
 	}
 
-	public String getYarnCommand() {
+	public String getNameOfFirstArgument() {
 		return null; //only used internally
 	}
 

@@ -25,7 +25,7 @@ public class ProfessionLine extends ConversationLine{
 		super();
 	}	
 
-	public String getYarnCommand() {
+	public String getNameOfFirstArgument() {
 		return "profession";
 	}
 
@@ -42,7 +42,7 @@ public class ProfessionLine extends ConversationLine{
 
 	@Override
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> condition, String con) {
+			LinkedList<String> listOfConditions, String currentCondition) {
 		return ""; // empty command because the profession not set using commands
 	}
 

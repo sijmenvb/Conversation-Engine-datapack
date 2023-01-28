@@ -34,7 +34,6 @@ public class ConversationNode {
 															// sequential nextlines are left.	
 		
 		ConversationNodeJsonParser.parseBody(body, this); // parse the body
-				
 	}
 
 	public LinkedList<Integer> getValidInpointerIds(HashMap<String, ConversationNode> nodes) {

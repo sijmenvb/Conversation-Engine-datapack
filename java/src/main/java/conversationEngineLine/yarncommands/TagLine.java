@@ -24,17 +24,17 @@ public class TagLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> condition, String con) {
+			LinkedList<String> listOfConditions, String currentCondition) {
 		String add;
 		if (remove) {
 			add = "remove";
 		} else {
 			add = "add";
 		}
-		return String.format("%srun tag @s %s %s\n", con, add, tag);
+		return String.format("%srun tag @s %s %s\n", currentCondition, add, tag);
 	}
 
-	public String getYarnCommand() {
+	public String getNameOfFirstArgument() {
 		return "tag";
 	}
 

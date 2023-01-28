@@ -32,15 +32,15 @@ public class IfCustomLine extends IfLine {
 		this.ifStatement = ifStatement;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
-			String con) {
-		int ifId = condition.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
-		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behaviour is defined in the set method)
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions,
+			String currentCondition) {
+		int ifId = listOfConditions.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
+		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behavior is defined in the set method)
 
-		condition.addLast(String.format("if score @s CE_if_%02d matches 1 ", ifId));
+		listOfConditions.addLast(String.format("if score @s CE_if_%02d matches 1 ", ifId));
 		return String.format(
 				"    # a custom if statement:\n%sif score @s CE_resend matches 0 run scoreboard players set @s CE_if_%02d 0\n%sif score @s CE_resend matches 0 if %s run scoreboard players set @s CE_if_%02d 1\n",
-				con, ifId, con, ifStatement, ifId);
+				currentCondition, ifId, currentCondition, ifStatement, ifId);
 	}
  
 	protected String getIfType() {

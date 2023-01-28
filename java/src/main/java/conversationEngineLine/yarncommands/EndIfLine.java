@@ -19,9 +19,9 @@ public class EndIfLine extends IfLine {
 	}
 
 	
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition, String con) {
-		if (condition.size() > 1) {//check if there is a if statement to end.
-			condition.removeLast();// remove last condition
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition) {
+		if (listOfConditions.size() > 1) {//check if there is a if statement to end.
+			listOfConditions.removeLast();// remove last condition
 		} else {
 			System.err.println("<<endif>> was used without corresponding if!!");
 		}
@@ -30,7 +30,7 @@ public class EndIfLine extends IfLine {
 	}
 
 	@Override
-	public String getYarnCommand() {
+	public String getNameOfFirstArgument() {
 		return "endif";
 	}
 

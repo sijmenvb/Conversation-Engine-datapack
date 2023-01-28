@@ -24,11 +24,11 @@ public class CommandLine extends ConversationLine {
 		this.command = command;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition, String con) {
-		return String.format("%srun %s\n",con, command);
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition) {
+		return String.format("%srun %s\n", currentCondition, command);
 	}
 
-	public String getYarnCommand() {
+	public String getNameOfFirstArgument() {
 		return "command";
 	}
 

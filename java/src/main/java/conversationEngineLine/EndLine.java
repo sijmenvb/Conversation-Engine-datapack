@@ -19,11 +19,11 @@ public class EndLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> condition, String con) {
-		return String.format("%srun function conversation_engine:messages/%s/end\n", con, npc.getName());
+			LinkedList<String> listOfConditions, String currentCondition) {
+		return String.format("%srun function conversation_engine:messages/%s/end\n", currentCondition, npc.getName());
 	}
 
-	public String getYarnCommand() {
+	public String getNameOfFirstArgument() {
 		return "end";
 	}
 

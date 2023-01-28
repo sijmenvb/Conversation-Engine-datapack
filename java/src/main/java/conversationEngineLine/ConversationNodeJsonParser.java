@@ -56,7 +56,7 @@ public abstract class ConversationNodeJsonParser {
 					ConversationLine parsedLine = null;
 					for (ConversationLine linetype : linetypes) { // try to parse the arguments into one of the
 																			// loaded conversationlines
-						if (Objects.equals(arguments[0].toLowerCase(), linetype.getYarnCommand())) {
+						if (Objects.equals(arguments[0].toLowerCase(), linetype.getNameOfFirstArgument())) {
 							parsedLine = linetype.tryParseArguments(arguments, node);
 							if (parsedLine != null) {
 								node.lines.push(parsedLine); // line successfully parsed

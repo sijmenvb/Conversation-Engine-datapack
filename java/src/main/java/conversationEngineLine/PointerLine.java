@@ -32,8 +32,8 @@ public class PointerLine extends ConversationLine {
 		return pointer;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition,
-			String con) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions,
+			String currentCondition) {
 		// try to get the id of the node if this node does not exist show an error and
 		// use id 0 instead.
 		int nodeId = 0;
@@ -49,11 +49,11 @@ public class PointerLine extends ConversationLine {
 
 		String playerSelector = String.format("\"%s},{\"selector\":\"@s\"%s},{\"text\":\"", clickevent, clickevent);
 
-		return String.format("%srun tellraw @s [{\"text\":\"%s\"%s}]\n", con,
+		return String.format("%srun tellraw @s [{\"text\":\"%s\"%s}]\n", currentCondition,
 				Functions.stringEscape(text).replace("@s", playerSelector), clickevent);
 	}
 
-	public String getYarnCommand() {
+	public String getNameOfFirstArgument() {
 		return null; //only used internally
 	}
 

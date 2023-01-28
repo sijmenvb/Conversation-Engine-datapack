@@ -24,11 +24,11 @@ public class PlaySound extends ConversationLine {
 		this.sound = sound;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> condition, String con) {
-		return String.format("%srun stopsound @s\n%sat @e[type= villager, tag = %s] run playsound %s voice @s\n",con, con, npc.getTagName(), sound);
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition) {
+		return String.format("%srun stopsound @s\n%sat @e[type= villager, tag = %s] run playsound %s voice @s\n",currentCondition, currentCondition, npc.getTagName(), sound);
 	}
 
-	public String getYarnCommand() {
+	public String getNameOfFirstArgument() {
 		return "playsound";
 	}
 
