@@ -5,9 +5,23 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.regex.Pattern;
 
 public class ReadConfig {
 	String fileName;
@@ -107,9 +121,11 @@ public class ReadConfig {
 	}
 
 	private void createRun() {
+		
 		// check if the file already exist
 		File tmpDir = new File("./run.bat");
 		if (!tmpDir.exists()) {
+			createPluginDirectory();
 			try {
 				InputStream source = getClass().getClassLoader().getResourceAsStream("run.bat");
 				File target = new File("./run.bat");
@@ -121,6 +137,40 @@ public class ReadConfig {
 			}
 		}
 
+	}
+
+	private void createPluginDirectory() {
+		try {
+			URI uri = getClass().getClassLoader().getResource("plugins").toURI();
+			Map<String, String> env = new HashMap<>();
+		    try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
+		        //Path path = zipfs.getPath("/images/icons16");
+		        for (Path path : zipfs.getRootDirectories()) {
+		            Files.list(path.resolve("/plugins"))
+		                    .forEach(p -> unpackFile(p,"plugins"));
+		        }
+		    }
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void unpackFile(Path p,String folderName) {
+		try {
+			String path = p.toString().replaceFirst(".*(?=" + Pattern.quote(folderName) + ")", "");
+			InputStream source = getClass().getClassLoader().getResourceAsStream(path);
+			File target = new File("./"+path);
+
+			Files.copy(source, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public String getFileName() {

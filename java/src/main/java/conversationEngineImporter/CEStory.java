@@ -7,26 +7,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Enumeration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import java.util.stream.Collectors;
+import conversationEngineImporterInterfaces.CEScheduledCommand;
+import conversationEngineLine.ConversationNodeJsonParser;
 
 /**
  * the Conversation Engine Story class stores the different npc's and is called
@@ -38,14 +35,15 @@ import java.util.zip.ZipOutputStream;
 public class CEStory {
 	private LinkedList<NPCGroup> groups;
 	private static String name = "exported datapack";
-	private HashMap<String, ConverzationNode> nodes;
+	private HashMap<String, ConversationNode> nodes;
+	private LinkedList<CEScheduledCommand> scheduledCommands;
 	private int noNestedIfStatements = 0;
 	private ZipOutputStream zipArch;
 	private boolean saveAsZip = false; // keep this false cause gradually generating the zip does not work
 	private boolean zipResult = false;
 	private FileOutputStream f;
 
-	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConverzationNode> nodes, String name,
+	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConversationNode> nodes, String name,
 			boolean zipResult) {
 		this.groups = groups;
 		this.nodes = nodes;
@@ -61,7 +59,6 @@ public class CEStory {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public void generateDatapack() {
@@ -74,16 +71,23 @@ public class CEStory {
 		deletePreviousDatapack();// move this to the end of this function if you do not want to keep exporting
 									// the file only.
 
+		loadScheduledPlugins();	
+		
 		loadEmptyDatapack();
 
 		Functions.debug("empty datapack loaded");
 		createPlayerLogOnFunction();
+		LinkedList<String> scheduledCommandsFunctionsNames = new LinkedList<String>();
+		scheduledCommandsFunctionsNames = createScheduledCommandsFolder();
+		Functions.debug("Scheduled commands folder created");
 		createGroupFolder();
 		Functions.debug("group folder created");
 		createMessagesFolder();
 		Functions.debug("messages created");
-		createInitFunction();// needs to be after createMessagesFolder
+		createInitFunction(scheduledCommandsFunctionsNames);// needs to be after createMessagesFolder
 		Functions.debug("init function created");
+		createTickCommandsFolder();
+		Functions.debug("Tick commands folder created");
 		createVillagerFolder();
 		Functions.debug("villager folder created");
 		if (zipResult) {
@@ -106,8 +110,15 @@ public class CEStory {
 		}
 
 	}
+	
+	private void loadScheduledPlugins() {
+		File pluginFolder = new File("Plugins");
+		pluginFolder.mkdir();
 
-	private void createInitFunction() {
+		scheduledCommands = PluginLoader.loadClasses(pluginFolder, CEScheduledCommand.class);
+	}	
+
+	private void createInitFunction(LinkedList<String> scheduledCommandsFunctionsNames) {
 		// add standard scoreboards
 		String s = "# detect when a player richt clicks a villager\nscoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager\n# scoreboard for storing sucsesses of functions to do conditionals\nscoreboard objectives add CE_suc dummy\nscoreboard objectives add CE_suc2 dummy\nscoreboard objectives add CE_resend dummy\nscoreboard objectives add CE_buy_count dummy\n# scoreboard for limiting recursion\nscoreboard objectives add CE_rec dummy\n\n# trigger scoreboard to be acsessed by players without permissions.\nscoreboard objectives add CE_trigger trigger\n# a way to store the current node in the dialouge tree. used to prevent players from jumping unexpectedly by using /trigger manually.\nscoreboard objectives add CE_current_node dummy\n";
 
@@ -137,11 +148,27 @@ public class CEStory {
 
 		// reset the score for all players
 		s += "\n# reset the scores for all players:\nexecute as @a run function conversation_engine:player_log_on\n";
+		
+		if(scheduledCommandsFunctionsNames != null && scheduledCommandsFunctionsNames.size() > 0) {
+			s += appendInitFunctionWithScheduledFunctions(scheduledCommandsFunctionsNames);
+		}
 
 		// Initialise message
 		s += "\nsay conversation engine initialized";
 
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\init.mcfunction", name));
+	}
+	
+	/*
+	 * Adds scheduled functions calls to init file. 
+	 */
+	private String appendInitFunctionWithScheduledFunctions(LinkedList<String> scheduledCommandsFunctionsNames) {
+		String scheduledFunctions = "";
+		for (String name: scheduledCommandsFunctionsNames) {
+			scheduledFunctions += String.format("\n# call the scheduled function\n", name);
+			scheduledFunctions += String.format("%s\n", name);
+		}
+		return scheduledFunctions;
 	}
 
 	private void createPlayerLogOnFunction() {
@@ -205,8 +232,54 @@ public class CEStory {
 			unzip(zipIn, name);
 		}
 	}
-
+	
 	// ---- load empty datapack ----
+	// ---- create scheduled_commands folder ----
+	
+	private LinkedList<String> createScheduledCommandsFolder() {
+		if(scheduledCommands != null && scheduledCommands.size() < 0) {
+			return new LinkedList<String>();
+		}
+		
+		createDirectory(name + "\\data\\conversation_engine\\functions\\scheduled_commands");
+		Map<Integer, List<CEScheduledCommand>> groupedScheduledCommands =  // Group scheduled commands by their period by tick
+				scheduledCommands.stream()											// Tick count is key, scheduled commands are value
+			    .collect(Collectors.groupingBy(CEScheduledCommand::getPeriodInGameTicks));
+		LinkedList<String> scheduledFunctionsNames = new LinkedList<String>();
+		for (Map.Entry<Integer, List<CEScheduledCommand>> groupedScheduledCommand: groupedScheduledCommands.entrySet()) {
+			if(groupedScheduledCommand.getKey() == 1) continue;
+			String functionName = createScheduledCommandFunction(groupedScheduledCommand.getKey(), groupedScheduledCommand.getValue()); // create file for each group
+			scheduledFunctionsNames.add(functionName); // add to list so it can be used for calling the function in init
+		}
+		return scheduledFunctionsNames;
+	}
+	
+	private String createScheduledCommandFunction(Integer periodTicks, List<CEScheduledCommand> commands) {
+		String fileContent = "";
+		for (int i = 0; i < commands.size(); i++) { // iterate over all commands
+			String tickCommandWithComment = commands.get(i).toScheduledCommandWithComment(); // Get command and its comment as string
+			String removedEmptyLinesString = removeUnnecessaryLineBreaksTabsSpaces((i < commands.size() - 1), tickCommandWithComment); // remove unnecessary spacing
+			fileContent += removedEmptyLinesString;
+		}
+		String fileName = String.format("scheduled_%d_ticks", periodTicks);
+		String functionAndFullName = String.format("function conversation_engine:scheduled_commands/%s", fileName);
+		fileContent += String.format("\n\nschedule %s %s replace", functionAndFullName, translateTicksToTimeString(periodTicks));
+		SaveAsFile(fileContent, String.format("%s\\data\\conversation_engine\\functions\\scheduled_commands\\%s.mcfunction", name,
+				fileName));
+		return functionAndFullName;
+	}
+	
+	private String translateTicksToTimeString(Integer ticks) {
+		if(ticks % 24000 == 0) { // ticks represent minecraft days
+			return String.format("%dd", ticks / 24000);
+		} else if(ticks % 20 == 0) { // ticks represent second
+			return String.format("%ds", ticks / 20);
+		} else {
+			return String.format("%dt", ticks);
+		}
+	}
+
+	// ---- create scheduled_commands folder ----
 	// ---- create group folder ---- 
 
 	private void createGroupFolder() {
@@ -299,7 +372,7 @@ public class CEStory {
 
 		// get all the nodes of this villager to functions
 		int i = 0;
-		for (ConverzationNode converzationNode : npc.getNodes()) {
+		for (ConversationNode converzationNode : npc.getNodes()) {
 			if (i == 0) {
 				Functions.debug("\tstarted for loop");
 			}
@@ -371,7 +444,7 @@ public class CEStory {
 				npc.getTagName(), npc.getName());
 		s += "\n# check for trigger\n";
 		// check for all the triggers
-		for (ConverzationNode converzationNode : npc.getNodes()) {
+		for (ConversationNode converzationNode : npc.getNodes()) {
 			s += String.format(
 					"execute as @s[scores={CE_trigger = %d}] run function conversation_engine:messages/%s/%s\n",
 					converzationNode.getId(), npc.getName(), converzationNode.getName());
@@ -382,7 +455,7 @@ public class CEStory {
 				npc.getName()));
 	}
 
-	private void createNodeFunction(NPCGroup npcGroup, NPC npc, ConverzationNode converzationNode) {
+	private void createNodeFunction(NPCGroup npcGroup, NPC npc, ConversationNode converzationNode) {
 		String s = String.format(
 				"# run as the player\n\n# message id: %d\n\n# reset the sucsess scoreboard\nscoreboard players set @s CE_suc 0\nscoreboard players set @s CE_resend 0\n",
 				converzationNode.getId());
@@ -411,8 +484,38 @@ public class CEStory {
 		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\%s.mcfunction", name,
 				npc.getName(), converzationNode.getName()));
 	}
+	
 
 	// ---- create messages folder ----
+	// ---- create server tick_commands folder ----
+	
+	private void createTickCommandsFolder() {
+		createDirectory(name + "\\data\\conversation_engine\\functions\\tick_commands");
+		createServerTickFunction();
+	}
+	
+	// Creates server tick function file with all the commands that have to be executed on the server every tick.
+	private void createServerTickFunction() {
+		
+		if(scheduledCommands == null || scheduledCommands.size() < 1) { // If no commands found, exit
+			return;
+		}
+		
+		List<CEScheduledCommand> tickCommands =  // Group scheduled commands by their period by tick
+				scheduledCommands.stream()	// Tick count is key, scheduled commands are value
+				.filter(value -> value.getPeriodInGameTicks() == 1)
+				.toList();
+		
+		String fileContent = "";
+		for (int i = 0; i < tickCommands.size(); i++) { // iterate over all commands
+			String tickCommandWithComment = tickCommands.get(i).toScheduledCommandWithComment(); // Get command and its comment as string
+			String removedEmptyLinesString = removeUnnecessaryLineBreaksTabsSpaces((i < tickCommands.size() - 1), tickCommandWithComment);
+			fileContent += removedEmptyLinesString;
+		}
+		SaveAsFile(fileContent, name + "\\data\\conversation_engine\\functions\\tick_commands\\server_tick.mcfunction"); // write to file
+	}
+
+	// ---- create server tick_commands folder ----
 	// ---- create villager folder ----
 
 	private void createVillagerFolder() {
@@ -673,5 +776,20 @@ public class CEStory {
 
 	// ---- unzip ----
 	// ---- getters and setters ----
+	
+	private static String removeUnnecessaryLineBreaksTabsSpaces(Boolean notLast, String commentAndCommand) {
+		String[] commandWithCommentArray = Arrays.stream(commentAndCommand.split("\n")) 	// Split the comments and command
+                .filter(value -> value != null && value.length() > 0) 							// remove strings that are null or empty
+                .map(String::trim)																// trim all the strings
+                .toArray(size -> new String[size]); 											// write all the string back to array
+		String removedEmptyLinesString = String.join("\n", commandWithCommentArray); // Glue array back together using breakline
+		
+		if(notLast && !removedEmptyLinesString.endsWith("\n")) { 
+			removedEmptyLinesString += "\n\n"; // If not last command and no breakline at the end - add two breaklines
+		}else if(notLast && removedEmptyLinesString.endsWith("\n")) { 
+			removedEmptyLinesString += "\n"; // If not last command but had breakline at the end - add one breakline
+		}
+		return removedEmptyLinesString;
+	}
 
 }

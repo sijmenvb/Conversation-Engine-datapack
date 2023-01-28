@@ -4,7 +4,7 @@
 	<artifactId>conversationEngineImporter</artifactId>
 	<version>1.1.0</version>
 	<name>conversation engine inporter </name>
-	<description>a tool that imports dialouge trees made with yarn and converts tem to a datapack for minecraft java edition</description>
+	<description>a tool that imports dialouge trees made with yarn and converts them to a datapack for minecraft java edition</description>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -33,21 +33,33 @@
 			</resource>
 		</resources>
 		<plugins>
+			<!--define the maven jar plugin to tell it not to do anything -->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>conversationEngineImporter.Main</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
 				<executions>
 					<execution>
 						<id>assemble-all</id>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>conversationEngineImporter.Main</mainClass>
+								</manifest>
+							</archive>
+							<descriptors>
+								<descriptor>mavenFiles/main.xml</descriptor>
+							</descriptors>
+							<appendAssemblyId>False</appendAssemblyId>
+						</configuration>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>

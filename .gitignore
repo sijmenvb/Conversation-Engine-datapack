@@ -15,3 +15,9 @@ java/src/main/resources/examples/@s.json
 java/src/main/resources/examples/
 java/input.json
 java/bin/
+java/src/main/resources/plugins/
+java/.settings/
+java/.project
+java/Plugins/BuyLine.jar
+java/Plugins/
+java/exported datapack.zip
