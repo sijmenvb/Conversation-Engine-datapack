@@ -6,10 +6,9 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
-import conversationEngineImporterInterfaces.ConversationLineInterface;
 import conversationEngineLine.ConversationLine;
 
-public abstract class IfLine extends ConversationLine implements ConversationLineInterface {
+public abstract class IfLine extends ConversationLine {
 
 	// Helper class for IfLine subclasses
 	protected boolean isValidRange(String s) {

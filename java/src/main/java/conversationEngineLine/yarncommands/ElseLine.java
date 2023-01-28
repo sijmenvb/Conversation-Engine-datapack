@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
-import conversationEngineImporterInterfaces.ConversationLineInterface;
 import conversationEngineLine.ConversationLine;
 
 public class ElseLine extends IfLine {
@@ -32,7 +31,6 @@ public class ElseLine extends IfLine {
 		return "    # else \n";
 	}
 
-	@Override
 	public String getYarnCommand() {
 		return "else";
 	}

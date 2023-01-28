@@ -72,6 +72,7 @@
 					<execution>
 						<id>onlyCommandLine</id>
 						<configuration>
+							<outputDirectory>./src/main/resources/plugins</outputDirectory>
 							<descriptors>
 								<descriptor>mavenFiles/onlyCommandLine.xml</descriptor>
 							</descriptors>

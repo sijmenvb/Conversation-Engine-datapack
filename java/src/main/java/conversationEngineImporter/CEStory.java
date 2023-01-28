@@ -23,7 +23,6 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.util.stream.Collectors;
 import conversationEngineImporterInterfaces.CEScheduledCommand;
-import conversationEngineImporterInterfaces.ConversationLineInterface;
 import conversationEngineLine.ConversationNodeJsonParser;
 
 /**

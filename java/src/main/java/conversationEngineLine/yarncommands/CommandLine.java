@@ -6,10 +6,9 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
-import conversationEngineImporterInterfaces.ConversationLineInterface;
 import conversationEngineLine.ConversationLine;
 
-public class CommandLine extends ConversationLine implements ConversationLineInterface {
+public class CommandLine extends ConversationLine {
 
 	String command;
 	

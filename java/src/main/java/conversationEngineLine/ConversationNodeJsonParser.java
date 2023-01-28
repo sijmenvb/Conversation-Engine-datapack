@@ -10,11 +10,10 @@ import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.Functions;
 import conversationEngineImporter.PluginLoader;
 import conversationEngineImporterInterfaces.CEScheduledCommand;
-import conversationEngineImporterInterfaces.ConversationLineInterface;
 
 public abstract class ConversationNodeJsonParser {
 
-	public static LinkedList<ConversationLineInterface> linetypes = new LinkedList<ConversationLineInterface>();
+	public static LinkedList<ConversationLine> linetypes = new LinkedList<ConversationLine>();
 
 	public static void parseBody(String body, ConversationNode node) {
 
@@ -55,7 +54,7 @@ public abstract class ConversationNodeJsonParser {
 
 				} else {
 					ConversationLine parsedLine = null;
-					for (ConversationLineInterface linetype : linetypes) { // try to parse the arguments into one of the
+					for (ConversationLine linetype : linetypes) { // try to parse the arguments into one of the
 																			// loaded conversationlines
 						if (Objects.equals(arguments[0].toLowerCase(), linetype.getYarnCommand())) {
 							parsedLine = linetype.tryParseArguments(arguments, node);

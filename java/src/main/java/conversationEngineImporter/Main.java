@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
-import conversationEngineImporterInterfaces.ConversationLineInterface;
+import conversationEngineLine.ConversationLine;
 import conversationEngineLine.ConversationNodeJsonParser;
 import conversationEngineLine.EndLine;
 
@@ -53,11 +53,9 @@ public class Main {
 	}
 	
 	private static void loadConversationLinePlugins() {
-		
-
 		File pluginFolder = new File("Plugins");
 		pluginFolder.mkdir();	
-		LinkedList<ConversationLineInterface> list = PluginLoader.loadClasses(pluginFolder, ConversationLineInterface.class);
+		LinkedList<ConversationLine> list = PluginLoader.loadClasses(pluginFolder, ConversationLine.class);
 		list.push(new EndLine());
 		ConversationNodeJsonParser.linetypes = list;
 	}

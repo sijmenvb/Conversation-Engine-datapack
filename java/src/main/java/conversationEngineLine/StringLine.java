@@ -26,4 +26,12 @@ public class StringLine extends ConversationLine {
 																										// of the
 																										// player.
 	}
+
+	public String getYarnCommand() {
+		return null; //only used internally
+	}
+
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
+		return null;//only used internally
+	}
 }

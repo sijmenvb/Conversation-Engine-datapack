@@ -11,7 +11,7 @@ mavenVersion = "1.1.0"
 #       The boolean denotes if it should be in the default installation.
 # NOTE: The file names are not dependent on the folder, each folder will be searched for files with this name. (matching "**/[name].*")
 configuration = [(["BuyLine"], True),
-                 (["CommandLine"], False),
+                 (["CommandLine"], True),
                  (["IfCustomLine", "ElseLine", "EndIfLine",
                   "IfLine", "IfScoreLine", "IfTagLine"], True),
                  (["TagLine"], True),

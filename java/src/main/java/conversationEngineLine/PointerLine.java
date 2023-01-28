@@ -53,4 +53,12 @@ public class PointerLine extends ConversationLine {
 				Functions.stringEscape(text).replace("@s", playerSelector), clickevent);
 	}
 
+	public String getYarnCommand() {
+		return null; //only used internally
+	}
+
+	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {
+		return null;//only used internally
+	}
+
 }

@@ -6,10 +6,9 @@ import java.util.LinkedList;
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
-import conversationEngineImporterInterfaces.ConversationLineInterface;
 import conversationEngineLine.ConversationLine;
 
-public class GiveLine extends ConversationLine implements ConversationLineInterface {
+public class GiveLine extends ConversationLine {
 	private String item;
 	private int ammount;
 

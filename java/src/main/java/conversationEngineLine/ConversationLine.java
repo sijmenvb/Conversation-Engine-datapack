@@ -19,8 +19,15 @@ public abstract class ConversationLine {
 
 	public ConversationLine() {
 	}	
-
+	
+	// return the YARN command which should match the first argument of the line
+	public abstract String getYarnCommand();
+		
+		// try to parse the whole argument list into a ConversationLine
+	public abstract ConversationLine tryParseArguments(String[] arguments, ConversationNode node);
+		
+		// transform the ConversationLine to Minecraft commands
 	public abstract String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> condition, String con);
+				LinkedList<String> condition, String con);
 
 }

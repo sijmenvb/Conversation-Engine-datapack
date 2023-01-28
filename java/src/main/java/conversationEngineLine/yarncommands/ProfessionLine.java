@@ -7,10 +7,9 @@ import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.Functions;
 import conversationEngineImporter.NPC;
-import conversationEngineImporterInterfaces.ConversationLineInterface;
 import conversationEngineLine.ConversationLine;
 
-public class ProfessionLine extends ConversationLine implements ConversationLineInterface {
+public class ProfessionLine extends ConversationLine{
 
 	private String profession;
 	
