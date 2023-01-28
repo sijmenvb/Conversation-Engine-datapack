@@ -16,3 +16,5 @@ java/src/main/resources/examples/
 java/input.json
 java/bin/
 java/src/main/resources/plugins/
+java/.settings/
+java/.project
