@@ -11,7 +11,7 @@ import conversationEngineImporter.Functions;
 import conversationEngineImporter.PluginLoader;
 import conversationEngineImporterInterfaces.CEScheduledCommand;
 
-public abstract class ConversationNodeJsonParser {
+public class ConversationNodeJsonParser {
 
 	public static LinkedList<ConversationLine> linetypes = new LinkedList<ConversationLine>();
 
