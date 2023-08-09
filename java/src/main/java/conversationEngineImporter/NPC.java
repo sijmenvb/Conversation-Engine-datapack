@@ -12,6 +12,7 @@ import java.util.LinkedList;
  */
 public class NPC {
 	private LinkedList<ConversationNode> nodes = new LinkedList<ConversationNode>();
+	private LinkedList<String> tags = new LinkedList<String>();
 	private String name;
 	private String profession;
 
@@ -19,6 +20,8 @@ public class NPC {
 		super();
 		this.name = name;
 		this.profession = profession;
+		tags.add("CE_npc");
+		tags.add(getTagName());
 	}
 
 	public void addNode(ConversationNode n) {
@@ -61,6 +64,23 @@ public class NPC {
 																											// of five.
 		}
 		return name.toLowerCase().replace(' ', '_');
+	}
+	
+	/**
+	 * 
+	 * @return retruns a comma seperated list of the tags like so: "tag1","tag2" etc.
+	 */
+	public String getFormattedTags() {
+		StringBuilder stringBuilder = new StringBuilder();
+
+        for (String tag : tags) {
+            if (stringBuilder.length() > 0) {
+                stringBuilder.append(",");
+            }
+            stringBuilder.append("\"").append(tag).append("\"");
+        }
+
+        return stringBuilder.toString();
 	}
 
 	public String getRealName() {
