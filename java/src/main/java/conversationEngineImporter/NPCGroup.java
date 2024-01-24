@@ -18,7 +18,7 @@ public class NPCGroup {
 
 		for (NPC npc : npcs) {
 			s += String.format(
-					"execute if score CE_mannager %s matches 1 as @p[scores={%s=1}] run function conversation_engine:messages/%s/tick\n",
+					"execute if score CE_mannager %s matches 1 as @p[scores={%s=1}] run function conversation_engine:messages/%s/ce_tick\n",
 					npc.getName(), npc.getName(), npc.getName());
 		}
 

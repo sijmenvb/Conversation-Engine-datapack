@@ -8,9 +8,6 @@ import java.util.HashSet;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import conversationEngineImporterInterfaces.CEScheduledCommand;
-
 /**
  * this class takes the input file and converts/parses it into a CEStory
  * 
@@ -32,10 +29,22 @@ public class Generator {
 
 		// get all nodes into the nodes hashMap as conversationNodes.
 		{
+			HashSet<String> foundNames = new HashSet<String>();//store the names of added nodes
+			//the following names are internal and should not be used as node names.
+			foundNames.add("ce_tick");
+			foundNames.add("ce_start");
+			foundNames.add("ce_end");
+			
 			@SuppressWarnings("unchecked") // ignore warning
 			Iterator<JSONObject> iter = nodesArray.iterator(); // get iterator for all nodes
 			while (iter.hasNext()) { // loop over all nodes
 				JSONObject obj = (JSONObject) iter.next(); // get current node
+				String curentNodeName = (String) obj.get("title");
+				if (foundNames.contains(curentNodeName.toLowerCase().replace(' ', '_'))) { //if a name with this node exists. 
+					System.err.println("ERROR! a node with name \"" + curentNodeName + "\" already exists. Node names must be uiniqe.\n Try moving the nodes around to see if they are not overlapping and check your names.\nDataPack could not be generated.");
+					System.exit(-1);
+				}
+				foundNames.add(curentNodeName.toLowerCase().replace(' ', '_'));
 				ConversationNode n = new ConversationNode(obj, getNewId()); // make node into conversation node
 				nodes.put(n.getName(), n);
 			}

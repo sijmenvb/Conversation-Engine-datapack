@@ -350,7 +350,7 @@ public class CEStory {
 		// for each villager
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
-				s += String.format("\nexecute at @s[tag=%s] run function conversation_engine:messages/%s/start",
+				s += String.format("\nexecute at @s[tag=%s] run function conversation_engine:messages/%s/ce_start",
 						npc.getTagName(), npc.getName());
 			}
 		}
@@ -417,7 +417,7 @@ public class CEStory {
 
 		s += "# set talking back to 0\nscoreboard players set @p[scores={CE_talking=1}] CE_talking 0";
 
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\start.mcfunction", name,
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\ce_start.mcfunction", name,
 				npc.getName()));
 	}
 
@@ -430,7 +430,7 @@ public class CEStory {
 				npcGroup.getGroupId());
 		s += String.format("\ntellraw @s {\"text\":\"[the conversation with %s has ended]\",\"color\":\"dark_gray\"}",
 				npc.getRealName());
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\end.mcfunction", name,
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\ce_end.mcfunction", name,
 				npc.getName()));
 
 	}
@@ -440,7 +440,7 @@ public class CEStory {
 				"# always run as the player talking with the villager (scores={%s = 1})\n\n# this function is run each tick if someone is talking to this NPC\n\n# check if the player is in range of the npc if not end the conversation.\n",
 				npc.getName());
 		s += String.format(
-				"execute at @s unless entity @e[type=villager, distance = ..7, tag=%s] run function conversation_engine:messages/%s/end\n",
+				"execute at @s unless entity @e[type=villager, distance = ..7, tag=%s] run function conversation_engine:messages/%s/ce_end\n",
 				npc.getTagName(), npc.getName());
 		s += "\n# check for trigger\n";
 		// check for all the triggers
@@ -451,7 +451,7 @@ public class CEStory {
 		}
 		s += "\n# set trigger back to 0\nscoreboard players set @s CE_trigger 0\n\n\n\n# set the current node, do not do this here\n";
 
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\tick.mcfunction", name,
+		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\ce_tick.mcfunction", name,
 				npc.getName()));
 	}
 
