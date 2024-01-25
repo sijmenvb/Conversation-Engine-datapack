@@ -33,6 +33,6 @@ public abstract class IfLine extends ConversationLine {
 
 	@Override
 	public abstract String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> listOfConditions, String currentCondition);
+			LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags);
 
 }

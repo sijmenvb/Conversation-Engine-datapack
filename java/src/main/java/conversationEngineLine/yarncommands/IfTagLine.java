@@ -23,7 +23,7 @@ public class IfTagLine extends IfLine {
 	//TODO: add comma separated list to test for multiple tags
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions,
-			String currentCondition) {
+			String currentCondition, LinkedList<String> tags) {
 		int ifId = listOfConditions.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
 		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behavior is defined in the set method)
 		listOfConditions.addLast(String.format("if score @s CE_if_%02d matches 1 ", ifId));

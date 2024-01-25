@@ -99,4 +99,9 @@ public class NPC {
 		return profession;
 	}
 
+	public LinkedList<String> getTags() {
+		
+		return tags;
+	}
+
 }

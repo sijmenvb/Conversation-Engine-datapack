@@ -24,7 +24,7 @@ public class TagLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> listOfConditions, String currentCondition) {
+			LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
 		String add;
 		if (remove) {
 			add = "remove";

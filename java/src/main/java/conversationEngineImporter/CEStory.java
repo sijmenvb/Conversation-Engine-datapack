@@ -88,7 +88,7 @@ public class CEStory {
 		Functions.debug("init function created");
 		createTickCommandsFolder();
 		Functions.debug("Tick commands folder created");
-		createVillagerFolder();
+		createVillagerFolder();//must be done last since the tags are only opdated when generating the commands.
 		Functions.debug("villager folder created");
 		if (zipResult) {
 			copydirTozip(name + "\\", name + "\\");
@@ -475,7 +475,7 @@ public class CEStory {
 
 		// give the dialogue and choices
 		s += "    # give the choices\n";
-		s += converzationNode.toCommand(nodes, this, npc, true);
+		s += converzationNode.toCommand(nodes, this, npc, true, npc.getTags());
 		s += "\n\n";
 
 		// update the last run node

@@ -33,7 +33,7 @@ public class PointerLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions,
-			String currentCondition) {
+			String currentCondition, LinkedList<String> tags) {
 		// try to get the id of the node if this node does not exist show an error and
 		// use id 0 instead.
 		int nodeId = 0;

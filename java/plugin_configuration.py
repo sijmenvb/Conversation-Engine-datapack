@@ -19,7 +19,8 @@ configuration = [(["BuyLine"], True),
                  (["PlaySound"], True),
                  (["ProfessionLine"], True),
                  (["CEScheduledCommandVillagerSetNoOffers"], False),
-                 (["CETickCommandVillagerFacingPlayer"], True)]
+                 (["CETickCommandVillagerFacingPlayer"], True),
+                 (["InvisibleNpc","ApplyInvisibility"], False)]
 
 
 #####################################################################################

@@ -1,0 +1,2 @@
+python3 plugin_configuration.py
+PAUSE

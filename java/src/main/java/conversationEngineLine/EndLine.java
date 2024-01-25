@@ -19,7 +19,7 @@ public class EndLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> listOfConditions, String currentCondition) {
+			LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
 		return String.format("%srun function conversation_engine:messages/%s/ce_end\n", currentCondition, npc.getName());
 	}
 

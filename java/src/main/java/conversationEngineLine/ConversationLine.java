@@ -34,6 +34,6 @@ public abstract class ConversationLine {
 	 * currentCondition contains the current condition from potential if statements and should be prepended to every command.
 	*/
 	public abstract String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-				LinkedList<String> listOfConditions, String currentCondition);
+				LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags);
 
 }

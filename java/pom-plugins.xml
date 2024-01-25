@@ -188,6 +188,20 @@
 							<goal>single</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>onlyInvisibleNpc</id>
+						<configuration>
+							<descriptors>
+								<descriptor>mavenFiles/onlyInvisibleNpc.xml</descriptor>
+							</descriptors>
+							<finalName>InvisibleNpc</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

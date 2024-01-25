@@ -24,6 +24,7 @@ public class ConversationNode {
 																		// node.
 	public String profession = "none";
 	private int noEmptyLines = 20;
+	
 
 	public ConversationNode(JSONObject in, int id) {
 		this.id = id;
@@ -52,7 +53,7 @@ public class ConversationNode {
 		return list;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, Boolean clearchat) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, Boolean clearchat, LinkedList<String> tags) {
 		String s = "";
 
 		// add the clear chat message.
@@ -78,7 +79,7 @@ public class ConversationNode {
 
 				con += condition.get(j);
 			}
-			s += lines.get(i).toCommand(nodes, ceStory, npc, condition, con);
+			s += lines.get(i).toCommand(nodes, ceStory, npc, condition, con, tags);
 			
 		}
 

@@ -18,7 +18,7 @@ public class ElseLine extends IfLine {
 		super();
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
 		if (listOfConditions.size() > 1) {//check if there is a if statement to "else".
 			listOfConditions.removeLast();// remove last condition
 			int ifId = listOfConditions.size() - 1;// get the number of if statements at this time (-1 for the standard

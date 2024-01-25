@@ -18,7 +18,7 @@ public class StringLine extends ConversationLine {
 	}
 
 	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> listOfConditions, String currentCondition) {
+			LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
 		return String.format("%srun tellraw @s [{\"text\":\"%s\",\"color\":\"white\"}]\n", currentCondition,
 				Functions.stringEscape(text).replace("@s", "\"},{\"selector\":\"@s\"},{\"text\":\"")); // when you type
 																										// @s it will

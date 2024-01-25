@@ -24,7 +24,7 @@ public class CommandLine extends ConversationLine {
 		this.command = command;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
 		return String.format("%srun %s\n", currentCondition, command);
 	}
 

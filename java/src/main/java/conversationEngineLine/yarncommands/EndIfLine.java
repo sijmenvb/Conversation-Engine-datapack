@@ -19,7 +19,7 @@ public class EndIfLine extends IfLine {
 	}
 
 	
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
 		if (listOfConditions.size() > 1) {//check if there is a if statement to end.
 			listOfConditions.removeLast();// remove last condition
 		} else {

@@ -24,7 +24,7 @@ public class PlaySound extends ConversationLine {
 		this.sound = sound;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition) {
+	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
 		return String.format("%srun stopsound @s\n%sat @e[type= villager, tag = %s] run playsound %s voice @s\n",currentCondition, currentCondition, npc.getTagName(), sound);
 	}
 
