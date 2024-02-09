@@ -1,4 +1,4 @@
-package conversationEngineLine.yarncommands;
+package conversationEngineLine.commandPlugins;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,15 +23,15 @@ public class TagLine extends ConversationLine {
 		this.tag = tag;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
+	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc,
+							LinkedList<String> conditionList, String currentConditionPrefix, LinkedList<String> tagList) {
 		String add;
 		if (remove) {
 			add = "remove";
 		} else {
 			add = "add";
 		}
-		return String.format("%srun tag @s %s %s\n", currentCondition, add, tag);
+		return String.format("%srun tag @s %s %s\n", currentConditionPrefix, add, tag);
 	}
 
 	public String getNameOfFirstArgument() {

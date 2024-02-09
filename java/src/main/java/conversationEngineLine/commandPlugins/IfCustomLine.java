@@ -1,4 +1,4 @@
-package conversationEngineLine.yarncommands;
+package conversationEngineLine.commandPlugins;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,15 +32,15 @@ public class IfCustomLine extends IfLine {
 		this.ifStatement = ifStatement;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions,
-			String currentCondition, LinkedList<String> tags) {
-		int ifId = listOfConditions.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
+	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc, LinkedList<String> conditionList,
+							String currentConditionPrefix, LinkedList<String> tagList) {
+		int ifId = conditionList.size() - 1;// get the number of if statements at this time (-1 for the standard condition)
 		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behavior is defined in the set method)
 
-		listOfConditions.addLast(String.format("if score @s CE_if_%02d matches 1 ", ifId));
+		conditionList.addLast(String.format("if score @s CE_if_%02d matches 1 ", ifId));
 		return String.format(
 				"    # a custom if statement:\n%sif score @s CE_resend matches 0 run scoreboard players set @s CE_if_%02d 0\n%sif score @s CE_resend matches 0 if %s run scoreboard players set @s CE_if_%02d 1\n",
-				currentCondition, ifId, currentCondition, ifStatement, ifId);
+				currentConditionPrefix, ifId, currentConditionPrefix, ifStatement, ifId);
 	}
  
 	protected String getIfType() {

@@ -22,8 +22,8 @@
             <directory>${project.build.outputDirectory}</directory>
             <!-- HERE we exclude all packages with plugins -->
             <excludes>
-            	<exclude>./conversationEngineLine/yarncommands/*</exclude>
-            	<exclude>./ReplacedWithPlugins/*</exclude>
+            	<exclude>./conversationEngineLine/commandPlugins/*</exclude>
+            	<exclude>./scheduledPlugins/*</exclude>
             </excludes>
         </fileSet>
     </fileSets>

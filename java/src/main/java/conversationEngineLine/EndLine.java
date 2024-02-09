@@ -18,9 +18,9 @@ public class EndLine extends ConversationLine {
 		super();
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
-		return String.format("%srun function conversation_engine:messages/%s/ce_end\n", currentCondition, npc.getName());
+	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc,
+							LinkedList<String> conditionList, String currentConditionPrefix, LinkedList<String> tagList) {
+		return String.format("%srun function conversation_engine:messages/%s/ce_end\n", currentConditionPrefix, npc.getName());
 	}
 
 	public String getNameOfFirstArgument() {

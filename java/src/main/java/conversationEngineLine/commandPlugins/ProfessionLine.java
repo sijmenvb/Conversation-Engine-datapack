@@ -1,4 +1,4 @@
-package conversationEngineLine.yarncommands;
+package conversationEngineLine.commandPlugins;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,8 +41,8 @@ public class ProfessionLine extends ConversationLine{
 	}
 
 	@Override
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
+	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc,
+							LinkedList<String> conditionList, String currentConditionPrefix, LinkedList<String> tagList) {
 		return ""; // empty command because the profession not set using commands
 	}
 

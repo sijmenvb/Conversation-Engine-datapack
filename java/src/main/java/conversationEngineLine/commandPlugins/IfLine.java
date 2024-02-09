@@ -1,4 +1,4 @@
-package conversationEngineLine.yarncommands;
+package conversationEngineLine.commandPlugins;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,7 +32,7 @@ public abstract class IfLine extends ConversationLine {
 	public abstract ConversationLine tryParseArguments(String[] arguments, ConversationNode node);
 
 	@Override
-	public abstract String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc,
-			LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags);
+	public abstract String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc,
+									 LinkedList<String> conditionList, String currentConditionPrefix, LinkedList<String> tagList);
 
 }

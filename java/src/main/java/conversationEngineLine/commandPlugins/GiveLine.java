@@ -1,4 +1,4 @@
-package conversationEngineLine.yarncommands;
+package conversationEngineLine.commandPlugins;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,9 +22,9 @@ public class GiveLine extends ConversationLine {
 		this.ammount = ammount;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions,
-			String currentCondition, LinkedList<String> tags) {
-		return String.format("%sif score @s CE_resend matches 0 run give @s %s %d\n", currentCondition, item, ammount);
+	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc, LinkedList<String> conditionList,
+							String currentConditionPrefix, LinkedList<String> tagList) {
+		return String.format("%sif score @s CE_resend matches 0 run give @s %s %d\n", currentConditionPrefix, item, ammount);
 	}
 
 	public String getNameOfFirstArgument() {

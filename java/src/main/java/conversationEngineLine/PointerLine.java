@@ -32,13 +32,13 @@ public class PointerLine extends ConversationLine {
 		return pointer;
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions,
-			String currentCondition, LinkedList<String> tags) {
+	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc, LinkedList<String> conditionList,
+							String currentConditionPrefix, LinkedList<String> tagList) {
 		// try to get the id of the node if this node does not exist show an error and
 		// use id 0 instead.
 		int nodeId = 0;
 		try {
-			nodeId = nodes.get(pointer).getId();
+			nodeId = nodeMap.get(pointer).getId();
 		} catch (NullPointerException e) {
 			System.err.println("WARNING: " + /*super.node.getName() +*/ " points to " + pointer + " which does NOT exist");
 		}
@@ -49,7 +49,7 @@ public class PointerLine extends ConversationLine {
 
 		String playerSelector = String.format("\"%s},{\"selector\":\"@s\"%s},{\"text\":\"", clickevent, clickevent);
 
-		return String.format("%srun tellraw @s [{\"text\":\"%s\"%s}]\n", currentCondition,
+		return String.format("%srun tellraw @s [{\"text\":\"%s\"%s}]\n", currentConditionPrefix,
 				Functions.stringEscape(text).replace("@s", playerSelector), clickevent);
 	}
 

@@ -1,4 +1,4 @@
-package conversationEngineLine.yarncommands;
+package conversationEngineLine.commandPlugins;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,9 +19,9 @@ public class EndIfLine extends IfLine {
 	}
 
 	
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
-		if (listOfConditions.size() > 1) {//check if there is a if statement to end.
-			listOfConditions.removeLast();// remove last condition
+	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc, LinkedList<String> conditionList, String currentConditionPrefix, LinkedList<String> tagList) {
+		if (conditionList.size() > 1) {//check if there is a if statement to end.
+			conditionList.removeLast();// remove last condition
 		} else {
 			System.err.println("<<endif>> was used without corresponding if!!");
 		}

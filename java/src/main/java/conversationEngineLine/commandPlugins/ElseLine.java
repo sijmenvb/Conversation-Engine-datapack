@@ -1,4 +1,4 @@
-package conversationEngineLine.yarncommands;
+package conversationEngineLine.commandPlugins;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,12 +18,12 @@ public class ElseLine extends IfLine {
 		super();
 	}
 
-	public String toCommand(HashMap<String, ConversationNode> nodes, CEStory ceStory, NPC npc, LinkedList<String> listOfConditions, String currentCondition, LinkedList<String> tags) {
-		if (listOfConditions.size() > 1) {//check if there is a if statement to "else".
-			listOfConditions.removeLast();// remove last condition
-			int ifId = listOfConditions.size() - 1;// get the number of if statements at this time (-1 for the standard
+	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc, LinkedList<String> conditionList, String currentConditionPrefix, LinkedList<String> tagList) {
+		if (conditionList.size() > 1) {//check if there is a if statement to "else".
+			conditionList.removeLast();// remove last condition
+			int ifId = conditionList.size() - 1;// get the number of if statements at this time (-1 for the standard
 											// condition)
-			listOfConditions.addLast(String.format("if score @s CE_if_%02d matches 0 ", ifId));
+			conditionList.addLast(String.format("if score @s CE_if_%02d matches 0 ", ifId));
 		} else {
 			System.err.println("<<else>> was used without corresponding if!!");
 		}
