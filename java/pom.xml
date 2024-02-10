@@ -59,7 +59,7 @@
 							<descriptors>
 								<descriptor>mavenFiles/main.xml</descriptor>
 							</descriptors>
-							<appendAssemblyId>False</appendAssemblyId>
+							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 						<phase>package</phase>
 						<goals>
