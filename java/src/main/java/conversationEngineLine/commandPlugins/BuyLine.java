@@ -29,8 +29,8 @@ public class BuyLine extends ConversationLine{
 
 	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc, LinkedList<String> conditionList,
 							String currentConditionPrefix, LinkedList<String> tagList) {
-		String s =String.format("    scoreboard players set @s CE_buy_count 0\n%sif score @s CE_resend matches 0 store result score @s CE_buy_count run clear @s %s 0\n", currentConditionPrefix,payItem);
-		return String.format("%s    execute if score @s CE_buy_count matches %d.. run clear @s %s %d\n    execute if score @s CE_buy_count matches %d.. run give @s %s %d\n", s, payAmmount,payItem,payAmmount,payAmmount,getItem,getAmmount);
+		String s =String.format("    scoreboard players set @s CE_buy_count 0\n%srun scoreboard players set @s CE_buy_success 0\n%sif score @s CE_resend matches 0 store result score @s CE_buy_count run clear @s %s 0\n", currentConditionPrefix,currentConditionPrefix,payItem);
+		return String.format("%s    execute if score @s CE_buy_count matches %d.. run clear @s %s %d\n    execute if score @s CE_buy_count matches %d.. run give @s %s %d\n    execute if score @s CE_buy_count matches %d.. run scoreboard players set @s CE_buy_success 1\n", s, payAmmount,payItem,payAmmount,payAmmount,getItem,getAmmount,payAmmount);
 	}
 
 	public String getNameOfFirstArgument() {

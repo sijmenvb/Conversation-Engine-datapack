@@ -16,6 +16,7 @@
 				<include>**/IfLine.*</include>
 				<include>**/IfScoreLine.*</include>
 				<include>**/IfTagLine.*</include>
+				<include>**/IfPurchaseSuccessfulLine.*</include>
 			</includes>
 		</fileSet>
 	</fileSets>

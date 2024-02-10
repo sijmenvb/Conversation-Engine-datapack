@@ -2,7 +2,7 @@
 import os
 
 # Use this to set the version.
-mavenVersion = "1.1.0"
+mavenVersion = "2.0.0"
 
 # Use this configuration to specify the plugins to be build.
 # Each item in this list will be a plugin.
@@ -13,7 +13,7 @@ mavenVersion = "1.1.0"
 configuration = [(["BuyLine"], True),
                  (["CommandLine"], True),
                  (["IfCustomLine", "ElseLine", "EndIfLine",
-                  "IfLine", "IfScoreLine", "IfTagLine"], True),
+                  "IfLine", "IfScoreLine", "IfTagLine", "IfPurchaseSuccessfulLine"], True),
                  (["TagLine"], True),
                  (["GiveLine"], True),
                  (["PlaySound"], True),

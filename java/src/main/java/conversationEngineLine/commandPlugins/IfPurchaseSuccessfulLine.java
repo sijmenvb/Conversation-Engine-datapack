@@ -1,26 +1,17 @@
 package conversationEngineLine.commandPlugins;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
 import conversationEngineImporter.CEStory;
 import conversationEngineImporter.ConversationNode;
 import conversationEngineImporter.NPC;
 import conversationEngineLine.ConversationLine;
 
-public class IfTagLine extends IfLine {
+import java.util.HashMap;
+import java.util.LinkedList;
 
-	private String tag;
-
-	public IfTagLine() {
+public class IfPurchaseSuccessfulLine extends IfLine {
+	public IfPurchaseSuccessfulLine() {
 		super();
 	}
-	
-	public IfTagLine(String tag, ConversationNode node) {
-		super();
-		this.tag = tag;
-	}
-	//TODO: add comma separated list to test for multiple tags
 
 	public String toCommand(HashMap<String, ConversationNode> nodeMap, CEStory ceStory, NPC npc, LinkedList<String> conditionList,
 							String currentConditionPrefix, LinkedList<String> tagList) {
@@ -28,25 +19,19 @@ public class IfTagLine extends IfLine {
 		ceStory.setNoNestedIfStatements(ifId); // update the max id (max behavior is defined in the set method)
 		conditionList.addLast(String.format("if score @s CE_if_%02d matches 1 ", ifId));
 		return String.format(
-				"    # if the player has the tag %s\n%sif score @s CE_resend matches 0 run scoreboard players set @s CE_if_%02d 0\n%sif score @s CE_resend matches 0 if entity @s[tag=%s] run scoreboard players set @s CE_if_%02d 1\n",
-				tag, currentConditionPrefix, ifId, currentConditionPrefix, tag, ifId);
+				"    # if the last purchase was successful\n%sif score @s CE_resend matches 0 run scoreboard players set @s CE_if_%02d 0\n%sif score @s CE_resend matches 0 if score @s CE_buy_success matches 1 run scoreboard players set @s CE_if_%02d 1\n",
+				 currentConditionPrefix, ifId, currentConditionPrefix, ifId);
 	}
 
-	
 	protected String getIfType() {
-		return "tag";
+		return "PurchaseSuccessful";
 	}
+
 	@Override
 	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {	
-		if (arguments[1].toLowerCase().equals(getIfType())) {
-			if (arguments.length == 3) {
-				return new IfTagLine(arguments[2], node);
-			}
-			else {
-				System.err.println("Error " + arguments[0] + " is invalid. example: <<if|tag|name of tag>>");
-			}
+		if (arguments[1].equalsIgnoreCase(getIfType())) {
+			return new IfPurchaseSuccessfulLine();
 		}
-
 		return null;
 	}
 

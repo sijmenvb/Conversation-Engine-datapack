@@ -39,7 +39,7 @@ public class IfScoreLine extends IfLine {
 
 	@Override
 	public ConversationLine tryParseArguments(String[] arguments, ConversationNode node) {		
-		if (arguments[1].toLowerCase().equals(getIfType())) {
+		if (arguments[1].equalsIgnoreCase(getIfType())) {
 			if (arguments.length == 4) {
 				String target = arguments[3];
 				if (!isValidRange(target)) { 
