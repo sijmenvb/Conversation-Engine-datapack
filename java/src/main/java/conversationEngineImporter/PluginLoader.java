@@ -14,8 +14,7 @@ import java.util.zip.ZipFile;
  */
 public class PluginLoader {
 	/**tries to load every class in every jar file in the plugins folder.
-	 * 
-	 * @param <Interface> the same as classInterface
+	 *
 	 * @param pluginFolder the Folder with the plugins (.jar files).
 	 * @param classInterface the interface/abstract class that will be cast to.
 	 * @param initargs the constructor arguments for the object.

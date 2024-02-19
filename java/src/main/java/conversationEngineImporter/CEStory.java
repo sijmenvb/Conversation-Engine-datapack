@@ -13,11 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -199,9 +195,8 @@ public class CEStory {
 
 	/**
 	 * deletes previous datapack with same name if it exists.
-	 * 
-	 * @param name
-	 */
+	 *
+     */
 	private void deletePreviousDatapack() {
 		if (!saveAsZip) {
 
@@ -218,9 +213,8 @@ public class CEStory {
 
 	/**
 	 * copys the empty datapack to the root directory
-	 * 
-	 * @param name
-	 */
+	 *
+     */
 	private void loadEmptyDatapack() {
 		if (saveAsZip) {
 			copyResourcesTozip("/datapack empty/");
@@ -500,13 +494,18 @@ public class CEStory {
 		if(scheduledCommands == null || scheduledCommands.size() < 1) { // If no commands found, exit
 			return;
 		}
-		
-		List<CEScheduledCommand> tickCommands =  // Group scheduled commands by their period by tick
-				scheduledCommands.stream()	// Tick count is key, scheduled commands are value
-				.filter(value -> value.getPeriodInGameTicks() == 1)
-				.toList();
-		
-		String fileContent = "";
+
+        // Group scheduled commands by their period by tick
+        // Tick count is key, scheduled commands are value
+        List<CEScheduledCommand> tickCommands =  // Group scheduled commands by their period by tick
+                new ArrayList<>();
+        for (CEScheduledCommand value : scheduledCommands) {
+            if (value.getPeriodInGameTicks() == 1) {
+                tickCommands.add(value);
+            }
+        }
+
+        String fileContent = "";
 		for (int i = 0; i < tickCommands.size(); i++) { // iterate over all commands
 			String tickCommandWithComment = tickCommands.get(i).toScheduledCommandWithComment(); // Get command and its comment as string
 			String removedEmptyLinesString = removeUnnecessaryLineBreaksTabsSpaces((i < tickCommands.size() - 1), tickCommandWithComment);
