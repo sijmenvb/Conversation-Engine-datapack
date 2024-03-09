@@ -24,3 +24,4 @@ java/exported datapack.zip
 /.metadata/
 java/conversationEngineImporter.iml
 java/.idea/
+java/mavenFiles/

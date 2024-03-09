@@ -18,7 +18,7 @@ public abstract class ConversationLine {
     public ConversationLine() {
     }
 
-    /**
+    /** Returned String should be lowercase!
      * Return the first argument of the command. e.g. for << give|item|amount>> it should return "give".
      * This is used to quickly check the input before we try to fully parse.
      */

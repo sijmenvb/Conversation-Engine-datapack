@@ -3,6 +3,7 @@ package conversationEngineImporter;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import conversationEngineLine.IsNpc;
 import org.json.simple.JSONObject;
 
 import conversationEngineLine.*;
@@ -101,6 +102,11 @@ public class ConversationNode {
 	 * @return true if this is a starting node
 	 */
 	public boolean isStartingNode() {
+		for (ConversationLine line : lines) {
+			if (line instanceof IsNpc) {
+				return true;
+			}
+		}
 		return inPointer.isEmpty();
 	}
 

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.LinkedList;
 
+import conversationEngineLine.IsNpc;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import conversationEngineLine.ConversationLine;
@@ -57,6 +58,7 @@ public class Main {
 		pluginFolder.mkdir();	
 		LinkedList<ConversationLine> list = PluginLoader.loadClasses(pluginFolder, ConversationLine.class);
 		list.push(new EndLine());
+		list.push(new IsNpc());
 		ConversationNodeJsonParser.linetypes = list;
 	}
 	
