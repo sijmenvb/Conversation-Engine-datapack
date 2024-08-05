@@ -37,14 +37,16 @@ public class CEStory {
 	private ZipOutputStream zipArch;
 	private boolean saveAsZip = false; // keep this false cause gradually generating the zip does not work
 	private boolean zipResult = false;
+	private boolean support1_21Plus = true;
 	private FileOutputStream f;
 
 	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConversationNode> nodes, String name,
-			boolean zipResult) {
+			boolean zipResult, Boolean support1_21Plus) {
 		this.groups = groups;
 		this.nodes = nodes;
 		CEStory.name = name;
 		this.zipResult = zipResult;
+		this.support1_21Plus = support1_21Plus;
 		
 		if (zipResult) {
 			try {
@@ -86,6 +88,13 @@ public class CEStory {
 		Functions.debug("Tick commands folder created");
 		createVillagerFolder();//must be done last since the tags are only opdated when generating the commands.
 		Functions.debug("villager folder created");
+
+		if (support1_21Plus){
+			//rename both functions files to function files.... (why mojang??
+			renameFolder(name + "\\data\\minecraft\\tags\\functions",name + "\\data\\minecraft\\tags\\function");
+			renameFolder(name + "\\data\\conversation_engine\\functions",name + "\\data\\conversation_engine\\function");
+		}
+
 		if (zipResult) {
 			copydirTozip(name + "\\", name + "\\");
 			Functions.debug("saved as zip");
@@ -655,6 +664,12 @@ public class CEStory {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void renameFolder(String path,String newPath){
+		File folderOrg = new File(path);
+		File folderNew = new File(newPath);
+		folderOrg.renameTo(folderNew);
 	}
 
 	public void copydirTozip(String path, String originalPath) {
