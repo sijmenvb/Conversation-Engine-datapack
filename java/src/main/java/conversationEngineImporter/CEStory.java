@@ -91,12 +91,15 @@ public class CEStory {
 
 		if (support1_21Plus){
 			//rename both functions files to function files.... (why mojang??
-			renameFolder(name + "\\data\\minecraft\\tags\\functions",name + "\\data\\minecraft\\tags\\function");
-			renameFolder(name + "\\data\\conversation_engine\\functions",name + "\\data\\conversation_engine\\function");
+			renameFolder(name + File.separator + "data" + File.separator + "minecraft" + File.separator + "tags" + File.separator + "functions",
+					name + File.separator + "data" + File.separator + "minecraft" + File.separator + "tags" + File.separator + "function");
+
+			renameFolder(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions",
+					name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "function");
 		}
 
 		if (zipResult) {
-			copydirTozip(name + "\\", name + "\\");
+			copydirTozip(name + File.separator, name + File.separator);
 			Functions.debug("saved as zip");
 			deletePreviousDatapack();
 		}
@@ -117,7 +120,7 @@ public class CEStory {
 	}
 	
 	private void loadScheduledPlugins() {
-		File pluginFolder = new File("Plugins");
+		File pluginFolder = new File("plugins");
 		pluginFolder.mkdir();
 
 		scheduledCommands = PluginLoader.loadClasses(pluginFolder, CEScheduledCommand.class);
@@ -161,7 +164,7 @@ public class CEStory {
 		// Initialise message
 		s += "\nsay conversation engine initialized";
 
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\init.mcfunction", name));
+		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sinit.mcfunction", name, File.separator, File.separator, File.separator, File.separator));
 	}
 	
 	/*
@@ -197,7 +200,8 @@ public class CEStory {
 		// welcome back message
 		s += "\n\nsay welcome back!";
 
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\player_log_on.mcfunction", name));
+		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%splayer_log_on.mcfunction", name, File.separator, File.separator, File.separator, File.separator));
+
 	}
 
 	// ---- delete previous datapack ----
@@ -210,7 +214,7 @@ public class CEStory {
 		if (!saveAsZip) {
 
 			try {
-				deleteDirectory(System.getProperty("user.dir") + "\\" + name);
+				deleteDirectory(System.getProperty("user.dir") + File.separator + name);
 			} catch (IOException e) {
 				System.out.println("There was no previous datapack to delete.");
 			}
@@ -243,8 +247,9 @@ public class CEStory {
 		if(scheduledCommands != null && scheduledCommands.size() < 0) {
 			return new LinkedList<String>();
 		}
-		
-		createDirectory(name + "\\data\\conversation_engine\\functions\\scheduled_commands");
+
+		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions"+ File.separator + "scheduled_commands");
+
 		Map<Integer, List<CEScheduledCommand>> groupedScheduledCommands =  // Group scheduled commands by their period by tick
 				scheduledCommands.stream()											// Tick count is key, scheduled commands are value
 			    .collect(Collectors.groupingBy(CEScheduledCommand::getPeriodInGameTicks));
@@ -267,8 +272,9 @@ public class CEStory {
 		String fileName = String.format("scheduled_%d_ticks", periodTicks);
 		String functionAndFullName = String.format("function conversation_engine:scheduled_commands/%s", fileName);
 		fileContent += String.format("\n\nschedule %s %s replace", functionAndFullName, translateTicksToTimeString(periodTicks));
-		SaveAsFile(fileContent, String.format("%s\\data\\conversation_engine\\functions\\scheduled_commands\\%s.mcfunction", name,
-				fileName));
+		SaveAsFile(fileContent, String.format("%s%sdata%sconversation_engine%sfunctions%sscheduled_commands%s%s.mcfunction",
+				name, File.separator, File.separator, File.separator, File.separator, File.separator, fileName));
+
 		return functionAndFullName;
 	}
 	
@@ -286,7 +292,8 @@ public class CEStory {
 	// ---- create group folder ---- 
 
 	private void createGroupFolder() {
-		createDirectory(name + "\\data\\conversation_engine\\functions\\group");
+		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "group");
+
 		createGroupFunction();
 		createOpenFunction();
 		createCloseFunction();
@@ -298,8 +305,8 @@ public class CEStory {
 			String s = npcGroup.createOpenFunction();
 
 			// try to save the file.
-			SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\group\\%03d.mcfunction", name,
-					npcGroup.getGroupId()));
+			SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sgroup%s%03d.mcfunction",
+					name, File.separator, File.separator, File.separator, File.separator, File.separator, npcGroup.getGroupId()));
 
 		}
 
@@ -310,8 +317,9 @@ public class CEStory {
 			String s = npcGroup.createCloseFunction();
 
 			// try to save the file.
-			SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\group\\close_%03d.mcfunction", name,
-					npcGroup.getGroupId()));
+			SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sgroup%sclose_%03d.mcfunction",
+					name, File.separator, File.separator, File.separator, File.separator, File.separator, npcGroup.getGroupId()));
+
 
 		}
 
@@ -327,7 +335,8 @@ public class CEStory {
 		}
 
 		// try to save the file.
-		SaveAsFile(s, name + "\\data\\conversation_engine\\functions\\group\\group.mcfunction");
+		SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "group" + File.separator + "group.mcfunction");
+
 
 	}
 
@@ -335,7 +344,7 @@ public class CEStory {
 	// ---- create messages folder ----
 
 	private void createMessagesFolder() {
-		createDirectory(name + "\\data\\conversation_engine\\functions\\messages");
+		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "messages");
 		createTalkFunction();
 
 		// for every villager create their named messages folder.
@@ -358,14 +367,18 @@ public class CEStory {
 			}
 		}
 
-		SaveAsFile(s, name + "\\data\\conversation_engine\\functions\\messages\\talk.mcfunction");
+
+		SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "messages" + File.separator + "talk.mcfunction");
+
 
 	}
 
 	private void createNpcFolder(NPCGroup npcGroup, NPC npc) {
 		Functions.debug("\tcreated npc folder: " + npc.getName());
 		// create a directory with the name of the npc.
-		createDirectory(String.format("%s\\data\\conversation_engine\\functions\\messages\\%s", name, npc.getName()));
+		createDirectory(String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s",
+				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName()));
+
 		createNpcStartFunction(npcGroup, npc);
 		Functions.debug("\tcreated npc start function");
 		createNpcEndFunction(npcGroup, npc);
@@ -420,8 +433,10 @@ public class CEStory {
 
 		s += "# set talking back to 0\nscoreboard players set @p[scores={CE_talking=1}] CE_talking 0";
 
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\ce_start.mcfunction", name,
-				npc.getName()));
+
+		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_start.mcfunction",
+				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
+
 	}
 
 	private void createNpcEndFunction(NPCGroup npcGroup, NPC npc) {
@@ -433,8 +448,8 @@ public class CEStory {
 				npcGroup.getGroupId());
 		s += String.format("\ntellraw @s {\"text\":\"[the conversation with %s has ended]\",\"color\":\"dark_gray\"}",
 				npc.getRealName());
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\ce_end.mcfunction", name,
-				npc.getName()));
+		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_end.mcfunction",
+				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
 
 	}
 
@@ -454,8 +469,9 @@ public class CEStory {
 		}
 		s += "\n# set trigger back to 0\nscoreboard players set @s CE_trigger 0\n\n\n\n# set the current node, do not do this here\n";
 
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\ce_tick.mcfunction", name,
-				npc.getName()));
+		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_tick.mcfunction",
+				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
+
 	}
 
 	private void createNodeFunction(NPCGroup npcGroup, NPC npc, ConversationNode converzationNode) {
@@ -484,8 +500,9 @@ public class CEStory {
 		// update the last run node
 		s += "    # update the last run node\n    execute if score @s CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger\n";
 
-		SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\messages\\%s\\%s.mcfunction", name,
-				npc.getName(), converzationNode.getName()));
+		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%s%s.mcfunction",
+				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator, converzationNode.getName()));
+
 	}
 	
 
@@ -493,7 +510,7 @@ public class CEStory {
 	// ---- create server tick_commands folder ----
 	
 	private void createTickCommandsFolder() {
-		createDirectory(name + "\\data\\conversation_engine\\functions\\tick_commands");
+		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "tick_commands");
 		createServerTickFunction();
 	}
 	
@@ -520,20 +537,24 @@ public class CEStory {
 			String removedEmptyLinesString = removeUnnecessaryLineBreaksTabsSpaces((i < tickCommands.size() - 1), tickCommandWithComment);
 			fileContent += removedEmptyLinesString;
 		}
-		SaveAsFile(fileContent, name + "\\data\\conversation_engine\\functions\\tick_commands\\server_tick.mcfunction"); // write to file
+
+		SaveAsFile(fileContent, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "tick_commands" + File.separator + "server_tick.mcfunction"); // write to file
+
 	}
 
 	// ---- create server tick_commands folder ----
 	// ---- create villager folder ----
 
 	private void createVillagerFolder() {
-		createDirectory(name + "\\data\\conversation_engine\\functions\\villager");
+		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager");
+
 		createKillFolder();
 		createSummonFolder();
 	}
 
 	private void createKillFolder() {
-		createDirectory(name + "\\data\\conversation_engine\\functions\\villager\\kill");
+		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "kill");
+
 		createkillAllFunction();
 		// for every villager create kill function
 		for (NPCGroup npcGroup : groups) {
@@ -541,8 +562,9 @@ public class CEStory {
 				String s = String.format("# kill the labrat npc\nkill @e[type=villager,tag=CE_npc,tag=%s]",
 						npc.getTagName());
 
-				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\kill\\%s.mcfunction",
-						name, npc.getTagName()));
+				SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%svillager%skill%s%s.mcfunction",
+						name, File.separator, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getTagName()));
+
 
 			}
 		}
@@ -550,11 +572,13 @@ public class CEStory {
 
 	private void createkillAllFunction() {
 		String s = "# kill all npc's\nkill @e[type=villager,tag=CE_npc]";
-		SaveAsFile(s, name + "\\data\\conversation_engine\\functions\\villager\\kill\\all.mcfunction");
+		SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "kill" + File.separator + "all.mcfunction");
+
 	}
 
 	private void createSummonFolder() {
-		createDirectory(name + "\\data\\conversation_engine\\functions\\villager\\summon");
+		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "summon");
+
 		// for every villager create summon function
 		for (NPCGroup npcGroup : groups) {
 			for (NPC npc : npcGroup.getNpcs()) {
@@ -563,8 +587,9 @@ public class CEStory {
 						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[%s],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{},Inventory:[{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b}]}",
 						npc.getFormattedTags(), npc.getRealName(), npc.getProfession());
 
-				SaveAsFile(s, String.format("%s\\data\\conversation_engine\\functions\\villager\\summon\\%s.mcfunction",
-						name, npc.getTagName()));
+				SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%svillager%ssummon%s%s.mcfunction",
+						name, File.separator, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getTagName()));
+
 
 			}
 		}
@@ -577,7 +602,7 @@ public class CEStory {
 		if (saveAsZip) {
 			try {
 
-				ZipEntry e = new ZipEntry(path.substring((name + "\\").length(), path.length()));
+				ZipEntry e = new ZipEntry(path.substring((name + File.separator).length(), path.length()));
 				zipArch.putNextEntry(e);
 				Charset charset = StandardCharsets.US_ASCII;
 

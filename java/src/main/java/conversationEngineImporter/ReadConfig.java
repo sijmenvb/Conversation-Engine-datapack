@@ -161,7 +161,7 @@ public class ReadConfig {
 		}
 	}
 
-	private void unpackFile(Path p,String folderName) {
+	private void unpackFileOld(Path p,String folderName) {
 		try {
 			String path = p.toString().replaceFirst(".*(?=" + Pattern.quote(folderName) + ")", "");
 			InputStream source = getClass().getClassLoader().getResourceAsStream(path);
@@ -170,6 +170,30 @@ public class ReadConfig {
 			Files.copy(source, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void unpackFile(Path p, String folderName) {
+		try {
+			// Normalize and resolve the path
+			String path = p.toString().replaceFirst(".*(?=" + Pattern.quote(folderName) + ")", "");
+			// Ensure the path is properly formatted
+			path = path.replace(File.separatorChar, '/'); // Use forward slashes for resource paths
+
+			// Obtain resource as an InputStream
+			InputStream source = getClass().getClassLoader().getResourceAsStream(path);
+			if (source == null) {
+				throw new IOException("Resource not found: " + path);
+			}
+
+			// Create target file
+			File target = new File("./" + path);
+			target.getParentFile().mkdirs(); // Ensure parent directories exist
+
+			// Copy resource to file
+			Files.copy(source, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

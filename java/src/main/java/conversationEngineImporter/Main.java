@@ -52,9 +52,9 @@ public class Main {
 		Functions.debug("DONE!");
 
 	}
-	
+
 	private static void loadConversationLinePlugins() {
-		File pluginFolder = new File("Plugins");
+		File pluginFolder = new File("plugins");
 		pluginFolder.mkdir();	
 		LinkedList<ConversationLine> list = PluginLoader.loadClasses(pluginFolder, ConversationLine.class);
 		list.push(new EndLine());

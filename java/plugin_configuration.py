@@ -2,7 +2,7 @@
 import os
 
 # Use this to set the version.
-mavenVersion = "2.1.0"
+mavenVersion = "2.1.2"
 
 # Use this configuration to specify the plugins to be build.
 # Each item in this list will be a plugin.

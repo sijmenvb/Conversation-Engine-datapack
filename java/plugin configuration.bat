@@ -1,2 +1,2 @@
-python3 plugin_configuration.py
+python plugin_configuration.py
 PAUSE
