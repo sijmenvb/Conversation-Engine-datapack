@@ -18,508 +18,503 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.util.stream.Collectors;
+
 import conversationEngineImporterInterfaces.CEScheduledCommand;
 import conversationEngineLine.ConversationNodeJsonParser;
 
 /**
  * the Conversation Engine Story class stores the different npc's and is called
  * to generate the datapack.
- * 
+ *
  * @author Sijmen_v_b
- * 
  */
 public class CEStory {
-	private LinkedList<NPCGroup> groups;
-	private static String name = "exported datapack";
-	private HashMap<String, ConversationNode> nodes;
-	private LinkedList<CEScheduledCommand> scheduledCommands;
-	private int noNestedIfStatements = 0;
-	private ZipOutputStream zipArch;
-	private boolean saveAsZip = false; // keep this false cause gradually generating the zip does not work
-	private boolean zipResult = false;
-	private boolean support1_21Plus = true;
-	private FileOutputStream f;
+    private final LinkedList<NPCGroup> groups;
+    private static String name = "exported datapack";
+    private final HashMap<String, ConversationNode> nodes;
+    private LinkedList<CEScheduledCommand> scheduledCommands;
+    private int noNestedIfStatements = 0;
+    private ZipOutputStream zipArch;
+    private FileOutputStream f;
 
-	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConversationNode> nodes, String name,
-			boolean zipResult, Boolean support1_21Plus) {
-		this.groups = groups;
-		this.nodes = nodes;
-		CEStory.name = name;
-		this.zipResult = zipResult;
-		this.support1_21Plus = support1_21Plus;
-		
-		if (zipResult) {
-			try {
-				f = new FileOutputStream(name + ".zip");
-				zipArch = new ZipOutputStream(new BufferedOutputStream(f));
-			} catch (FileNotFoundException e) {
+    public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConversationNode> nodes) {
+        this.groups = groups;
+        this.nodes = nodes;
+        CEStory.name = Main.config.getDatapackName();
 
-				e.printStackTrace();
-			}
-		}
-	}
+        if (Main.config.isSaveAsZip()) {
+            try {
+                f = new FileOutputStream(name + ".zip");
+                zipArch = new ZipOutputStream(new BufferedOutputStream(f));
+            } catch (FileNotFoundException e) {
 
-	public void generateDatapack() {
-		if (zipResult) {
-			if (zipArch == null) {// check if zip exist.
-				System.err.println("ERROR CREATING ZIP FILE!");
-				return;
-			}
-		}
-		deletePreviousDatapack();// move this to the end of this function if you do not want to keep exporting
-									// the file only.
+                e.printStackTrace();
+            }
+        }
+    }
 
-		loadScheduledPlugins();	
-		
-		loadEmptyDatapack();
+    public void generateDatapack() {
+        if (Main.config.isSaveAsZip()) {
+            if (zipArch == null) {// check if zip exist.
+                System.err.println("ERROR CREATING ZIP FILE!");
+                return;
+            }
+        }
+        deletePreviousDatapack();// move this to the end of this function if you do not want to keep exporting
+        // the file only.
 
-		Functions.debug("empty datapack loaded");
-		createPlayerLogOnFunction();
-		LinkedList<String> scheduledCommandsFunctionsNames = new LinkedList<String>();
-		scheduledCommandsFunctionsNames = createScheduledCommandsFolder();
-		Functions.debug("Scheduled commands folder created");
-		createGroupFolder();
-		Functions.debug("group folder created");
-		createMessagesFolder();
-		Functions.debug("messages created");
-		createInitFunction(scheduledCommandsFunctionsNames);// needs to be after createMessagesFolder
-		Functions.debug("init function created");
-		createTickCommandsFolder();
-		Functions.debug("Tick commands folder created");
-		createVillagerFolder();//must be done last since the tags are only opdated when generating the commands.
-		Functions.debug("villager folder created");
+        loadScheduledPlugins();
 
-		if (support1_21Plus){
-			//rename both functions files to function files.... (why mojang??
-			renameFolder(name + File.separator + "data" + File.separator + "minecraft" + File.separator + "tags" + File.separator + "functions",
-					name + File.separator + "data" + File.separator + "minecraft" + File.separator + "tags" + File.separator + "function");
+        loadEmptyDatapack();
 
-			renameFolder(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions",
-					name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "function");
-		}
+        Functions.debug("empty datapack loaded");
+        createPlayerLogOnFunction();
+        LinkedList<String> scheduledCommandsFunctionsNames = new LinkedList<String>();
+        scheduledCommandsFunctionsNames = createScheduledCommandsFolder();
+        Functions.debug("Scheduled commands folder created");
+        createGroupFolder();
+        Functions.debug("group folder created");
+        createMessagesFolder();
+        Functions.debug("messages created");
+        createInitFunction(scheduledCommandsFunctionsNames);// needs to be after createMessagesFolder
+        Functions.debug("init function created");
+        createTickCommandsFolder();
+        Functions.debug("Tick commands folder created");
+        createVillagerFolder();//must be done last since the tags are only opdated when generating the commands.
+        Functions.debug("villager folder created");
 
-		if (zipResult) {
-			copydirTozip(name + File.separator, name + File.separator);
-			Functions.debug("saved as zip");
-			deletePreviousDatapack();
-		}
+        if (Main.config.isSupport1_21Plus()) {
+            //rename both functions files to function files.... (why mojang??
+            renameFolder(name + File.separator + "data" + File.separator + "minecraft" + File.separator + "tags" + File.separator + "functions",
+                    name + File.separator + "data" + File.separator + "minecraft" + File.separator + "tags" + File.separator + "function");
 
-		// copyResourcesTozip("/exported datapack/");
-		if (zipResult) {
-			try {
-				zipArch.finish();
-				zipArch.close();
-				f.close();
+            renameFolder(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions",
+                    name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "function");
+        }
 
-			} catch (IOException e) {
-				System.err.println("ERROR SAVING ZIP FILE!");
-				e.printStackTrace();
-			}
-		}
+        if (Main.config.isSaveAsZip()) {
+            copydirTozip(name + File.separator, name + File.separator);
+            Functions.debug("saved as zip");
+            deletePreviousDatapack();
+        }
 
-	}
-	
-	private void loadScheduledPlugins() {
-		File pluginFolder = new File("plugins");
-		pluginFolder.mkdir();
+        // copyResourcesTozip("/exported datapack/");
+        if (Main.config.isSaveAsZip()) {
+            try {
+                zipArch.finish();
+                zipArch.close();
+                f.close();
 
-		scheduledCommands = PluginLoader.loadClasses(pluginFolder, CEScheduledCommand.class);
-	}	
+            } catch (IOException e) {
+                System.err.println("ERROR SAVING ZIP FILE!");
+                e.printStackTrace();
+            }
+        }
 
-	private void createInitFunction(LinkedList<String> scheduledCommandsFunctionsNames) {
-		// add standard scoreboards
-		String s = "# detect when a player richt clicks a villager\nscoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager\n# scoreboard for storing sucsesses of functions to do conditionals\nscoreboard objectives add CE_suc dummy\nscoreboard objectives add CE_suc2 dummy\nscoreboard objectives add CE_resend dummy\nscoreboard objectives add CE_buy_count dummy\nscoreboard objectives add CE_buy_success dummy\n# scoreboard for limiting recursion\nscoreboard objectives add CE_rec dummy\n\n# trigger scoreboard to be acsessed by players without permissions.\nscoreboard objectives add CE_trigger trigger\n# a way to store the current node in the dialouge tree. used to prevent players from jumping unexpectedly by using /trigger manually.\nscoreboard objectives add CE_current_node dummy\n";
+    }
 
-		// add for scoreboards
-		s += "\n# scoreboards for if statements\n";
-		for (int id = 0; id <= noNestedIfStatements; id++) { // for this to work it must be run after
-																// createMessagesFolder
-			s += String.format("scoreboard objectives add CE_if_%02d dummy\n", id);
-		}
+    private void loadScheduledPlugins() {
+        File pluginFolder = new File("plugins");
+        pluginFolder.mkdir();
 
-		// Initialise all the groups
-		s += "\n# groups for optimazation to be used by fake player CE_mannager\n";
-		for (NPCGroup npcGroup : groups) {
-			s += String.format("scoreboard objectives add CE_group_%02d dummy\n", npcGroup.getGroupId());
-		}
+        scheduledCommands = PluginLoader.loadClasses(pluginFolder, CEScheduledCommand.class);
+    }
 
-		// Initialise all the groups
-		s += "\n# scoreboard for villagers to be used by fake player CE_mannager\n";
-		for (NPCGroup npcGroup : groups) {
-			for (NPC npc : npcGroup.getNpcs()) {
-				s += String.format("scoreboard objectives add %s dummy\n", npc.getName());
-			}
-		}
+    private void createInitFunction(LinkedList<String> scheduledCommandsFunctionsNames) {
+        // add standard scoreboards
+        String s = "# detect when a player richt clicks a villager\nscoreboard objectives add CE_talking minecraft.custom:minecraft.talked_to_villager\n# scoreboard for storing sucsesses of functions to do conditionals\nscoreboard objectives add CE_suc dummy\nscoreboard objectives add CE_suc2 dummy\nscoreboard objectives add CE_resend dummy\nscoreboard objectives add CE_buy_count dummy\nscoreboard objectives add CE_buy_success dummy\n# scoreboard for limiting recursion\nscoreboard objectives add CE_rec dummy\n\n# trigger scoreboard to be acsessed by players without permissions.\nscoreboard objectives add CE_trigger trigger\n# a way to store the current node in the dialouge tree. used to prevent players from jumping unexpectedly by using /trigger manually.\nscoreboard objectives add CE_current_node dummy\n";
 
-		// detect player joining
-		s += "\n# scoreboard for detecting if a player joins the game\nexecute unless entity @a run scoreboard objectives remove CE_leave_game\n# not fully shure what the one above does but it got reccomended to me and it can't hurt.\nscoreboard objectives add CE_leave_game custom:leave_game\n";
+        // add for scoreboards
+        s += "\n# scoreboards for if statements\n";
+        for (int id = 0; id <= noNestedIfStatements; id++) { // for this to work it must be run after
+            // createMessagesFolder
+            s += String.format("scoreboard objectives add CE_if_%02d dummy\n", id);
+        }
 
-		// reset the score for all players
-		s += "\n# reset the scores for all players:\nexecute as @a run function conversation_engine:player_log_on\n";
-		
-		if(scheduledCommandsFunctionsNames != null && scheduledCommandsFunctionsNames.size() > 0) {
-			s += appendInitFunctionWithScheduledFunctions(scheduledCommandsFunctionsNames);
-		}
+        // Initialise all the groups
+        s += "\n# groups for optimazation to be used by fake player CE_mannager\n";
+        for (NPCGroup npcGroup : groups) {
+            s += String.format("scoreboard objectives add CE_group_%02d dummy\n", npcGroup.getGroupId());
+        }
 
-		// Initialise message
-		s += "\nsay conversation engine initialized";
+        // Initialise all the groups
+        s += "\n# scoreboard for villagers to be used by fake player CE_mannager\n";
+        for (NPCGroup npcGroup : groups) {
+            for (NPC npc : npcGroup.getNpcs()) {
+                s += String.format("scoreboard objectives add %s dummy\n", npc.getName());
+            }
+        }
 
-		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sinit.mcfunction", name, File.separator, File.separator, File.separator, File.separator));
-	}
-	
-	/*
-	 * Adds scheduled functions calls to init file. 
-	 */
-	private String appendInitFunctionWithScheduledFunctions(LinkedList<String> scheduledCommandsFunctionsNames) {
-		String scheduledFunctions = "";
-		for (String name: scheduledCommandsFunctionsNames) {
-			scheduledFunctions += String.format("\n# call the scheduled function\n", name);
-			scheduledFunctions += String.format("%s\n", name);
-		}
-		return scheduledFunctions;
-	}
+        // detect player joining
+        s += "\n# scoreboard for detecting if a player joins the game\nexecute unless entity @a run scoreboard objectives remove CE_leave_game\n# not fully shure what the one above does but it got reccomended to me and it can't hurt.\nscoreboard objectives add CE_leave_game custom:leave_game\n";
 
-	private void createPlayerLogOnFunction() {
-		// set the leave scoreboard
-		String s = "# called by players who just log in again.\n\n# reset the CE_leave_game scoreboard \nscoreboard players set @s CE_leave_game 0\n";
+        // reset the score for all players
+        s += "\n# reset the scores for all players:\nexecute as @a run function conversation_engine:player_log_on\n";
 
-		// reset the groups scoreboards
-		s += "\n# reset the scoreboards\n    # groups\n";
-		for (NPCGroup npcGroup : groups) {
-			s += String.format("scoreboard players set @s CE_group_%02d 0\n", npcGroup.getGroupId());
-		}
+        if (scheduledCommandsFunctionsNames != null && scheduledCommandsFunctionsNames.size() > 0) {
+            s += appendInitFunctionWithScheduledFunctions(scheduledCommandsFunctionsNames);
+        }
 
-		// reset the villager scoreboards
-		s += "\n    # scoreboard for villagers\n";
-		for (NPCGroup npcGroup : groups) {
-			for (NPC npc : npcGroup.getNpcs()) {
-				s += String.format("scoreboard players set @s %s 0\n", npc.getName());
-			}
-		}
+        // Initialise message
+        s += "\nsay conversation engine initialized";
 
-		// welcome back message
-		s += "\n\nsay welcome back!";
+        SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sinit.mcfunction", name, File.separator, File.separator, File.separator, File.separator));
+    }
 
-		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%splayer_log_on.mcfunction", name, File.separator, File.separator, File.separator, File.separator));
-
-	}
-
-	// ---- delete previous datapack ----
-
-	/**
-	 * deletes previous datapack with same name if it exists.
-	 *
+    /*
+     * Adds scheduled functions calls to init file.
      */
-	private void deletePreviousDatapack() {
-		if (!saveAsZip) {
+    private String appendInitFunctionWithScheduledFunctions(LinkedList<String> scheduledCommandsFunctionsNames) {
+        String scheduledFunctions = "";
+        for (String name : scheduledCommandsFunctionsNames) {
+            scheduledFunctions += String.format("\n# call the scheduled function\n", name);
+            scheduledFunctions += String.format("%s\n", name);
+        }
+        return scheduledFunctions;
+    }
 
-			try {
-				deleteDirectory(System.getProperty("user.dir") + File.separator + name);
-			} catch (IOException e) {
-				System.out.println("There was no previous datapack to delete.");
-			}
-		}
-	}
+    private void createPlayerLogOnFunction() {
+        // set the leave scoreboard
+        String s = "# called by players who just log in again.\n\n# reset the CE_leave_game scoreboard \nscoreboard players set @s CE_leave_game 0\n";
 
-	// ---- delete previous datapack ----
-	// ---- load empty datapack ----
+        // reset the groups scoreboards
+        s += "\n# reset the scoreboards\n    # groups\n";
+        for (NPCGroup npcGroup : groups) {
+            s += String.format("scoreboard players set @s CE_group_%02d 0\n", npcGroup.getGroupId());
+        }
 
-	/**
-	 * copys the empty datapack to the root directory
-	 *
+        // reset the villager scoreboards
+        s += "\n    # scoreboard for villagers\n";
+        for (NPCGroup npcGroup : groups) {
+            for (NPC npc : npcGroup.getNpcs()) {
+                s += String.format("scoreboard players set @s %s 0\n", npc.getName());
+            }
+        }
+
+        // welcome back message
+        s += "\n\nsay welcome back!";
+
+        SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%splayer_log_on.mcfunction", name, File.separator, File.separator, File.separator, File.separator));
+
+    }
+
+    // ---- delete previous datapack ----
+
+    /**
+     * deletes previous datapack with same name if it exists.
      */
-	private void loadEmptyDatapack() {
-		if (saveAsZip) {
-			copyResourcesTozip("/datapack empty/");
-		} else {
-			InputStream source = getClass().getClassLoader().getResourceAsStream("datapack empty.zip");
-
-			// get path from resource
-			ZipInputStream zipIn = new ZipInputStream(source);
-			unzip(zipIn, name);
-		}
-	}
-	
-	// ---- load empty datapack ----
-	// ---- create scheduled_commands folder ----
-	
-	private LinkedList<String> createScheduledCommandsFolder() {
-		if(scheduledCommands != null && scheduledCommands.size() < 0) {
-			return new LinkedList<String>();
-		}
-
-		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions"+ File.separator + "scheduled_commands");
-
-		Map<Integer, List<CEScheduledCommand>> groupedScheduledCommands =  // Group scheduled commands by their period by tick
-				scheduledCommands.stream()											// Tick count is key, scheduled commands are value
-			    .collect(Collectors.groupingBy(CEScheduledCommand::getPeriodInGameTicks));
-		LinkedList<String> scheduledFunctionsNames = new LinkedList<String>();
-		for (Map.Entry<Integer, List<CEScheduledCommand>> groupedScheduledCommand: groupedScheduledCommands.entrySet()) {
-			if(groupedScheduledCommand.getKey() == 1) continue;
-			String functionName = createScheduledCommandFunction(groupedScheduledCommand.getKey(), groupedScheduledCommand.getValue()); // create file for each group
-			scheduledFunctionsNames.add(functionName); // add to list so it can be used for calling the function in init
-		}
-		return scheduledFunctionsNames;
-	}
-	
-	private String createScheduledCommandFunction(Integer periodTicks, List<CEScheduledCommand> commands) {
-		String fileContent = "";
-		for (int i = 0; i < commands.size(); i++) { // iterate over all commands
-			String tickCommandWithComment = commands.get(i).toScheduledCommandWithComment(); // Get command and its comment as string
-			String removedEmptyLinesString = removeUnnecessaryLineBreaksTabsSpaces((i < commands.size() - 1), tickCommandWithComment); // remove unnecessary spacing
-			fileContent += removedEmptyLinesString;
-		}
-		String fileName = String.format("scheduled_%d_ticks", periodTicks);
-		String functionAndFullName = String.format("function conversation_engine:scheduled_commands/%s", fileName);
-		fileContent += String.format("\n\nschedule %s %s replace", functionAndFullName, translateTicksToTimeString(periodTicks));
-		SaveAsFile(fileContent, String.format("%s%sdata%sconversation_engine%sfunctions%sscheduled_commands%s%s.mcfunction",
-				name, File.separator, File.separator, File.separator, File.separator, File.separator, fileName));
-
-		return functionAndFullName;
-	}
-	
-	private String translateTicksToTimeString(Integer ticks) {
-		if(ticks % 24000 == 0) { // ticks represent minecraft days
-			return String.format("%dd", ticks / 24000);
-		} else if(ticks % 20 == 0) { // ticks represent second
-			return String.format("%ds", ticks / 20);
-		} else {
-			return String.format("%dt", ticks);
-		}
-	}
-
-	// ---- create scheduled_commands folder ----
-	// ---- create group folder ---- 
-
-	private void createGroupFolder() {
-		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "group");
-
-		createGroupFunction();
-		createOpenFunction();
-		createCloseFunction();
-
-	}
-
-	private void createOpenFunction() {
-		for (NPCGroup npcGroup : groups) {
-			String s = npcGroup.createOpenFunction();
-
-			// try to save the file.
-			SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sgroup%s%03d.mcfunction",
-					name, File.separator, File.separator, File.separator, File.separator, File.separator, npcGroup.getGroupId()));
-
-		}
-
-	}
-
-	private void createCloseFunction() {
-		for (NPCGroup npcGroup : groups) {
-			String s = npcGroup.createCloseFunction();
-
-			// try to save the file.
-			SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sgroup%sclose_%03d.mcfunction",
-					name, File.separator, File.separator, File.separator, File.separator, File.separator, npcGroup.getGroupId()));
+    private void deletePreviousDatapack() {
 
 
-		}
+        try {
+            deleteDirectory(System.getProperty("user.dir") + File.separator + name);
+        } catch (IOException e) {
+            System.out.println("There was no previous datapack to delete.");
+        }
 
-	}
+    }
 
-	private void createGroupFunction() {
-		// start the function with some comments
-		String s = "# run by server\n\n# this is for grouping of villagers so we don't have to check each villager each tick only each group.\n\n# check if there is a conversation in a group:\n";
-		for (NPCGroup npcGroup : groups) {// for each group create the execute command with the correct group id.
-			s += String.format(
-					"execute if score CE_mannager CE_group_%02d matches 1 run function conversation_engine:group/%03d\n",
-					npcGroup.getGroupId(), npcGroup.getGroupId());
-		}
+    // ---- delete previous datapack ----
+    // ---- load empty datapack ----
 
-		// try to save the file.
-		SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "group" + File.separator + "group.mcfunction");
+    /**
+     * copys the empty datapack to the root directory
+     */
+    private void loadEmptyDatapack() {
 
+        InputStream source = getClass().getClassLoader().getResourceAsStream("datapack empty.zip");
 
-	}
+        // get path from resource
+        ZipInputStream zipIn = new ZipInputStream(source);
+        unzip(zipIn, name);
 
-	// ---- create group folder ----
-	// ---- create messages folder ----
+    }
 
-	private void createMessagesFolder() {
-		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "messages");
-		createTalkFunction();
+    // ---- load empty datapack ----
+    // ---- create scheduled_commands folder ----
 
-		// for every villager create their named messages folder.
-		for (NPCGroup npcGroup : groups) {
-			for (NPC npc : npcGroup.getNpcs()) {
-				createNpcFolder(npcGroup, npc);
-			}
-		}
-	}
+    private LinkedList<String> createScheduledCommandsFolder() {
+        if (scheduledCommands != null && scheduledCommands.size() < 0) {
+            return new LinkedList<String>();
+        }
 
-	private void createTalkFunction() {
+        createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "scheduled_commands");
 
-		String s = "# always run by the NPC\n\n# this function checks wich NPC the player has clicked\n";
+        Map<Integer, List<CEScheduledCommand>> groupedScheduledCommands =  // Group scheduled commands by their period by tick
+                scheduledCommands.stream()                                            // Tick count is key, scheduled commands are value
+                        .collect(Collectors.groupingBy(CEScheduledCommand::getPeriodInGameTicks));
+        LinkedList<String> scheduledFunctionsNames = new LinkedList<String>();
+        for (Map.Entry<Integer, List<CEScheduledCommand>> groupedScheduledCommand : groupedScheduledCommands.entrySet()) {
+            if (groupedScheduledCommand.getKey() == 1) continue;
+            String functionName = createScheduledCommandFunction(groupedScheduledCommand.getKey(), groupedScheduledCommand.getValue()); // create file for each group
+            scheduledFunctionsNames.add(functionName); // add to list so it can be used for calling the function in init
+        }
+        return scheduledFunctionsNames;
+    }
 
-		// for each villager
-		for (NPCGroup npcGroup : groups) {
-			for (NPC npc : npcGroup.getNpcs()) {
-				s += String.format("\nexecute at @s[tag=%s] run function conversation_engine:messages/%s/ce_start",
-						npc.getTagName(), npc.getName());
-			}
-		}
+    private String createScheduledCommandFunction(Integer periodTicks, List<CEScheduledCommand> commands) {
+        String fileContent = "";
+        for (int i = 0; i < commands.size(); i++) { // iterate over all commands
+            String tickCommandWithComment = commands.get(i).toScheduledCommandWithComment(); // Get command and its comment as string
+            String removedEmptyLinesString = removeUnnecessaryLineBreaksTabsSpaces((i < commands.size() - 1), tickCommandWithComment); // remove unnecessary spacing
+            fileContent += removedEmptyLinesString;
+        }
+        String fileName = String.format("scheduled_%d_ticks", periodTicks);
+        String functionAndFullName = String.format("function conversation_engine:scheduled_commands/%s", fileName);
+        fileContent += String.format("\n\nschedule %s %s replace", functionAndFullName, translateTicksToTimeString(periodTicks));
+        SaveAsFile(fileContent, String.format("%s%sdata%sconversation_engine%sfunctions%sscheduled_commands%s%s.mcfunction",
+                name, File.separator, File.separator, File.separator, File.separator, File.separator, fileName));
 
+        return functionAndFullName;
+    }
 
-		SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "messages" + File.separator + "talk.mcfunction");
+    private String translateTicksToTimeString(Integer ticks) {
+        if (ticks % 24000 == 0) { // ticks represent minecraft days
+            return String.format("%dd", ticks / 24000);
+        } else if (ticks % 20 == 0) { // ticks represent second
+            return String.format("%ds", ticks / 20);
+        } else {
+            return String.format("%dt", ticks);
+        }
+    }
 
+    // ---- create scheduled_commands folder ----
+    // ---- create group folder ----
 
-	}
+    private void createGroupFolder() {
+        createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "group");
 
-	private void createNpcFolder(NPCGroup npcGroup, NPC npc) {
-		Functions.debug("\tcreated npc folder: " + npc.getName());
-		// create a directory with the name of the npc.
-		createDirectory(String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s",
-				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName()));
+        createGroupFunction();
+        createOpenFunction();
+        createCloseFunction();
 
-		createNpcStartFunction(npcGroup, npc);
-		Functions.debug("\tcreated npc start function");
-		createNpcEndFunction(npcGroup, npc);
-		Functions.debug("\tcreated npc end function");
-		createNpcTickFunction(npcGroup, npc);
-		Functions.debug("\tcreated tick function");
+    }
 
-		// get all the nodes of this villager to functions
-		int i = 0;
-		for (ConversationNode converzationNode : npc.getNodes()) {
-			if (i == 0) {
-				Functions.debug("\tstarted for loop");
-			}
-			createNodeFunction(npcGroup, npc, converzationNode);
+    private void createOpenFunction() {
+        for (NPCGroup npcGroup : groups) {
+            String s = npcGroup.createOpenFunction();
 
-			if (i % 1000 == 0) {
-				Functions.debug("\tcreated node function: " + converzationNode.getRealName());
-			}
-			i++;
-		}
-	}
+            // try to save the file.
+            SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sgroup%s%03d.mcfunction",
+                    name, File.separator, File.separator, File.separator, File.separator, File.separator, npcGroup.getGroupId()));
 
-	private void createNpcStartFunction(NPCGroup npcGroup, NPC npc) {
-		Boolean force1TalkingAtATime = true;
-		int n = 0;
-		if (force1TalkingAtATime) {
-			n = 2;
-		}
+        }
 
-		String s = "# always run by the NPC\n\n# this function starts the conversation with a npc\n\n# reset the boolean.\n";
-		s += "scoreboard players set @r[scores={CE_talking=1}] CE_suc2 0\n# if the player is already talking to this villager\n";
-		s += String.format(
-				"    execute if entity @p[scores={CE_talking=1,%s=1}] run scoreboard players set @r[scores={CE_talking=1}] CE_suc2 1\n    # make the tellraw the same as the last message so it repeats.\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 1 as @p[scores={CE_talking=1,%s=1}] run scoreboard players operation @s CE_trigger = @s CE_current_node\n",
-				npc.getName(), npc.getName());
-		s += String.format(
-				"# unless there is already someone else talking to the villager  (note that 2 as boolean is also true) \n# TIP: turn the 2(on the next line) into a 0 if you want multiple people to talk to the same npc at the same time\nexecute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 if entity @a[scores={%s=1}] run scoreboard players set @r[scores={CE_talking=1}] CE_suc2 %01d \n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 2 run tellraw @r[scores={CE_talking=1}] [{\"selector\":\"@a[scores={%s=1}]\"},{\"text\":\"[someone is already talking to this NPC]\",\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"you'll have to wait your turn.\"}]}}]\n",
-				npc.getName(), n, npc.getName(), npc.getName());
-		s += String.format(
-				"# else:\n\n    # start the %s conversation\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set CE_mannager CE_group_%02d 1\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set CE_mannager %s 1\n",
-				npc.getName(), npcGroup.getGroupId(), npc.getName());
-		s += String.format(
-				"\n    # set the %s score to 1 for the player.\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 as @p[scores={CE_talking=1}] run scoreboard players set @s %s 1\n",
-				npc.getName(), npc.getName());
-		s += String.format(
-				"\n    # also set the current node back to 0 \n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_current_node 0\n",
-				npc.getName());
+    }
 
-		// make sure you will start the correct node.
-		s += String.format(
-				"\n    # give the choises using the trigger command.\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_trigger %d \n",
-				npc.getName(), npc.GetStartingNodeId());
+    private void createCloseFunction() {
+        for (NPCGroup npcGroup : groups) {
+            String s = npcGroup.createCloseFunction();
 
-		s += "# set talking back to 0\nscoreboard players set @p[scores={CE_talking=1}] CE_talking 0";
+            // try to save the file.
+            SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%sgroup%sclose_%03d.mcfunction",
+                    name, File.separator, File.separator, File.separator, File.separator, File.separator, npcGroup.getGroupId()));
 
 
-		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_start.mcfunction",
-				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
+        }
 
-	}
+    }
 
-	private void createNpcEndFunction(NPCGroup npcGroup, NPC npc) {
-		String s = "# run as the player\n\n# this function ends the conversation with a npc\n\n# stop the labrat conversation\n";
-		s += String.format("scoreboard players set CE_mannager %s 0\n", npc.getName());
-		s += "\n# reset the last node \nscoreboard players set @s CE_current_node 0\n# also reset the trigger\nscoreboard players set @s CE_trigger 0\n\n# set lab_rat score of player that was talking to this villager back to 0\n";
-		s += String.format("scoreboard players set @s %s 0\n", npc.getName());
-		s += String.format("\n# try to close the group as well\nfunction conversation_engine:group/close_%03d\n",
-				npcGroup.getGroupId());
-		s += String.format("\ntellraw @s {\"text\":\"[the conversation with %s has ended]\",\"color\":\"dark_gray\"}",
-				npc.getRealName());
-		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_end.mcfunction",
-				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
+    private void createGroupFunction() {
+        // start the function with some comments
+        String s = "# run by server\n\n# this is for grouping of villagers so we don't have to check each villager each tick only each group.\n\n# check if there is a conversation in a group:\n";
+        for (NPCGroup npcGroup : groups) {// for each group create the execute command with the correct group id.
+            s += String.format(
+                    "execute if score CE_mannager CE_group_%02d matches 1 run function conversation_engine:group/%03d\n",
+                    npcGroup.getGroupId(), npcGroup.getGroupId());
+        }
 
-	}
+        // try to save the file.
+        SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "group" + File.separator + "group.mcfunction");
 
-	private void createNpcTickFunction(NPCGroup npcGroup, NPC npc) {
-		String s = String.format(
-				"# always run as the player talking with the villager (scores={%s = 1})\n\n# this function is run each tick if someone is talking to this NPC\n\n# check if the player is in range of the npc if not end the conversation.\n",
-				npc.getName());
-		s += String.format(
-				"execute at @s unless entity @e[type=villager, distance = ..7, tag=%s] run function conversation_engine:messages/%s/ce_end\n",
-				npc.getTagName(), npc.getName());
-		s += "\n# check for trigger\n";
-		// check for all the triggers
-		for (ConversationNode converzationNode : npc.getNodes()) {
-			s += String.format(
-					"execute as @s[scores={CE_trigger = %d}] run function conversation_engine:messages/%s/%s\n",
-					converzationNode.getId(), npc.getName(), converzationNode.getName());
-		}
-		s += "\n# set trigger back to 0\nscoreboard players set @s CE_trigger 0\n\n\n\n# set the current node, do not do this here\n";
 
-		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_tick.mcfunction",
-				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
+    }
 
-	}
+    // ---- create group folder ----
+    // ---- create messages folder ----
 
-	private void createNodeFunction(NPCGroup npcGroup, NPC npc, ConversationNode converzationNode) {
-		String s = String.format(
-				"# run as the player\n\n# message id: %d\n\n# reset the sucsess scoreboard\nscoreboard players set @s CE_suc 0\nscoreboard players set @s CE_resend 0\n",
-				converzationNode.getId());
-		s += "\n# check if the player came from a valid previous node (to prevent manual use of /trigger)\n";
-		// check if you come from a valid node (to prevent manual use of the /trigger
-		// command)
-		for (int id : converzationNode.getValidInpointerIds(nodes)) {
-			s += String.format(
-					"execute if score @s CE_current_node matches %d run scoreboard players set @s CE_suc 1\n", id);
-		}
-		s += "\n";
+    private void createMessagesFolder() {
+        createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "messages");
+        createTalkFunction();
 
-		// check if the previous node is itself
-		s += String.format(
-				"# special case in case the previous node is itself in that case CE_resend of @s is set to 1 (use this to prevent commands that for example give items are executed twice)\nexecute store success score @s CE_resend if score @s CE_current_node matches %d run scoreboard players set @s CE_suc 1\n\n",
-				converzationNode.getId());
+        // for every villager create their named messages folder.
+        for (NPCGroup npcGroup : groups) {
+            for (NPC npc : npcGroup.getNpcs()) {
+                createNpcFolder(npcGroup, npc);
+            }
+        }
+    }
 
-		// give the dialogue and choices
-		s += "    # give the choices\n";
-		s += converzationNode.toCommand(nodes, this, npc, true, npc.getTags());
-		s += "\n\n";
+    private void createTalkFunction() {
 
-		// update the last run node
-		s += "    # update the last run node\n    execute if score @s CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger\n";
+        String s = "# always run by the NPC\n\n# this function checks wich NPC the player has clicked\n";
 
-		SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%s%s.mcfunction",
-				name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator, converzationNode.getName()));
+        // for each villager
+        for (NPCGroup npcGroup : groups) {
+            for (NPC npc : npcGroup.getNpcs()) {
+                s += String.format("\nexecute at @s[tag=%s] run function conversation_engine:messages/%s/ce_start",
+                        npc.getTagName(), npc.getName());
+            }
+        }
 
-	}
-	
 
-	// ---- create messages folder ----
-	// ---- create server tick_commands folder ----
-	
-	private void createTickCommandsFolder() {
-		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "tick_commands");
-		createServerTickFunction();
-	}
-	
-	// Creates server tick function file with all the commands that have to be executed on the server every tick.
-	private void createServerTickFunction() {
-		
-		if(scheduledCommands == null || scheduledCommands.size() < 1) { // If no commands found, exit
-			return;
-		}
+        SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "messages" + File.separator + "talk.mcfunction");
+
+
+    }
+
+    private void createNpcFolder(NPCGroup npcGroup, NPC npc) {
+        Functions.debug("\tcreated npc folder: " + npc.getName());
+        // create a directory with the name of the npc.
+        createDirectory(String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s",
+                name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName()));
+
+        createNpcStartFunction(npcGroup, npc);
+        Functions.debug("\tcreated npc start function");
+        createNpcEndFunction(npcGroup, npc);
+        Functions.debug("\tcreated npc end function");
+        createNpcTickFunction(npcGroup, npc);
+        Functions.debug("\tcreated tick function");
+
+        // get all the nodes of this villager to functions
+        int i = 0;
+        for (ConversationNode converzationNode : npc.getNodes()) {
+            if (i == 0) {
+                Functions.debug("\tstarted for loop");
+            }
+            createNodeFunction(npcGroup, npc, converzationNode);
+
+            if (i % 1000 == 0) {
+                Functions.debug("\tcreated node function: " + converzationNode.getRealName());
+            }
+            i++;
+        }
+    }
+
+    private void createNpcStartFunction(NPCGroup npcGroup, NPC npc) {
+        Boolean force1TalkingAtATime = true;
+        int n = 0;
+        if (force1TalkingAtATime) {
+            n = 2;
+        }
+
+        String s = "# always run by the NPC\n\n# this function starts the conversation with a npc\n\n# reset the boolean.\n";
+        s += "scoreboard players set @r[scores={CE_talking=1}] CE_suc2 0\n# if the player is already talking to this villager\n";
+        s += String.format(
+                "    execute if entity @p[scores={CE_talking=1,%s=1}] run scoreboard players set @r[scores={CE_talking=1}] CE_suc2 1\n    # make the tellraw the same as the last message so it repeats.\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 1 as @p[scores={CE_talking=1,%s=1}] run scoreboard players operation @s CE_trigger = @s CE_current_node\n",
+                npc.getName(), npc.getName());
+        s += String.format(
+                "# unless there is already someone else talking to the villager  (note that 2 as boolean is also true) \n# TIP: turn the 2(on the next line) into a 0 if you want multiple people to talk to the same npc at the same time\nexecute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 if entity @a[scores={%s=1}] run scoreboard players set @r[scores={CE_talking=1}] CE_suc2 %01d \n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 2 run tellraw @r[scores={CE_talking=1}] [{\"selector\":\"@a[scores={%s=1}]\"},{\"text\":\"[someone is already talking to this NPC]\",\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"you'll have to wait your turn.\"}]}}]\n",
+                npc.getName(), n, npc.getName(), npc.getName());
+        s += String.format(
+                "# else:\n\n    # start the %s conversation\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set CE_mannager CE_group_%02d 1\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set CE_mannager %s 1\n",
+                npc.getName(), npcGroup.getGroupId(), npc.getName());
+        s += String.format(
+                "\n    # set the %s score to 1 for the player.\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 as @p[scores={CE_talking=1}] run scoreboard players set @s %s 1\n",
+                npc.getName(), npc.getName());
+        s += String.format(
+                "\n    # also set the current node back to 0 \n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_current_node 0\n",
+                npc.getName());
+
+        // make sure you will start the correct node.
+        s += String.format(
+                "\n    # give the choises using the trigger command.\n    execute if score @r[scores={CE_talking=1}] CE_suc2 matches 0 run scoreboard players set @p[scores={%s=1}] CE_trigger %d \n",
+                npc.getName(), npc.GetStartingNodeId());
+
+        s += "# set talking back to 0\nscoreboard players set @p[scores={CE_talking=1}] CE_talking 0";
+
+
+        SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_start.mcfunction",
+                name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
+
+    }
+
+    private void createNpcEndFunction(NPCGroup npcGroup, NPC npc) {
+        String s = "# run as the player\n\n# this function ends the conversation with a npc\n\n# stop the labrat conversation\n";
+        s += String.format("scoreboard players set CE_mannager %s 0\n", npc.getName());
+        s += "\n# reset the last node \nscoreboard players set @s CE_current_node 0\n# also reset the trigger\nscoreboard players set @s CE_trigger 0\n\n# set lab_rat score of player that was talking to this villager back to 0\n";
+        s += String.format("scoreboard players set @s %s 0\n", npc.getName());
+        s += String.format("\n# try to close the group as well\nfunction conversation_engine:group/close_%03d\n",
+                npcGroup.getGroupId());
+
+        //only add the conversation ended message when it is enabled in the config.
+        if (Main.config.isEndMessage()){
+            s += String.format("\ntellraw @s {\"text\":\"[the conversation with %s has ended]\",\"color\":\"dark_gray\"}",
+                    npc.getRealName());
+        }
+
+        SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_end.mcfunction",
+                name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
+
+    }
+
+    private void createNpcTickFunction(NPCGroup npcGroup, NPC npc) {
+        String s = String.format(
+                "# always run as the player talking with the villager (scores={%s = 1})\n\n# this function is run each tick if someone is talking to this NPC\n\n# check if the player is in range of the npc if not end the conversation.\n",
+                npc.getName());
+        s += String.format(
+                "execute at @s unless entity @e[type=villager, distance = ..7, tag=%s] run function conversation_engine:messages/%s/ce_end\n",
+                npc.getTagName(), npc.getName());
+        s += "\n# check for trigger\n";
+        // check for all the triggers
+        for (ConversationNode converzationNode : npc.getNodes()) {
+            s += String.format(
+                    "execute as @s[scores={CE_trigger = %d}] run function conversation_engine:messages/%s/%s\n",
+                    converzationNode.getId(), npc.getName(), converzationNode.getName());
+        }
+        s += "\n# set trigger back to 0\nscoreboard players set @s CE_trigger 0\n\n\n\n# set the current node, do not do this here\n";
+
+        SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%sce_tick.mcfunction",
+                name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator));
+
+    }
+
+    private void createNodeFunction(NPCGroup npcGroup, NPC npc, ConversationNode converzationNode) {
+        String s = String.format(
+                "# run as the player\n\n# message id: %d\n\n# reset the sucsess scoreboard\nscoreboard players set @s CE_suc 0\nscoreboard players set @s CE_resend 0\n",
+                converzationNode.getId());
+        s += "\n# check if the player came from a valid previous node (to prevent manual use of /trigger)\n";
+        // check if you come from a valid node (to prevent manual use of the /trigger
+        // command)
+        for (int id : converzationNode.getValidInpointerIds(nodes)) {
+            s += String.format(
+                    "execute if score @s CE_current_node matches %d run scoreboard players set @s CE_suc 1\n", id);
+        }
+        s += "\n";
+
+        // check if the previous node is itself
+        s += String.format(
+                "# special case in case the previous node is itself in that case CE_resend of @s is set to 1 (use this to prevent commands that for example give items are executed twice)\nexecute store success score @s CE_resend if score @s CE_current_node matches %d run scoreboard players set @s CE_suc 1\n\n",
+                converzationNode.getId());
+
+        // give the dialogue and choices
+        s += "    # give the choices\n";
+        s += converzationNode.toCommand(nodes, this, npc, true, npc.getTags());
+        s += "\n\n";
+
+        // update the last run node
+        s += "    # update the last run node\n    execute if score @s CE_suc matches 1 run scoreboard players operation @s CE_current_node = @s CE_trigger\n";
+
+        SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%smessages%s%s%s%s.mcfunction",
+                name, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getName(), File.separator, converzationNode.getName()));
+
+    }
+
+
+    // ---- create messages folder ----
+    // ---- create server tick_commands folder ----
+
+    private void createTickCommandsFolder() {
+        createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "tick_commands");
+        createServerTickFunction();
+    }
+
+    // Creates server tick function file with all the commands that have to be executed on the server every tick.
+    private void createServerTickFunction() {
+
+        if (scheduledCommands == null || scheduledCommands.size() < 1) { // If no commands found, exit
+            return;
+        }
 
         // Group scheduled commands by their period by tick
         // Tick count is key, scheduled commands are value
@@ -532,303 +527,288 @@ public class CEStory {
         }
 
         String fileContent = "";
-		for (int i = 0; i < tickCommands.size(); i++) { // iterate over all commands
-			String tickCommandWithComment = tickCommands.get(i).toScheduledCommandWithComment(); // Get command and its comment as string
-			String removedEmptyLinesString = removeUnnecessaryLineBreaksTabsSpaces((i < tickCommands.size() - 1), tickCommandWithComment);
-			fileContent += removedEmptyLinesString;
-		}
+        for (int i = 0; i < tickCommands.size(); i++) { // iterate over all commands
+            String tickCommandWithComment = tickCommands.get(i).toScheduledCommandWithComment(); // Get command and its comment as string
+            String removedEmptyLinesString = removeUnnecessaryLineBreaksTabsSpaces((i < tickCommands.size() - 1), tickCommandWithComment);
+            fileContent += removedEmptyLinesString;
+        }
 
-		SaveAsFile(fileContent, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "tick_commands" + File.separator + "server_tick.mcfunction"); // write to file
+        SaveAsFile(fileContent, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "tick_commands" + File.separator + "server_tick.mcfunction"); // write to file
 
-	}
+    }
 
-	// ---- create server tick_commands folder ----
-	// ---- create villager folder ----
+    // ---- create server tick_commands folder ----
+    // ---- create villager folder ----
 
-	private void createVillagerFolder() {
-		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager");
+    private void createVillagerFolder() {
+        createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager");
 
-		createKillFolder();
-		createSummonFolder();
-	}
+        createKillFolder();
+        createSummonFolder();
+    }
 
-	private void createKillFolder() {
-		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "kill");
+    private void createKillFolder() {
+        createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "kill");
 
-		createkillAllFunction();
-		// for every villager create kill function
-		for (NPCGroup npcGroup : groups) {
-			for (NPC npc : npcGroup.getNpcs()) {
-				String s = String.format("# kill the labrat npc\nkill @e[type=villager,tag=CE_npc,tag=%s]",
-						npc.getTagName());
+        createkillAllFunction();
+        // for every villager create kill function
+        for (NPCGroup npcGroup : groups) {
+            for (NPC npc : npcGroup.getNpcs()) {
+                String s = String.format("# kill the labrat npc\nkill @e[type=villager,tag=CE_npc,tag=%s]",
+                        npc.getTagName());
 
-				SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%svillager%skill%s%s.mcfunction",
-						name, File.separator, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getTagName()));
-
-
-			}
-		}
-	}
-
-	private void createkillAllFunction() {
-		String s = "# kill all npc's\nkill @e[type=villager,tag=CE_npc]";
-		SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "kill" + File.separator + "all.mcfunction");
-
-	}
-
-	private void createSummonFolder() {
-		createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "summon");
-
-		// for every villager create summon function
-		for (NPCGroup npcGroup : groups) {
-			for (NPC npc : npcGroup.getNpcs()) {
-
-				String s = String.format(
-						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[%s],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{},Inventory:[{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b}]}",
-						npc.getFormattedTags(), npc.getRealName(), npc.getProfession());
-
-				SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%svillager%ssummon%s%s.mcfunction",
-						name, File.separator, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getTagName()));
+                SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%svillager%skill%s%s.mcfunction",
+                        name, File.separator, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getTagName()));
 
 
-			}
-		}
-	}
+            }
+        }
+    }
 
-	// ---- create villager folder ----
-	// ---- save string as file ----
+    private void createkillAllFunction() {
+        String s = "# kill all npc's\nkill @e[type=villager,tag=CE_npc]";
+        SaveAsFile(s, name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "kill" + File.separator + "all.mcfunction");
 
-	private void SaveAsFile(String s, String path) {
-		if (saveAsZip) {
-			try {
+    }
 
-				ZipEntry e = new ZipEntry(path.substring((name + File.separator).length(), path.length()));
-				zipArch.putNextEntry(e);
-				Charset charset = StandardCharsets.US_ASCII;
+    private void createSummonFolder() {
+        createDirectory(name + File.separator + "data" + File.separator + "conversation_engine" + File.separator + "functions" + File.separator + "villager" + File.separator + "summon");
 
-				zipArch.write(charset.encode(s).array());
+        // for every villager create summon function
+        for (NPCGroup npcGroup : groups) {
+            for (NPC npc : npcGroup.getNpcs()) {
 
-				zipArch.closeEntry();
+                String s = String.format(
+                        "# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[%s],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{},Inventory:[{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b}]}",
+                        npc.getFormattedTags(), npc.getRealName(), npc.getProfession());
 
-			} catch (IOException e1) {
-				System.err.println("failed saving " + path);
-				e1.printStackTrace();
-			}
-		} else {
-			try {
-				PrintWriter out = new PrintWriter(path);
-				out.write(s);
-				out.close();
-			} catch (FileNotFoundException e) {
+                SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%svillager%ssummon%s%s.mcfunction",
+                        name, File.separator, File.separator, File.separator, File.separator, File.separator, File.separator, npc.getTagName()));
 
-				e.printStackTrace();
-			}
-		}
 
-	}
+            }
+        }
+    }
 
-	// ---- save string as file ----
-	// ---- create directory ----
+    // ---- create villager folder ----
+    // ---- save string as file ----
 
-	private void createDirectory(String dirpath) {
-		if (!saveAsZip) {
-			File f = new File(dirpath);
-			if (!f.exists()) {
-				f.mkdir();
-			}
-		}
+    private void SaveAsFile(String s, String path) {
 
-	}
+        try {
+            PrintWriter out = new PrintWriter(path);
+            out.write(s);
+            out.close();
+        } catch (FileNotFoundException e) {
 
-	// ---- create directory ----
-	// ---- copy directory ---- source: https://www.baeldung.com/java-copy-directory
+            e.printStackTrace();
+        }
 
-	public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation)
-			throws IOException {
-		System.err.println("source dir: " + sourceDirectoryLocation);
-		Files.walk(Paths.get(sourceDirectoryLocation)).forEach(source -> {
-			Path destination = Paths.get(destinationDirectoryLocation,
-					source.toString().substring(sourceDirectoryLocation.length()));
-			try {
-				Files.copy(source, destination);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-	}
 
-	public void copyResourcesTozip(String path) {
-		try {
+    }
 
-			File[] file = (new File(getClass().getResource(path).toURI())).listFiles();// get all files/directory's in
-																						// the folder
-			for (File file2 : file) { // for every file
-				if (file2.isDirectory()) { // if the file is a directory
-					copyResourcesTozip(path + file2.getName() + "/"); // recursively copy that directory as well.
-				} else { // if it is a file
-					try {
-						// get the relative file path
-						String filePath = path + file2.getName();
-						filePath = filePath.substring(("/datapack empty/").length(), filePath.length());
+    // ---- save string as file ----
+    // ---- create directory ----
 
-						// create new entry for the file
-						ZipEntry e = new ZipEntry(filePath);
-						zipArch.putNextEntry(e);
+    private void createDirectory(String dirpath) {
 
-						// write the content's of the file to the new zip entry.
-						zipArch.write(Files.readAllBytes(file2.toPath()));
-						zipArch.closeEntry();
+        File f = new File(dirpath);
+        if (!f.exists()) {
+            f.mkdir();
+        }
 
-					} catch (IOException e1) {
-						System.err.println("faled saving " + path);
-						e1.printStackTrace();
-					}
-				}
-			}
 
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-	}
+    }
 
-	public void renameFolder(String path,String newPath){
-		File folderOrg = new File(path);
-		File folderNew = new File(newPath);
-		folderOrg.renameTo(folderNew);
-	}
+    // ---- create directory ----
+    // ---- copy directory ---- source: https://www.baeldung.com/java-copy-directory
 
-	public void copydirTozip(String path, String originalPath) {
-		File[] file = (new File(path).listFiles());// get all files/directory's in
-													// the folder
-		for (File file2 : file) { // for every file
-			if (file2.isDirectory()) { // if the file is a directory
-				copydirTozip(path + file2.getName() + "/", originalPath); // recursively copy that directory as well.
-			} else { // if it is a file
-				try {
-					// get the relative file path
-					String filePath = path + file2.getName();
-					filePath = filePath.substring((originalPath).length(), filePath.length());
+    public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation)
+            throws IOException {
+        System.err.println("source dir: " + sourceDirectoryLocation);
+        Files.walk(Paths.get(sourceDirectoryLocation)).forEach(source -> {
+            Path destination = Paths.get(destinationDirectoryLocation,
+                    source.toString().substring(sourceDirectoryLocation.length()));
+            try {
+                Files.copy(source, destination);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
-					// create new entry for the file
-					ZipEntry e = new ZipEntry(filePath);
-					zipArch.putNextEntry(e);
+    public void copyResourcesTozip(String path) {
+        try {
 
-					// write the content's of the file to the new zip entry.
-					zipArch.write(Files.readAllBytes(file2.toPath()));
-					zipArch.closeEntry();
+            File[] file = (new File(getClass().getResource(path).toURI())).listFiles();// get all files/directory's in
+            // the folder
+            for (File file2 : file) { // for every file
+                if (file2.isDirectory()) { // if the file is a directory
+                    copyResourcesTozip(path + file2.getName() + "/"); // recursively copy that directory as well.
+                } else { // if it is a file
+                    try {
+                        // get the relative file path
+                        String filePath = path + file2.getName();
+                        filePath = filePath.substring(("/datapack empty/").length(), filePath.length());
 
-				} catch (IOException e1) {
-					System.err.println("faled saving " + path);
-					e1.printStackTrace();
-				}
-			}
-		}
-	}
+                        // create new entry for the file
+                        ZipEntry e = new ZipEntry(filePath);
+                        zipArch.putNextEntry(e);
 
-	// ---- copy directory ---- source: https://www.baeldung.com/java-copy-directory
-	// ---- delete directory ---- source:
-	// https://softwarecave.org/2018/03/24/delete-directory-with-contents-in-java/
+                        // write the content's of the file to the new zip entry.
+                        zipArch.write(Files.readAllBytes(file2.toPath()));
+                        zipArch.closeEntry();
 
-	private void deleteDirectory(String dirpath) throws IOException {
-		if (!saveAsZip) {
-			File file = new File(dirpath);
-			deleteDirectoryRecursionJava6(file);
-		}
-	}
+                    } catch (IOException e1) {
+                        System.err.println("faled saving " + path);
+                        e1.printStackTrace();
+                    }
+                }
+            }
 
-	private void deleteDirectoryRecursionJava6(File file) throws IOException {
-		if (file.isDirectory()) {
-			File[] entries = file.listFiles();
-			if (entries != null) {
-				for (File entry : entries) {
-					deleteDirectoryRecursionJava6(entry);
-				}
-			}
-		}
-		if (!file.delete()) {
-			throw new IOException("Failed to delete " + file);
-		}
-	}
-	// ---- delete directory ---- source:
-	// https://softwarecave.org/2018/03/24/delete-directory-with-contents-in-java/
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void setNoNestedIfStatements(int noNestedIfStatements) {
-		if (noNestedIfStatements > this.noNestedIfStatements) {// only update is new value is bigger
-			this.noNestedIfStatements = noNestedIfStatements;
-		}
-	}
+    public void renameFolder(String path, String newPath) {
+        File folderOrg = new File(path);
+        File folderNew = new File(newPath);
+        folderOrg.renameTo(folderNew);
+    }
 
-	// ---- delete directory ----
-	// ---- unzip ---- source: https://www.baeldung.com/java-compress-and-uncompress
+    public void copydirTozip(String path, String originalPath) {
+        File[] file = (new File(path).listFiles());// get all files/directory's in
+        // the folder
+        for (File file2 : file) { // for every file
+            if (file2.isDirectory()) { // if the file is a directory
+                copydirTozip(path + file2.getName() + "/", originalPath); // recursively copy that directory as well.
+            } else { // if it is a file
+                try {
+                    // get the relative file path
+                    String filePath = path + file2.getName();
+                    filePath = filePath.substring((originalPath).length(), filePath.length());
 
-	private void unzip(ZipInputStream zipIn, String destinationPath) {
-		try {
-			File destDir = new File(destinationPath);
-			byte[] buffer = new byte[1024];
-			ZipEntry zipEntry;
+                    // create new entry for the file
+                    ZipEntry e = new ZipEntry(filePath);
+                    zipArch.putNextEntry(e);
 
-			zipEntry = zipIn.getNextEntry();
+                    // write the content's of the file to the new zip entry.
+                    zipArch.write(Files.readAllBytes(file2.toPath()));
+                    zipArch.closeEntry();
 
-			while (zipEntry != null) {
-				File newFile = newFile(destDir, zipEntry);
-				if (zipEntry.isDirectory()) {
-					if (!newFile.isDirectory() && !newFile.mkdirs()) {
-						throw new IOException("Failed to create directory " + newFile);
-					}
-				} else {
-					// fix for Windows-created archives
-					File parent = newFile.getParentFile();
-					if (!parent.isDirectory() && !parent.mkdirs()) {
-						throw new IOException("Failed to create directory " + parent);
-					}
+                } catch (IOException e1) {
+                    System.err.println("faled saving " + path);
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
 
-					// write file content
-					FileOutputStream fos = new FileOutputStream(newFile);
-					int len;
-					while ((len = zipIn.read(buffer)) > 0) {
-						fos.write(buffer, 0, len);
-					}
-					fos.close();
-				}
-				zipEntry = zipIn.getNextEntry();
-			}
-			zipIn.closeEntry();
-			zipIn.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    // ---- copy directory ---- source: https://www.baeldung.com/java-copy-directory
+    // ---- delete directory ---- source:
+    // https://softwarecave.org/2018/03/24/delete-directory-with-contents-in-java/
 
-	private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-		File destFile = new File(destinationDir, zipEntry.getName());
+    private void deleteDirectory(String dirpath) throws IOException {
 
-		String destDirPath = destinationDir.getCanonicalPath();
-		String destFilePath = destFile.getCanonicalPath();
+        File file = new File(dirpath);
+        deleteDirectoryRecursionJava6(file);
 
-		if (!destFilePath.startsWith(destDirPath + File.separator)) {
-			throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-		}
+    }
 
-		return destFile;
-	}
+    private void deleteDirectoryRecursionJava6(File file) throws IOException {
+        if (file.isDirectory()) {
+            File[] entries = file.listFiles();
+            if (entries != null) {
+                for (File entry : entries) {
+                    deleteDirectoryRecursionJava6(entry);
+                }
+            }
+        }
+        if (!file.delete()) {
+            throw new IOException("Failed to delete " + file);
+        }
+    }
+    // ---- delete directory ---- source:
+    // https://softwarecave.org/2018/03/24/delete-directory-with-contents-in-java/
 
-	// ---- unzip ----
-	// ---- getters and setters ----
-	
-	private static String removeUnnecessaryLineBreaksTabsSpaces(Boolean notLast, String commentAndCommand) {
-		String[] commandWithCommentArray = Arrays.stream(commentAndCommand.split("\n")) 	// Split the comments and command
-                .filter(value -> value != null && value.length() > 0) 							// remove strings that are null or empty
-                .map(String::trim)																// trim all the strings
-                .toArray(size -> new String[size]); 											// write all the string back to array
-		String removedEmptyLinesString = String.join("\n", commandWithCommentArray); // Glue array back together using breakline
-		
-		if(notLast && !removedEmptyLinesString.endsWith("\n")) { 
-			removedEmptyLinesString += "\n\n"; // If not last command and no breakline at the end - add two breaklines
-		}else if(notLast && removedEmptyLinesString.endsWith("\n")) { 
-			removedEmptyLinesString += "\n"; // If not last command but had breakline at the end - add one breakline
-		}
-		return removedEmptyLinesString;
-	}
+    public void setNoNestedIfStatements(int noNestedIfStatements) {
+        if (noNestedIfStatements > this.noNestedIfStatements) {// only update is new value is bigger
+            this.noNestedIfStatements = noNestedIfStatements;
+        }
+    }
+
+    // ---- delete directory ----
+    // ---- unzip ---- source: https://www.baeldung.com/java-compress-and-uncompress
+
+    private void unzip(ZipInputStream zipIn, String destinationPath) {
+        try {
+            File destDir = new File(destinationPath);
+            byte[] buffer = new byte[1024];
+            ZipEntry zipEntry;
+
+            zipEntry = zipIn.getNextEntry();
+
+            while (zipEntry != null) {
+                File newFile = newFile(destDir, zipEntry);
+                if (zipEntry.isDirectory()) {
+                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                        throw new IOException("Failed to create directory " + newFile);
+                    }
+                } else {
+                    // fix for Windows-created archives
+                    File parent = newFile.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException("Failed to create directory " + parent);
+                    }
+
+                    // write file content
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zipIn.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+                }
+                zipEntry = zipIn.getNextEntry();
+            }
+            zipIn.closeEntry();
+            zipIn.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destinationDir.getCanonicalPath();
+        String destFilePath = destFile.getCanonicalPath();
+
+        if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
+    }
+
+    // ---- unzip ----
+    // ---- getters and setters ----
+
+    private static String removeUnnecessaryLineBreaksTabsSpaces(Boolean notLast, String commentAndCommand) {
+        String[] commandWithCommentArray = Arrays.stream(commentAndCommand.split("\n"))    // Split the comments and command
+                .filter(value -> value != null && value.length() > 0)                            // remove strings that are null or empty
+                .map(String::trim)                                                                // trim all the strings
+                .toArray(size -> new String[size]);                                            // write all the string back to array
+        String removedEmptyLinesString = String.join("\n", commandWithCommentArray); // Glue array back together using breakline
+
+        if (notLast && !removedEmptyLinesString.endsWith("\n")) {
+            removedEmptyLinesString += "\n\n"; // If not last command and no breakline at the end - add two breaklines
+        } else if (notLast && removedEmptyLinesString.endsWith("\n")) {
+            removedEmptyLinesString += "\n"; // If not last command but had breakline at the end - add one breakline
+        }
+        return removedEmptyLinesString;
+    }
 
 }

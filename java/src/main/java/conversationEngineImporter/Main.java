@@ -17,10 +17,12 @@ import conversationEngineLine.EndLine;
 
 public class Main {
 
+	public static ReadConfig config;
+
 	public static void main(String[] args) {
 		loadConversationLinePlugins();
 		
-		ReadConfig config = new ReadConfig();
+		config = new ReadConfig();
 		String file = config.getFileName();
 		
 		
@@ -44,7 +46,7 @@ public class Main {
 		
 
 		System.out.println("importing the file");
-		CEStory Story = new Generator().generateStory(nodesArray, 10,config.getDatapackName(),config.isSaveAsZip(),config.isSupport1_21Plus());
+		CEStory Story = new Generator().generateStory(nodesArray, 10);
 
 		Story.generateDatapack();
 

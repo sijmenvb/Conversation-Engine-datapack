@@ -24,10 +24,13 @@ import java.util.jar.JarEntry;
 import java.util.regex.Pattern;
 
 public class ReadConfig {
-	String fileName;
-	String datapackName;
-	boolean saveAsZip;
-	boolean support1_21Plus;
+	private final String fileName;
+	private final String datapackName;
+	private final boolean saveAsZip;
+	private final boolean support1_21Plus;
+
+	private final boolean endMessage;
+	private final Integer numberOfEmptyLines;
 
 	public ReadConfig() {
 		createRun();
@@ -61,6 +64,9 @@ public class ReadConfig {
 		datapackName = getStringFromConfig("name", prop, propBackup);
 		saveAsZip = getBoolFromConfig("saveAsZip", prop, propBackup);
 		support1_21Plus = getBoolFromConfig("support1_21Plus", prop, propBackup);
+		endMessage = getBoolFromConfig("endMessage", prop, propBackup);
+		numberOfEmptyLines = getIntFromConfig("numberOfEmptyLines", prop, propBackup);
+
 	}
 
 	private String getStringFromConfig(String key, Properties prop, Properties propBackup) {
@@ -212,5 +218,13 @@ public class ReadConfig {
 
 	public boolean isSupport1_21Plus() {
 		return support1_21Plus;
+	}
+
+	public boolean isEndMessage() {
+		return endMessage;
+	}
+
+	public Integer getNumberOfEmptyLines() {
+		return numberOfEmptyLines;
 	}
 }

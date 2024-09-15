@@ -19,7 +19,7 @@ public class Generator {
 	private int IdCounter = 0; // to ensure unique id's (picked sequentially) (0 will never be used
 								// intentionally)
 
-	public CEStory generateStory(JSONArray nodesArray, int groupSize, String datapackName, boolean zipResult, boolean support1_21Plus) {
+	public CEStory generateStory(JSONArray nodesArray, int groupSize) {
 		// System.out.println(nodesArray.get(0));
 
 		HashMap<String, ConversationNode> nodes = new HashMap<String, ConversationNode>();// store all conversation
@@ -120,7 +120,7 @@ public class Generator {
 		}
 
 		// now gather the groups into a CEStory
-		CEStory story = new CEStory(npcGroups, nodes, datapackName, zipResult,support1_21Plus);
+		CEStory story = new CEStory(npcGroups, nodes);
 
 		/*
 		 * // print all the commands, for testing purposes. for (ConverzationNode n :
