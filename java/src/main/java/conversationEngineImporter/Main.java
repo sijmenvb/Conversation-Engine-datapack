@@ -44,7 +44,7 @@ public class Main {
 		
 
 		System.out.println("importing the file");
-		CEStory Story = new Generator().generateStory(nodesArray, 10,config.getDatapackName(),config.isSaveAsZip(),config.isSupport1_21Plus());
+		CEStory Story = new Generator().generateStory(nodesArray, 10,config.getDatapackName(),config.isSaveAsZip(),config.isSupport1_21Plus(),config.isSupport1_21_5Plus());
 
 		Story.generateDatapack();
 

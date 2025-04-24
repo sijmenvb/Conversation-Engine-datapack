@@ -38,16 +38,18 @@ public class CEStory {
 	private boolean saveAsZip = false; // keep this false cause gradually generating the zip does not work
 	private boolean zipResult = false;
 	private boolean support1_21Plus = true;
+	private boolean support1_21_5Plus = true;
 	private FileOutputStream f;
 
 	public CEStory(LinkedList<NPCGroup> groups, HashMap<String, ConversationNode> nodes, String name,
-			boolean zipResult, Boolean support1_21Plus) {
+			boolean zipResult, boolean support1_21Plus,boolean support1_21_5Plus) {
 		this.groups = groups;
 		this.nodes = nodes;
 		CEStory.name = name;
 		this.zipResult = zipResult;
 		this.support1_21Plus = support1_21Plus;
-		
+		this.support1_21_5Plus = support1_21_5Plus;
+
 		if (zipResult) {
 			try {
 				f = new FileOutputStream(name + ".zip");
@@ -584,7 +586,7 @@ public class CEStory {
 			for (NPC npc : npcGroup.getNpcs()) {
 
 				String s = String.format(
-						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[%s],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:'{\"text\":\"%s\",\"color\":\"white\"}',VillagerData:{profession:\"minecraft:%s\"},Offers:{},Inventory:[{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b}]}",
+						"# summon a villager with a name a tag equal to the name (space becomes _ ) and the CE_npc tag \nsummon villager ~ ~ ~ {Tags:[%s],Invulnerable:1b,CustomNameVisible:1b,NoAI:1b,CanPickUpLoot:0b,CustomName:" + (support1_21_5Plus ? "" : "'") +"{\"text\":\"%s\",\"color\":\"white\"}" + (support1_21_5Plus ? "" : "'") + ",VillagerData:{profession:\"minecraft:%s\"},Offers:{},Inventory:[{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b},{id:\"minecraft:carrot\",Count:64b}]}",
 						npc.getFormattedTags(), npc.getRealName(), npc.getProfession());
 
 				SaveAsFile(s, String.format("%s%sdata%sconversation_engine%sfunctions%svillager%ssummon%s%s.mcfunction",

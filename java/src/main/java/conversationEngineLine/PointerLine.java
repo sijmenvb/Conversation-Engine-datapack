@@ -12,7 +12,9 @@ public class PointerLine extends ConversationLine {
 	private String text;
 	private String pointer;
 
-	public PointerLine(String text, ConversationNode node) {
+	private boolean support1_21_5Plus;
+
+	public PointerLine(String text, ConversationNode node, boolean support1_21_5Plus) {
 		super();
 		String split[] = text.split("\\]\\]|\\[\\[|\\|"); // splits at and removes the following characters [[ and ]]
 															// and |
@@ -26,6 +28,7 @@ public class PointerLine extends ConversationLine {
 								// at [[)
 		this.pointer = split[2].replace(' ', '_').toLowerCase(); // get the pointer and make sure it has underscores
 																	// just as the id's
+		this.support1_21_5Plus = support1_21_5Plus;
 	}
 
 	public String getPointer() {
@@ -44,7 +47,7 @@ public class PointerLine extends ConversationLine {
 		}
 
 		String clickevent = String.format(
-				",\"color\":\"#A8DFFF\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/trigger CE_trigger set %d\"}",
+				",\"color\":\"#A8DFFF\",\""+ (support1_21_5Plus ? "click_event" : "clickEvent") + "\":{\"action\":\"run_command\",\""+(support1_21_5Plus ? "command":"value")+"\":\"/trigger CE_trigger set %d\"}",
 				nodeId);
 
 		String playerSelector = String.format("\"%s},{\"selector\":\"@s\"%s},{\"text\":\"", clickevent, clickevent);

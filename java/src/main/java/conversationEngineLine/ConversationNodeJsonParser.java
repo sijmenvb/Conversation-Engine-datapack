@@ -15,7 +15,7 @@ public class ConversationNodeJsonParser {
 
 	public static LinkedList<ConversationLine> linetypes = new LinkedList<ConversationLine>();
 
-	public static void parseBody(String body, ConversationNode node) {
+	public static void parseBody(String body, ConversationNode node, boolean support1_21_5Plus) {
 
 		String lines[] = body.split("(\\r?\\n)|((?=\\[\\[)|(?<=\\]\\]))|((?=<<)|(?<=>>))"); // splits before [[ and << ,
 		// after ]] and >> and it
@@ -28,7 +28,7 @@ public class ConversationNodeJsonParser {
 																	// empty ignore it. do not display empty lines
 			} else if (lines[i].matches("\\[\\[([^\\|]*)\\|([^\\|]*)\\]\\]")) { // if the line is in the format of [[
 																				// some text | some text ]]
-				PointerLine pointerLine = new PointerLine(lines[i], node);// convert input to PointerLine.
+				PointerLine pointerLine = new PointerLine(lines[i], node, support1_21_5Plus);// convert input to PointerLine.
 				node.lines.push(pointerLine); // add the pointerLine to the list.
 				node.outPointer.push(pointerLine.getPointer());// update the outPointer list.
 
@@ -43,7 +43,7 @@ public class ConversationNodeJsonParser {
 				s += s.substring(2, s.length() - 1);
 				s += "]]";
 
-				PointerLine pointerLine = new PointerLine(s, node);// convert input to PointerLine.
+				PointerLine pointerLine = new PointerLine(s, node, support1_21_5Plus);// convert input to PointerLine.
 				node.lines.push(pointerLine); // add the pointerLine to the list.
 				node.outPointer.push(pointerLine.getPointer());// update the outPointer list.
 			} else if (lines[i].matches("<<.*>>")) { // if the line is in the form <<text>>

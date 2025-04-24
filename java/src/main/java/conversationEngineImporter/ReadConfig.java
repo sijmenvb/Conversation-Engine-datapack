@@ -28,7 +28,7 @@ public class ReadConfig {
 	String datapackName;
 	boolean saveAsZip;
 	boolean support1_21Plus;
-
+	boolean support1_21_5Plus;
 	public ReadConfig() {
 		createRun();
 		Properties prop = new Properties();
@@ -61,6 +61,7 @@ public class ReadConfig {
 		datapackName = getStringFromConfig("name", prop, propBackup);
 		saveAsZip = getBoolFromConfig("saveAsZip", prop, propBackup);
 		support1_21Plus = getBoolFromConfig("support1_21Plus", prop, propBackup);
+		support1_21_5Plus = getBoolFromConfig("support1_21_5Plus", prop, propBackup);
 	}
 
 	private String getStringFromConfig(String key, Properties prop, Properties propBackup) {
@@ -172,6 +173,10 @@ public class ReadConfig {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isSupport1_21_5Plus() {
+		return support1_21_5Plus;
 	}
 
 	private void unpackFile(Path p, String folderName) {

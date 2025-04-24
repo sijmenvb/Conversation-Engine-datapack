@@ -27,7 +27,7 @@ public class ConversationNode {
 	private int noEmptyLines = 20;
 	
 
-	public ConversationNode(JSONObject in, int id) {
+	public ConversationNode(JSONObject in, int id, boolean support1_21_5Plus) {
 		this.id = id;
 		this.name = ((String) in.get("title"));// make sure there are no spaces in the name.
 		String body = (String) in.get("body");	
@@ -35,7 +35,9 @@ public class ConversationNode {
 		body = Functions.recReplace(body, "\n\n", "\n \n"); // replace to sequential nextlines to have a space until no
 															// sequential nextlines are left.	
 		
-		ConversationNodeJsonParser.parseBody(body, this); // parse the body
+		ConversationNodeJsonParser.parseBody(body, this, support1_21_5Plus); // parse the body
+
+
 	}
 
 	public LinkedList<Integer> getValidInpointerIds(HashMap<String, ConversationNode> nodes) {
